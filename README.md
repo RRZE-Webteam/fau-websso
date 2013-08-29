@@ -26,6 +26,8 @@ Bereitstellung des FAU-SP (Service Provider) mit SimpleSAMLphp
 
 <pre>
 $metadata['https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'] = array(
+    'metadata-set' => 'saml20-idp-remote',
+    'entityid' => 'https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php',
     'name' => array(
         'de' => 'Zentraler Anmeldedienst der Universitaet Erlangen-Nuernberg',
         'en' => 'Central login service of the University Erlangen-Nuernberg',
@@ -33,10 +35,34 @@ $metadata['https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'] =
     'description' => array(
         'de' => 'Anmeldung für zentral-vergebene Kennungen von Studierenden und Beschaeftigten der Universitaet Erlangen-Nuernberg.',
         'en' => 'Login for centrally assigned IDs of students and employees of the University Erlangen-Nürnberg.'
+    ),    
+    'SingleSignOnService' =>
+    array(
+        0 =>
+        array(
+            'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+            'Location' => 'https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/SSOService.php',
+        ),
     ),
-    'SingleSignOnService' => 'https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/SSOService.php',    
     'SingleLogoutService' => 'https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/SingleLogoutService.php',
-    'certData' => 'MIIF1...',
+    'keys' =>
+    array(
+        0 =>
+        array(
+            'type' => 'X509Certificate',
+            'signing' => true,
+            'encryption' => true,
+            'X509Certificate' => 'MIIHCTCCB...',
+        ),
+        1 =>
+        array(
+            'type' => 'X509Certificate',
+            'signing' => true,
+            'encryption' => false,
+            'X509Certificate' => 'MIIF1TCCBL2...',
+        ),
+    ),
+    'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
 );
 </pre>
 
