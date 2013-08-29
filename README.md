@@ -8,8 +8,8 @@ WP-Einstellungsmenue
 
 Einstellungen › FAU-WebSSO
 
-Bereitstellung eines FAU-SP (Service Provider) mit SimpleSAMLphp
-----------------------------------------------------------------
+Bereitstellung des FAU-SP (Service Provider) mit SimpleSAMLphp
+--------------------------------------------------------------
 
 - 1. Letzte version des SimpleSAMLphp herunterladen. Siehe http://code.google.com/p/simplesamlphp/downloads/list
 - 2. Das simplesamlphp-Verzeichnis kopieren und unter dem wp-content-Verzeichnis des WordPress einsetzen
@@ -45,7 +45,7 @@ Apache-Einstellungen
 
 - Alias für SimpleSAMLphp einrichten:
 
-<pre>Alias /simplesaml /Pfade zum simplesamlphp/www-Verzeichnis</pre>
+<pre>Alias /simplesaml /Pfad zum simplesamlphp/www-Verzeichnis</pre>
 
 Z.B.: Alias /simplesaml /wordpress/wp-content/simplesamlphp/www
 
