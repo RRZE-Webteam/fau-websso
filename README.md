@@ -52,14 +52,14 @@ $metadata['https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'] =
             'type' => 'X509Certificate',
             'signing' => true,
             'encryption' => true,
-            'X509Certificate' => 'MIIHCTCCB...',
+            'X509Certificate' => 'Public-Key-Algorithmus',
         ),
         1 =>
         array(
             'type' => 'X509Certificate',
             'signing' => true,
             'encryption' => false,
-            'X509Certificate' => 'MIIF1TCCBL2...',
+            'X509Certificate' => 'Public-Key des Zertifikatinhabers',
         ),
     ),
     'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
