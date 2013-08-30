@@ -82,7 +82,7 @@ Anmeldung
 - Folgende Info an der RRZE-WebSSO-E-Mail-Verteiler versenden:
 
 <pre>
-Metadata-URL: http(s)://webauftritt-url/simplesaml/saml2/sp/metadata.php
+Metadata-URL: http(s)://webauftritt-url/simplesaml/module.php/saml/sp/metadata.php/default-sp
 Login-URL: http(s)://webauftritt-url/wp-login.php?action=sso
 Erforderliche Attribute: 
 	displayname
