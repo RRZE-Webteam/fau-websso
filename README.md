@@ -62,10 +62,6 @@ Anmeldung
 ---------
 
 - Folgende Info an der RRZE-WebSSO-E-Mail-Verteiler versenden:
-$metadata['https://zuv.cms.fau.dev/simplesaml/module.php/saml/sp/metadata.php/default-sp'] = array(
-    'AssertionConsumerService' => 'https://zuv.cms.fau.dev/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp',
-    'SingleLogoutService' => 'https://zuv.cms.fau.dev/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp',
-);
 
 <pre>
 Metadata-URL: http(s)://webauftritt-url/simplesaml/module.php/saml/sp/metadata.php/default-sp
