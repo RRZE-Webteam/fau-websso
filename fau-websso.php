@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 2.0
+ * Version: 2.1
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -30,7 +30,7 @@ register_activation_hook( __FILE__, array( 'FAU_WebSSO', 'activation' ) );
 
 class FAU_WebSSO {
 
-    const version = '2.0'; // Plugin-Version
+    const version = '2.1'; // Plugin-Version
     
     const option_name = '_fau_websso';
 
@@ -61,7 +61,17 @@ class FAU_WebSSO {
         if($options['force_websso']) {
             add_action( 'lost_password', array( __CLASS__, 'disable_function' ) );
             add_action( 'retrieve_password', array( __CLASS__, 'disable_function' ) );
-            add_action( 'password_reset', array( __CLASS__, 'disable_function' ) );            
+            add_action( 'password_reset', array( __CLASS__, 'disable_function' ) );  
+
+            add_filter( 'map_meta_cap', array( __CLASS__, 'map_meta_cap_filter' ), 10, 2 );
+
+            add_filter( 'show_password_fields', '__return_false' );
+
+            if( current_user_can( 'promote_users' ) ) {
+                add_action( 'admin_init', array( __CLASS__, 'add_user_request' ) );          
+                add_action( 'admin_menu', array( __CLASS__, 'add_user_menu' ) );
+            }
+            
         } else {
             add_action( 'login_form', array( __CLASS__, 'login_form' ));            
         }
@@ -190,10 +200,15 @@ class FAU_WebSSO {
         $userdata = get_user_by( 'login', $user_login );
 
         if ($userdata) {
-            if($userdata->user_email == $user_email && ( get_user_meta($userdata->ID, 'edu_person_affiliation') || get_user_meta($userdata->ID, 'edu_person_entitlement')))
+            
+            if($userdata->user_email == $user_email) {
                 $user = new WP_User($userdata->ID);
-            else
+                update_user_meta( $userdata->ID, 'edu_person_affiliation', $edu_person_affiliation );
+                update_user_meta( $userdata->ID, 'edu_person_entitlement', $edu_person_entitlement );                
+            } else {
                 return self::simplesaml_login_error(__('Die Benutzerdaten sind nicht im Einklang mit den lokalen Daten.', self::textdomain));
+            }
+            
         } else {
 
             if( ! get_site_option( 'users_can_register')) {
@@ -284,6 +299,176 @@ class FAU_WebSSO {
         return $output;
     }
     
+    public static function map_meta_cap_filter( $caps, $cap ) {
+
+        foreach( $caps as $key => $capability ) {
+            if( $cap == 'create_users' )
+                $caps[$key] = 'do_not_allow';
+        }
+
+        return $caps;
+        
+    }
+    
+    public static function add_user_menu() {
+        global $submenu;
+        
+        remove_submenu_page( 'users.php', 'user-new.php' );
+        
+        $submenu_page = add_submenu_page( 'users.php', __( 'Neu hinzufügen', self::textdomain ), __( 'Neu hinzufügen', self::textdomain ), 'promote_users', 'user-new', array( __CLASS__, 'add_user_page' ) );
+        
+        add_action( sprintf( 'load-%s', $submenu_page ), array( __CLASS__, 'add_user_help_tab' ) );        
+        
+        foreach( $submenu['users.php'] as $key => $value ) {
+            if( $value == __( 'Neu hinzufügen', self::textdomain ) )
+                break;
+        }
+        
+        $submenu['users.php'][10] = $submenu['users.php'][$key];
+        unset( $submenu['users.php'][$key] );
+        
+        ksort( $submenu['users.php'] );
+    }
+    
+    public static function add_user_help_tab() {
+        $help = '<p>' . __( 'Um einen neuen Benutzer zu Ihrer Webseite hinzufügen, füllen Sie das Formular auf dieser Seite aus, und klicken Sie unten auf Neuen Benutzer hinzufügen.', self::textdomain ) . '</p>';
+        $help .= '<p>' . __( 'Vergessen Sie nicht, unten auf dieser Seite auf Neuen Benutzer hinzufügen zu klicken, wenn Sie fertig sind.', self::textdomain ) . '</p>';
+
+        get_current_screen()->add_help_tab( array(
+            'id'      => 'overview',
+            'title'   => __( 'Übersicht', self::textdomain ),
+            'content' => $help,
+        ) );
+
+        get_current_screen()->add_help_tab( array(
+        'id'      => 'user-roles',
+        'title'   => __( 'Benutzerrollen', self::textdomain ),
+        'content' => '<p>' . __( 'Hier ist ein grober Überblick über die verschiedenen Benutzerrollen und die jeweils damit verknüpften Berechtigungen:', self::textdomain ) . '</p>' .
+                     '<ul>' .
+                     '<li>' . __( 'Administratoren haben die komplette Macht und sehen alle Optionen.', self::textdomain ) . '</li>' .
+                     '<li>' . __( 'Redakteure können Artikel und Seiten anlegen und veröffentlichen, sowie die Artikel, Seiten, etc. von anderen Benutzern verwalten (ändern, löschen, veröffentlichen).', self::textdomain ) . '</li>' .
+                     '<li>' . __( 'Autoren können ihre eigenen Artikel veröffentlichen und verwalten sowie Dateien hochladen.', self::textdomain ) . '</li>' .
+                     '<li>' . __( 'Mitarbeiter können eigene Artikel schreiben und bearbeiten, sie jedoch nicht veröffentlichen. Auch dürfen sie keine Dateien hochladen.', self::textdomain ) . '</li>' .
+                     '<li>' . __( 'Abonennten können nur Kommentare lesen und abgeben, aber keine eigenen Inhalte erstellen.', self::textdomain ) . '</li>' .
+                     '</ul>'
+        ) );
+
+    }
+    
+    public static function add_user_request() {
+        global $blog_id, $pagenow;
+        
+        if( $pagenow == 'site-users.php' )
+            return;
+        
+        if ( $pagenow == 'user-new.php' ) {
+            wp_redirect( 'users.php?page=user-new' );
+            die();
+        }
+        
+        if ( isset( $_REQUEST['action'] ) && 'adduser' == $_REQUEST['action'] ) {
+
+            if ( ! current_user_can( 'promote_user' ) )
+                wp_die( __( 'Schummeln, was?', self::textdomain ) );
+            
+            check_admin_referer( 'add-user', '_wpnonce_add-user' );
+            
+            $options = self::get_options();
+            
+            $blog_id = get_current_blog_id();
+            $redirect = 'users.php?page=user-new';
+            
+            if ( empty( $blog_id ) ) {
+                wp_redirect( $redirect );
+                die();
+            }
+            
+            $user_login = isset( $_REQUEST['newuser'] ) ? trim( $_REQUEST['newuser'] ) : '';
+            
+            $default_role = get_option( 'default_role' );
+            $role = isset( $_REQUEST['new_role'] ) ? trim( $_REQUEST['new_role'] ) : $default_role;
+            $role = ! is_null( get_role( $role ) ) ? $role : $default_role;
+            
+            $userdata = get_user_by( 'login', $user_login );
+            
+            if( $userdata ) {
+                
+                $user_id = $userdata->ID;
+                
+                if ( array_key_exists( $blog_id, get_blogs_of_user( $user_id ) ) ) {
+                    $redirect = add_query_arg( array( 'update' => 'err_add_member' ), $redirect );
+                } else {
+                    add_existing_user_to_blog( array( 'user_id' => $user_id, 'role' => $role ) );
+                    $redirect = add_query_arg( array('update' => 'adduser'), $redirect );
+                }
+                
+            } else {
+                $redirect = add_query_arg( array('update' => 'err_add_notfound'), $redirect );
+            }
+            
+            wp_redirect( $redirect );
+            die();
+                   
+        }
+        
+    }
+    
+    public static function add_user_page() {
+        
+        if ( isset( $_GET['update'] ) ) {
+            $messages = array();
+            switch ( $_GET['update'] ) {
+                case 'adduser':
+                    $messages[] = sprintf( '<div id="message" class="updated"><p>%s</p></div>', __( 'Der Benutzer wurde zu Ihre Webseite hinzugefügt.', self::textdomain ) );
+                    break;
+                case 'err_add_member':
+                    $messages[] = sprintf( '<div id="message" class="error"><p>%s</p></div>', __( 'Dieser Benutzer ist bereits ein Mitglied dieser Webseite.', self::textdomain ) );
+                    break;
+                case 'err_add_notfound':
+                    $messages[] = sprintf( '<div id="message" class="error"><p>%s</p></div>', __( 'Geben Sie den Benutzernamen eines bestehenden Benutzers ein.', self::textdomain ) );
+                    break;                
+            }
+        }
+        ?>
+        <div class="wrap">
+            <div id="icon-users" class="icon32">
+                <br />
+            </div>
+            <h2><?php _e( 'Neuen Benutzer hinzufügen', self::textdomain ); ?></h2>
+            <?php
+            if ( ! empty( $messages ) )
+                foreach ( $messages as $_message )
+                    echo $_message;
+            ?>            
+            <h3 id="add-existing-user"><?php _e( 'Benutzer hinzufügen', self::textdomain ) ?></h3>
+            
+            <p><?php _e( 'Tragen Sie die Benutzerkennung eines bestehenden Nutzers ein um ihn zu dieser Webseite hinzufügen.', self::textdomain ); ?></p>
+
+            <form action="" method="post" name="adduser" id="adduser">
+                <input name="action" type="hidden" value="adduser" />
+                <?php wp_nonce_field( 'add-user', '_wpnonce_add-user' ) ?>
+
+                <table class="form-table">
+                    <tr class="form-field form-required">
+                        <th scope="row"><label for="addusername"><?php _e( 'Benutzerkennung', self::textdomain ) ?></label></th>
+                        <td><input name="newuser" type="text" id="addusername" class="wp-suggest-user"  style="width: 10em;" value="" /></td>
+                    </tr>
+                    <tr class="form-field">
+                        <th scope="row"><label for="adduser-role"><?php _e( 'Rolle', self::textdomain ) ?></label></th>
+                        <td><select name="new_role" id="adduser-role">
+                            <?php wp_dropdown_roles( get_option( 'default_role' ) ); ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <?php submit_button( __( 'Neuen Benutzer hinzufügen', self::textdomain ), 'primary', 'adduser-submit', true, array( 'id' => 'adduser-submit' ) ); ?>
+                
+            </form>
+
+        </div>
+    <?php
+    }
+    
     public static function network_admin_menu() {
         add_submenu_page( 'settings.php', __( 'FAU-WebSSO', self::textdomain ), __( 'FAU-WebSSO', self::textdomain ), 'manage_options', 'fau-websso-options', array( __CLASS__, 'network_options_page' ) );        
     }
@@ -338,14 +523,14 @@ class FAU_WebSSO {
     public static function admin_init() {        
 
         if(!is_multisite())
-            register_setting( 'fau_websso_options', self::version_option_name, array( __CLASS__, 'options_validate' ) );
+            register_setting( 'fau_websso_options', self::option_name, array( __CLASS__, 'options_validate' ) );
 
         add_settings_section( 'websso_options_section', false, array( __CLASS__, 'websso_settings_section' ), 'fau_websso_options' );
         add_settings_field( 'force_websso', __('Zur Single Sign-On zwingen', self::textdomain), array( __CLASS__, 'force_websso_field' ), 'fau_websso_options', 'websso_options_section' );
         
         add_settings_section( 'simplesaml_options_section', false, array( __CLASS__, 'simplesaml_settings_section' ), 'fau_websso_options' );
         add_settings_field( 'simplesaml_include', __('Autoload-Pfad', self::textdomain), array( __CLASS__, 'simplesaml_include_field' ), 'fau_websso_options', 'simplesaml_options_section' );
-        add_settings_field( 'simplesaml_auth_source', __('Authentifizierungsquelle', self::textdomain), array( __CLASS__, 'simplesaml_auth_source' ), 'fau_websso_options', 'simplesaml_options_section' );
+        add_settings_field( 'simplesaml_auth_source', __('Authentifizierungsquelle', self::textdomain), array( __CLASS__, 'simplesaml_auth_source_field' ), 'fau_websso_options', 'simplesaml_options_section' );
     }
 
     public static function websso_settings_section() {
@@ -369,7 +554,7 @@ class FAU_WebSSO {
         echo '<p class="description">' . __('Relative Pfad ausgehend vom wp-content-Verzeichnis.', self::textdomain) . '</p>';
     }
 
-    public static function simplesaml_auth_source() {
+    public static function simplesaml_auth_source_field() {
         $options = self::get_options();   
         echo '<input type="text" id="simplesaml_auth_source" class="regular-text ltr" name="' . self::option_name . '[simplesaml_auth_source]" value="' . esc_attr( $options['simplesaml_auth_source'] ) . '">';
     }
