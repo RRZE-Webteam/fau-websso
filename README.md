@@ -16,8 +16,8 @@ Bereitstellung eines FAU-SP (Service Provider) mittels SimpleSAMLphp
 - 3. Folgenden Attribute in der Datei /simplesamlphp/config/config.php ändern/bearbeiten:
 
 <pre>
-'auth.adminpassword' = 'Beliebige Admin-Password'
-'secretsalt' => 'Beliebige, moeglichst einzigartige Phrase'
+'auth.adminpassword' = 'Beliebiges Admin-Password'
+'secretsalt' => 'Beliebige, möglichst einzigartige Phrase'
 'technicalcontact_name' => 'Name des technischen Ansprechpartners'
 'technicalcontact_email' => 'E-Mail-Adresse des technischen Ansprechpartners'
 </pre>
