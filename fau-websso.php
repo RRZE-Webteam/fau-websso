@@ -67,9 +67,11 @@ class FAU_WebSSO {
 
             add_filter( 'show_password_fields', '__return_false' );
 
-            if( current_user_can( 'promote_users' ) ) {
+            if(is_multisite() && current_user_can( 'promote_users' ) ) {
                 add_action( 'admin_init', array( __CLASS__, 'add_user_request' ) );          
                 add_action( 'admin_menu', array( __CLASS__, 'add_user_menu' ) );
+            } else {
+                add_action( 'admin_menu', array( __CLASS__, 'remove_admin_menu' ) );
             }
             
         } else {
@@ -310,6 +312,10 @@ class FAU_WebSSO {
         
     }
     
+    public static function remove_admin_menu() {
+        remove_submenu_page( 'users.php', 'user-new.php' );
+    }
+    
     public static function add_user_menu() {
         global $submenu;
         
@@ -472,7 +478,7 @@ class FAU_WebSSO {
     public static function network_admin_menu() {
         add_submenu_page( 'settings.php', __( 'FAU-WebSSO', self::textdomain ), __( 'FAU-WebSSO', self::textdomain ), 'manage_options', 'fau-websso-options', array( __CLASS__, 'network_options_page' ) );        
     }
-        
+    
     public static function admin_menu() {
         add_options_page( __('FAU-WebSSO', self::textdomain), __('FAU-WebSSO', self::textdomain), 'manage_options', 'fau-websso-options', array( __CLASS__, 'options_page' ) );        
     }
