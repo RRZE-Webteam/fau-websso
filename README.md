@@ -1,15 +1,15 @@
 FAU-WebSSO
 ==========
 
-Wordpress-Plugin: Anmeldung fuer zentral vergebene Kennungen von Studierenden und Beschaeftigten.
+Wordpress-Plugin: Anmeldung für zentral-vergebene Kennungen von Studierenden und Beschäftigten der Universitaet Erlangen-Nuernberg.
 
 WP-Einstellungsmenue
 -------------------- 
 
 Einstellungen › FAU-WebSSO
 
-Bereitstellung des FAU-SP (Service Provider) mit SimpleSAMLphp
---------------------------------------------------------------
+Bereitstellung eines FAU-SP (Service Provider) mittels SimpleSAMLphp
+--------------------------------------------------------------------
 
 - 1. Letzte version des SimpleSAMLphp herunterladen. Siehe http://code.google.com/p/simplesamlphp/downloads/list
 - 2. Das simplesamlphp-Verzeichnis kopieren und unter dem wp-content-Verzeichnis des WordPress einsetzen
