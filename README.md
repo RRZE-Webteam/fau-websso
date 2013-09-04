@@ -1,10 +1,10 @@
 FAU-WebSSO
 ==========
 
-Wordpress-Plugin: Anmeldung für zentral-vergebene Kennungen von Studierenden und Beschäftigten der Universitaet Erlangen-Nuernberg.
+Wordpress-Plugin: Anmeldung für zentral-vergebene Kennungen von Studierenden und Beschäftigten der Universität Erlangen-Nürnberg.
 
-WP-Einstellungsmenue
--------------------- 
+WP-Einstellungsmenü
+------------------- 
 
 Einstellungen › FAU-WebSSO
 
