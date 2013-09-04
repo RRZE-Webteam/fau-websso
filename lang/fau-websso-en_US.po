@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU-WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-28 16:20+0100\n"
+"POT-Creation-Date: 2013-09-04 16:27+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../fau-websso.php:35
+#: ../fau-websso.php:89
 #, php-format
 msgid ""
 "Ihre PHP-Version %s ist veraltet. Bitte aktualisieren Sie mindestens auf die "
@@ -26,7 +26,7 @@ msgstr ""
 "Your server is running PHP version %s. Please upgrade at least to PHP "
 "version %s."
 
-#: ../fau-websso.php:38
+#: ../fau-websso.php:92
 #, php-format
 msgid ""
 "Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
@@ -35,40 +35,115 @@ msgstr ""
 "Your Wordpress version is %s. Please upgrade at least to Wordpress version "
 "%s."
 
-#: ../fau-websso.php:120 ../fau-websso.php:141
-msgid "<strong>Fehler</strong>: Die Anmeldung ist fehlgeschlagen."
-msgstr "<strong>Error</strong>: Authentication failed."
+#: ../fau-websso.php:106
+msgid "Dieses Plugin muss für alle Webseiten aktiviert werden."
+msgstr "This plugin must be enabled for all sites."
 
-#: ../fau-websso.php:125
+#: ../fau-websso.php:108
 msgid ""
-"<strong>Fehler</strong>: Zurzeit ist die Benutzer-Registrierung nicht "
-"erlaubt."
-msgstr "<strong>Error</strong>: User registration is currently not allowed."
+"Sie haben versucht das Plugin zu aktivieren, haben aber nicht die "
+"ausreichenden Rechte dazu."
+msgstr ""
+"You tried to activate the plugin, but have not sufficient rights to do so."
 
-#: ../fau-websso.php:197
+#: ../fau-websso.php:174
+msgid "Die Benutzerattribute fehlen."
+msgstr "The user attributes are missing."
+
+#: ../fau-websso.php:179
+msgid "Eingegebene Text ist nicht geeignet als Benutzername."
+msgstr "Entered text is not suitable as a username."
+
+#: ../fau-websso.php:196
+msgid "Die Benutzerdaten sind nicht im Einklang mit den lokalen Daten."
+msgstr "The user data are not consistent with the local data."
+
+#: ../fau-websso.php:200
+msgid "Zurzeit ist die Benutzer-Registrierung nicht erlaubt."
+msgstr "User registration is currently not allowed."
+
+#: ../fau-websso.php:216
+msgid "Die Benutzer-Registrierung ist fehlgeschlagen."
+msgstr "User registration failed."
+
+#: ../fau-websso.php:253
+msgid "Fehler"
+msgstr "ERROR"
+
+#: ../fau-websso.php:254
+msgid "Die Anmeldung ist fehlgeschlagen."
+msgstr "Authentication failed."
+
+#: ../fau-websso.php:255
+msgid ""
+"Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an "
+"den Ansprechpartner der Webseite."
+msgstr ""
+"However, if no login is possible, please contact the contact person of the "
+"Website."
+
+#: ../fau-websso.php:275
+#, php-format
+msgid "Ansprechpartner und Kontakt für die &bdquo;%1$s&ldquo;-Webseite"
+msgstr "Contact persons for the &bdquo;%1$s&ldquo; website"
+
+#: ../fau-websso.php:280
+msgid "E-Mail:"
+msgstr "Email"
+
+#: ../fau-websso.php:288 ../fau-websso.php:292
 msgid "FAU-WebSSO"
 msgstr "FAU-WebSSO"
 
-#: ../fau-websso.php:204
+#: ../fau-websso.php:298
+msgid "Schummeln, was?"
+msgstr "Cheatin&#8217; uh?"
+
+#: ../fau-websso.php:308 ../fau-websso.php:325
 msgid "Einstellungen &rsaquo; FAU-WebSSO"
 msgstr "FAU-WebSSO Settings"
 
-#: ../fau-websso.php:223
-msgid "SimpleSAMLphp-Include-Pfad"
-msgstr "SimpleSAMLphp-Include-Pfad"
+#: ../fau-websso.php:344
+msgid "Zur Single Sign-On zwingen"
+msgstr "Force Single Sign-On"
 
-#: ../fau-websso.php:224
-msgid "SimpleSAMLphp-SSO-URL"
-msgstr "SimpleSAMLphp-SSO-URL"
+#: ../fau-websso.php:347
+msgid "Autoload-Pfad"
+msgstr "Autoload path"
 
-#: ../fau-websso.php:225
-msgid "SimpleSAMLphp-SLO-URL"
-msgstr "SimpleSAMLphp-SLO-URL"
+#: ../fau-websso.php:348
+msgid "Authentifizierungsquelle"
+msgstr "Authentication source"
 
-#: ../fau-websso.php:231
+#: ../fau-websso.php:352
+msgid "Allgemein"
+msgstr "General"
+
+#: ../fau-websso.php:353
+msgid "Allgemeine Einstellungen."
+msgstr "General Settings."
+
+#: ../fau-websso.php:362
+msgid "SimpleSAMLphp"
+msgstr "SimpleSAMLphp"
+
+#: ../fau-websso.php:363
+msgid "Einstellungen des Service Provider."
+msgstr "Service Provider Settings"
+
+#: ../fau-websso.php:369
 msgid "Relative Pfad ausgehend vom wp-content-Verzeichnis."
 msgstr "Relative path starting from the wp-content directory."
 
-#: ../fau-websso.php:237 ../fau-websso.php:243
-msgid "Relative URL."
-msgstr "Relative URL."
+#: ../fau-websso.php:390
+msgid "Anmeldung über Single Sign-On"
+msgstr "Login through Single Sign-On"
+
+#: ../fau-websso.php:390
+msgid ""
+"(zentraler Anmeldedienst der Universität Erlangen-Nürnberg). Anmeldung für "
+"zentral-vergebene Kennungen von Studierenden und Beschäftigten der "
+"Universität Erlangen-Nürnberg."
+msgstr ""
+"(central login service of the University Erlangen-Nürnberg). Login for "
+"centrally assigned IDs of students and employees."
