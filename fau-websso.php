@@ -36,6 +36,8 @@ class FAU_WebSSO {
 
     const version_option_name = '_fau_websso_version';
     
+    const option_group = 'fau-websso';
+    
     const textdomain = 'fau-websso';
     
     const php_version = '5.3'; // Minimal erforderliche PHP-Version
@@ -46,7 +48,7 @@ class FAU_WebSSO {
         
         $options = self::get_options();
         
-        load_plugin_textdomain( self::textdomain, false, sprintf( '%slang', plugin_dir_path( __FILE__ ) ) );
+        load_plugin_textdomain( self::textdomain, false, sprintf( '%s/lang/', dirname( plugin_basename( __FILE__ ) ) ) );
         
         add_action( 'init', array( __CLASS__, 'update_version' ) );
         
@@ -485,31 +487,36 @@ class FAU_WebSSO {
     }
     
     public static function network_admin_menu() {
-        add_submenu_page( 'settings.php', __( 'FAU-WebSSO', self::textdomain ), __( 'FAU-WebSSO', self::textdomain ), 'manage_options', 'fau-websso-options', array( __CLASS__, 'network_options_page' ) );        
+        add_submenu_page( 'settings.php', __( 'FAU-WebSSO', self::textdomain ), __( 'FAU-WebSSO', self::textdomain ), 'manage_network_options', self::option_group, array( __CLASS__, 'network_options_page' ) );        
     }
     
     public static function admin_menu() {
-        add_options_page( __('FAU-WebSSO', self::textdomain), __('FAU-WebSSO', self::textdomain), 'manage_options', 'fau-websso-options', array( __CLASS__, 'options_page' ) );        
+        add_options_page( __('FAU-WebSSO', self::textdomain), __('FAU-WebSSO', self::textdomain), 'manage_options', self::option_group, array( __CLASS__, 'options_page' ) );        
     }
 
     public static function network_options_page() {
-        if( isset( $_POST[self::option_name] )) {
-            if ( !is_super_admin() )
-                wp_die( __( 'Schummeln, was?', self::textdomain ) );			
+        if ( !is_super_admin() )
+            wp_die( __( 'Schummeln, was?', self::textdomain ) );
 
+        if( !empty( $_POST[self::option_name] )) {
+            check_admin_referer(self::option_group . '-options');
             $options = self::get_options();
             $input = self::options_validate($_POST[self::option_name]);
             if($options !== $input)
                 update_site_option( self::option_name, $input );
         }
+        
+        if ( isset($_POST['action']) && $_POST['action'] == 'update') {
+            ?><div id="message" class="updated"><p><?php _e( 'Einstellungen gespeichert.', self::textdomain ) ?></p></div><?php
+        }        
         ?>
         <div class="wrap">
             <?php screen_icon('options-general'); ?>
             <h2><?php echo esc_html( __( 'Einstellungen &rsaquo; FAU-WebSSO', self::textdomain) ); ?></h2>
             <form method="post">
-                <?php             
-                do_settings_sections( 'fau_websso_options' );
-                settings_fields( 'fau_websso_options' );
+                <?php   
+                do_settings_sections( self::option_group );
+                settings_fields( self::option_group );
                 submit_button();
                 ?>
             </form>
@@ -525,8 +532,8 @@ class FAU_WebSSO {
             <h2><?php echo esc_html( __( 'Einstellungen &rsaquo; FAU-WebSSO', self::textdomain) ); ?></h2>
             <form method="post" action="options.php">
                 <?php             
-                do_settings_sections( 'fau_websso_options' );
-                settings_fields( 'fau_websso_options' );
+                do_settings_sections( self::option_group );
+                settings_fields( self::option_group );
                 submit_button();
                 ?>
             </form>
@@ -538,14 +545,14 @@ class FAU_WebSSO {
     public static function admin_init() {        
 
         if(!is_multisite())
-            register_setting( 'fau_websso_options', self::option_name, array( __CLASS__, 'options_validate' ) );
+            register_setting( self::option_group, self::option_name, array( __CLASS__, 'options_validate' ) );
 
-        add_settings_section( 'websso_options_section', false, array( __CLASS__, 'websso_settings_section' ), 'fau_websso_options' );
-        add_settings_field( 'force_websso', __('Zum SSO zwingen', self::textdomain), array( __CLASS__, 'force_websso_field' ), 'fau_websso_options', 'websso_options_section' );
+        add_settings_section( 'websso_options_section', false, array( __CLASS__, 'websso_settings_section' ), self::option_group );
+        add_settings_field( 'force_websso', __('Zum SSO zwingen', self::textdomain), array( __CLASS__, 'force_websso_field' ), self::option_group, 'websso_options_section' );
         
-        add_settings_section( 'simplesaml_options_section', false, array( __CLASS__, 'simplesaml_settings_section' ), 'fau_websso_options' );
-        add_settings_field( 'simplesaml_include', __('Autoload-Pfad', self::textdomain), array( __CLASS__, 'simplesaml_include_field' ), 'fau_websso_options', 'simplesaml_options_section' );
-        add_settings_field( 'simplesaml_auth_source', __('Authentifizierungsquelle', self::textdomain), array( __CLASS__, 'simplesaml_auth_source_field' ), 'fau_websso_options', 'simplesaml_options_section' );
+        add_settings_section( 'simplesaml_options_section', false, array( __CLASS__, 'simplesaml_settings_section' ), self::option_group );
+        add_settings_field( 'simplesaml_include', __('Autoload-Pfad', self::textdomain), array( __CLASS__, 'simplesaml_include_field' ), self::option_group, 'simplesaml_options_section' );
+        add_settings_field( 'simplesaml_auth_source', __('Authentifizierungsquelle', self::textdomain), array( __CLASS__, 'simplesaml_auth_source_field' ), self::option_group, 'simplesaml_options_section' );
     }
 
     public static function websso_settings_section() {
