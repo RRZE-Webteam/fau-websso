@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU-WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-05 10:58+0100\n"
+"POT-Creation-Date: 2013-09-05 16:16+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -17,216 +17,220 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../fau-websso.php:89
+#: ../fau-websso.php:91
 #, php-format
 msgid ""
 "Ihre PHP-Version %s ist veraltet. Bitte aktualisieren Sie mindestens auf die "
 "PHP-Version %s."
 msgstr ""
 
-#: ../fau-websso.php:92
+#: ../fau-websso.php:94
 #, php-format
 msgid ""
 "Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
 "auf die Wordpress-Version %s."
 msgstr ""
 
-#: ../fau-websso.php:106
+#: ../fau-websso.php:108
 msgid "Dieses Plugin muss für alle Webseiten aktiviert werden."
 msgstr ""
 
-#: ../fau-websso.php:108
+#: ../fau-websso.php:110
 msgid ""
 "Sie haben versucht das Plugin zu aktivieren, haben aber nicht die "
 "ausreichenden Rechte dazu."
 msgstr ""
 
-#: ../fau-websso.php:180
+#: ../fau-websso.php:182
 msgid "Die Benutzerattribute fehlen."
 msgstr ""
 
-#: ../fau-websso.php:185
+#: ../fau-websso.php:187
 msgid "Eingegebene Text ist nicht geeignet als Benutzername."
 msgstr ""
 
-#: ../fau-websso.php:205
+#: ../fau-websso.php:207
 msgid "Die Benutzerdaten sind nicht im Einklang mit den lokalen Daten."
 msgstr ""
 
-#: ../fau-websso.php:211
+#: ../fau-websso.php:213
 msgid "Zurzeit ist die Benutzer-Registrierung nicht erlaubt."
 msgstr ""
 
-#: ../fau-websso.php:227
+#: ../fau-websso.php:229
 msgid "Die Benutzer-Registrierung ist fehlgeschlagen."
 msgstr ""
 
-#: ../fau-websso.php:264
+#: ../fau-websso.php:266
 msgid "Fehler"
 msgstr ""
 
-#: ../fau-websso.php:265
+#: ../fau-websso.php:267
 msgid "Die Anmeldung ist fehlgeschlagen."
 msgstr ""
 
-#: ../fau-websso.php:266
+#: ../fau-websso.php:268
 msgid ""
 "Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an "
 "den Ansprechpartner der Webseite."
 msgstr ""
 
-#: ../fau-websso.php:286
+#: ../fau-websso.php:288
 #, php-format
 msgid "Ansprechpartner und Kontakt für die &bdquo;%1$s&ldquo;-Webseite"
 msgstr ""
 
-#: ../fau-websso.php:291
+#: ../fau-websso.php:293
 msgid "E-Mail:"
 msgstr ""
 
-#: ../fau-websso.php:333 ../fau-websso.php:338
+#: ../fau-websso.php:335 ../fau-websso.php:340
 msgid "Neu hinzufügen"
 msgstr ""
 
-#: ../fau-websso.php:349
+#: ../fau-websso.php:351
 msgid ""
 "Um einen neuen Benutzer zu Ihrer Webseite hinzufügen, füllen Sie das "
 "Formular auf dieser Seite aus, und klicken Sie unten auf Neuen Benutzer "
 "hinzufügen."
 msgstr ""
 
-#: ../fau-websso.php:350
+#: ../fau-websso.php:352
 msgid ""
 "Vergessen Sie nicht, unten auf dieser Seite auf Neuen Benutzer hinzufügen zu "
 "klicken, wenn Sie fertig sind."
 msgstr ""
 
-#: ../fau-websso.php:354
+#: ../fau-websso.php:356
 msgid "Übersicht"
 msgstr ""
 
-#: ../fau-websso.php:360
+#: ../fau-websso.php:362
 msgid "Benutzerrollen"
 msgstr ""
 
-#: ../fau-websso.php:361
+#: ../fau-websso.php:363
 msgid ""
 "Hier ist ein grober Überblick über die verschiedenen Benutzerrollen und die "
 "jeweils damit verknüpften Berechtigungen:"
 msgstr ""
 
-#: ../fau-websso.php:363
+#: ../fau-websso.php:365
 msgid "Administratoren haben die komplette Macht und sehen alle Optionen."
 msgstr ""
 
-#: ../fau-websso.php:364
+#: ../fau-websso.php:366
 msgid ""
 "Redakteure können Artikel und Seiten anlegen und veröffentlichen, sowie die "
 "Artikel, Seiten, etc. von anderen Benutzern verwalten (ändern, löschen, "
 "veröffentlichen)."
 msgstr ""
 
-#: ../fau-websso.php:365
+#: ../fau-websso.php:367
 msgid ""
 "Autoren können ihre eigenen Artikel veröffentlichen und verwalten sowie "
 "Dateien hochladen."
 msgstr ""
 
-#: ../fau-websso.php:366
+#: ../fau-websso.php:368
 msgid ""
 "Mitarbeiter können eigene Artikel schreiben und bearbeiten, sie jedoch nicht "
 "veröffentlichen. Auch dürfen sie keine Dateien hochladen."
 msgstr ""
 
-#: ../fau-websso.php:367
+#: ../fau-websso.php:369
 msgid ""
 "Abonennten können nur Kommentare lesen und abgeben, aber keine eigenen "
 "Inhalte erstellen."
 msgstr ""
 
-#: ../fau-websso.php:387 ../fau-websso.php:498
+#: ../fau-websso.php:389 ../fau-websso.php:499
 msgid "Schummeln, was?"
 msgstr ""
 
-#: ../fau-websso.php:437
+#: ../fau-websso.php:439
 msgid "Der Benutzer wurde zu Ihre Webseite hinzugefügt."
 msgstr ""
 
-#: ../fau-websso.php:440
+#: ../fau-websso.php:442
 msgid "Dieser Benutzer ist bereits ein Mitglied dieser Webseite."
 msgstr ""
 
-#: ../fau-websso.php:443
+#: ../fau-websso.php:445
 msgid "Geben Sie den Benutzernamen eines bestehenden Benutzers ein."
 msgstr ""
 
-#: ../fau-websso.php:452 ../fau-websso.php:479
+#: ../fau-websso.php:454 ../fau-websso.php:481
 msgid "Neuen Benutzer hinzufügen"
 msgstr ""
 
-#: ../fau-websso.php:458
+#: ../fau-websso.php:460
 msgid "Benutzer hinzufügen"
 msgstr ""
 
-#: ../fau-websso.php:460
+#: ../fau-websso.php:462
 msgid ""
 "Tragen Sie die Benutzerkennung eines bestehenden Nutzers ein um ihn zu "
 "dieser Webseite hinzufügen."
 msgstr ""
 
-#: ../fau-websso.php:468
+#: ../fau-websso.php:470
 msgid "Benutzerkennung"
 msgstr ""
 
-#: ../fau-websso.php:472
+#: ../fau-websso.php:474
 msgid "Rolle"
 msgstr ""
 
-#: ../fau-websso.php:488 ../fau-websso.php:492
+#: ../fau-websso.php:490 ../fau-websso.php:494
 msgid "FAU-WebSSO"
 msgstr ""
 
-#: ../fau-websso.php:508 ../fau-websso.php:525
+#: ../fau-websso.php:510
+msgid "Einstellungen gespeichert."
+msgstr ""
+
+#: ../fau-websso.php:515 ../fau-websso.php:532
 msgid "Einstellungen &rsaquo; FAU-WebSSO"
 msgstr ""
 
-#: ../fau-websso.php:544
+#: ../fau-websso.php:551
 msgid "Zum SSO zwingen"
 msgstr ""
 
-#: ../fau-websso.php:547
+#: ../fau-websso.php:554
 msgid "Autoload-Pfad"
 msgstr ""
 
-#: ../fau-websso.php:548
+#: ../fau-websso.php:555
 msgid "Authentifizierungsquelle"
 msgstr ""
 
-#: ../fau-websso.php:552
+#: ../fau-websso.php:559
 msgid "Single Sign-On"
 msgstr ""
 
-#: ../fau-websso.php:553
+#: ../fau-websso.php:560
 msgid "Allgemeine SSO-Einstellungen."
 msgstr ""
 
-#: ../fau-websso.php:562
+#: ../fau-websso.php:569
 msgid "SimpleSAMLphp"
 msgstr ""
 
-#: ../fau-websso.php:563
+#: ../fau-websso.php:570
 msgid "Einstellungen des Service Provider."
 msgstr ""
 
-#: ../fau-websso.php:569
+#: ../fau-websso.php:576
 msgid "Relative Pfad ausgehend vom wp-content-Verzeichnis."
 msgstr ""
 
-#: ../fau-websso.php:591
+#: ../fau-websso.php:598
 msgid "Anmeldung über Single Sign-On"
 msgstr ""
 
-#: ../fau-websso.php:591
+#: ../fau-websso.php:598
 msgid ""
 "(zentraler Anmeldedienst der Universität Erlangen-Nürnberg). Anmeldung für "
 "zentral-vergebene Kennungen von Studierenden und Beschäftigten der "
