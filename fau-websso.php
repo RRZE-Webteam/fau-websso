@@ -49,6 +49,8 @@ class FAU_WebSSO {
         load_plugin_textdomain( self::textdomain, false, sprintf( '%slang', plugin_dir_path( __FILE__ ) ) );
         
         add_action( 'init', array( __CLASS__, 'update_version' ) );
+        
+        add_action( 'admin_init', array( __CLASS__, 'admin_init' ));
                 
         add_filter( 'authenticate', array( __CLASS__, 'authenticate' ), 10, 3);
         
@@ -58,40 +60,26 @@ class FAU_WebSSO {
         
         add_filter( 'wp_auth_check_same_domain', '__return_false' );     
         
-        if($options['force_websso']) {
-            add_action( 'lost_password', array( __CLASS__, 'disable_function' ) );
-            add_action( 'retrieve_password', array( __CLASS__, 'disable_function' ) );
-            add_action( 'password_reset', array( __CLASS__, 'disable_function' ) );  
-
-            add_filter( 'map_meta_cap', array( __CLASS__, 'map_meta_cap_filter' ), 10, 2 );
-
-            add_filter( 'show_password_fields', '__return_false' );
-
-            if(is_multisite() && current_user_can( 'promote_users' ) ) {
-                add_action( 'admin_init', array( __CLASS__, 'add_user_request' ) );          
-                add_action( 'admin_menu', array( __CLASS__, 'add_user_menu' ) );
-            } else {
-                add_action( 'admin_menu', array( __CLASS__, 'remove_admin_menu' ) );
-            }
-            
-        } else {
-            add_action( 'login_form', array( __CLASS__, 'login_form' ));            
-        }
+        if($options['force_websso'])
+            self::force_websso();
+        else
+            add_action( 'login_form', array( __CLASS__, 'login_form' ));
         
         if(is_multisite())
             add_action( 'network_admin_menu', array( __CLASS__, 'network_admin_menu' ));
         else
-            add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ));
-        
-        add_action( 'admin_init', array( __CLASS__, 'admin_init' )); 
+            add_action( 'admin_menu', array( __CLASS__, 'admin_menu' )); 
      }
 
     public static function activation($networkwide) {
         self::version_compare();
         
-        self::try_networkwide($networkwide);
-        
-        update_option( self::version_option_name , self::version );
+        if(is_multisite()) {
+            self::networkwide_validate($networkwide);
+            update_site_option( self::version_option_name , self::version );
+        } else {
+            update_option( self::version_option_name , self::version );
+        }
     }
         
     public static function version_compare() {
@@ -110,10 +98,10 @@ class FAU_WebSSO {
         
     }
     
-    public static function try_networkwide($networkwide) {
+    public static function networkwide_validate($networkwide) {
         $error = '';
         
-        if ( is_multisite() && !$networkwide ) {
+        if ( !$networkwide ) {
             if(is_super_admin())
                 $error = __( 'Dieses Plugin muss für alle Webseiten aktiviert werden.', self::textdomain );
             else
@@ -128,8 +116,10 @@ class FAU_WebSSO {
     }
 
     public static function update_version() {
-		if( get_option( self::version_option_name, null) != self::version )
-			update_option( self::version_option_name , self::version );
+		if( is_multisite() && get_site_option( self::version_option_name, null) != self::version )
+            update_site_option( self::version_option_name , self::version );
+        elseif( !is_multisite() && get_option( self::version_option_name, null) != self::version )
+            update_option( self::version_option_name , self::version );
     }
     
     private static function get_options() {
@@ -138,8 +128,12 @@ class FAU_WebSSO {
             'simplesaml_auth_source' => 'default-sp',
             'force_websso' => false
         );
-
-        $options = (array) get_option( self::option_name );
+        
+        if(is_multisite())
+            $options = (array) get_site_option( self::option_name );
+        else
+            $options = (array) get_option( self::option_name );
+        
         $options = wp_parse_args( $options, $defaults );
         $options = array_intersect_key( $options, $defaults );
 
@@ -276,7 +270,7 @@ class FAU_WebSSO {
         wp_die( $output );
     }
     
-    private static function get_contact(){
+    private static function get_contact() {
         global $wpdb;
 
         $blog_prefix = $wpdb->get_blog_prefix( get_current_blog_id() );
@@ -301,6 +295,25 @@ class FAU_WebSSO {
         return $output;
     }
     
+    private static function force_websso() {
+        add_action( 'lost_password', array( __CLASS__, 'disable_function' ) );
+        add_action( 'retrieve_password', array( __CLASS__, 'disable_function' ) );
+        add_action( 'password_reset', array( __CLASS__, 'disable_function' ) );  
+
+        add_filter( 'map_meta_cap', array( __CLASS__, 'map_meta_cap_filter' ), 10, 2 );
+
+        add_filter( 'show_password_fields', '__return_false' );
+
+        if(is_multisite() && current_user_can( 'promote_users' ) ) {
+            add_action( 'admin_init', array( __CLASS__, 'add_user_request' ) );          
+            add_action( 'admin_menu', array( __CLASS__, 'add_user_menu' ) );
+        } else {
+            add_action( 'admin_menu', function() {
+                remove_submenu_page( 'users.php', 'user-new.php' );
+            });
+        }        
+    }
+    
     public static function map_meta_cap_filter( $caps, $cap ) {
 
         foreach( $caps as $key => $capability ) {
@@ -310,10 +323,6 @@ class FAU_WebSSO {
 
         return $caps;
         
-    }
-    
-    public static function remove_admin_menu() {
-        remove_submenu_page( 'users.php', 'user-new.php' );
     }
     
     public static function add_user_menu() {
@@ -491,11 +500,11 @@ class FAU_WebSSO {
             $options = self::get_options();
             $input = self::options_validate($_POST[self::option_name]);
             if($options !== $input)
-                update_option( self::option_name, $input );
+                update_site_option( self::option_name, $input );
         }
         ?>
         <div class="wrap">
-            <?php screen_icon(); ?>
+            <?php screen_icon('options-general'); ?>
             <h2><?php echo esc_html( __( 'Einstellungen &rsaquo; FAU-WebSSO', self::textdomain) ); ?></h2>
             <form method="post">
                 <?php             
@@ -532,7 +541,7 @@ class FAU_WebSSO {
             register_setting( 'fau_websso_options', self::option_name, array( __CLASS__, 'options_validate' ) );
 
         add_settings_section( 'websso_options_section', false, array( __CLASS__, 'websso_settings_section' ), 'fau_websso_options' );
-        add_settings_field( 'force_websso', __('Zur Single Sign-On zwingen', self::textdomain), array( __CLASS__, 'force_websso_field' ), 'fau_websso_options', 'websso_options_section' );
+        add_settings_field( 'force_websso', __('Zum SSO zwingen', self::textdomain), array( __CLASS__, 'force_websso_field' ), 'fau_websso_options', 'websso_options_section' );
         
         add_settings_section( 'simplesaml_options_section', false, array( __CLASS__, 'simplesaml_settings_section' ), 'fau_websso_options' );
         add_settings_field( 'simplesaml_include', __('Autoload-Pfad', self::textdomain), array( __CLASS__, 'simplesaml_include_field' ), 'fau_websso_options', 'simplesaml_options_section' );
@@ -540,8 +549,8 @@ class FAU_WebSSO {
     }
 
     public static function websso_settings_section() {
-        echo '<h3 class="title">' . __('Allgemein', self::textdomain) . '</h3>';
-        echo '<p>' . __('Allgemeine Einstellungen.', self::textdomain) . '</p>';
+        echo '<h3 class="title">' . __('Single Sign-On', self::textdomain) . '</h3>';
+        echo '<p>' . __('Allgemeine SSO-Einstellungen.', self::textdomain) . '</p>';
     }
 
     public static function force_websso_field() {
@@ -570,7 +579,8 @@ class FAU_WebSSO {
 
         $input['force_websso'] = !empty($input['force_websso']) ? true : false;
         
-        $input['simplesaml_include'] = isset($input['simplesaml_include']) ? esc_attr($input['simplesaml_include']) : $options['simplesaml_include'];
+        $input['simplesaml_include'] = isset($input['simplesaml_include']) && file_exists(esc_attr($input['simplesaml_include'])) ? esc_attr($input['simplesaml_include']) : $options['simplesaml_include'];
+        
         $input['simplesaml_auth_source'] = isset($input['simplesaml_auth_source']) ? esc_attr($input['simplesaml_auth_source']) : $options['simplesaml_auth_source'];
 
         return $input;
