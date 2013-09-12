@@ -71,6 +71,8 @@ class FAU_WebSSO {
             add_action( 'network_admin_menu', array( __CLASS__, 'network_admin_menu' ));
         else
             add_action( 'admin_menu', array( __CLASS__, 'admin_menu' )); 
+        
+        add_filter( 'is_fau_websso_active', '__return_true' ); 
      }
 
     public static function activation($networkwide) {
@@ -208,30 +210,33 @@ class FAU_WebSSO {
             }
             
         } else {
-
-            if( ! get_site_option( 'users_can_register')) {
+            
+            if(is_multisite() && (!get_site_option( 'registration' ) || get_site_option('registration') == 'none'))
                 return self::simplesaml_login_error(__('Zurzeit ist die Benutzer-Registrierung nicht erlaubt.', self::textdomain));
+            
+            elseif(!is_multisite() && !get_option( 'users_can_register'))
+                return self::simplesaml_login_error(__('Zurzeit ist die Benutzer-Registrierung nicht erlaubt.', self::textdomain));
+            
+            do_action('cms_try_access');
+            
+            $account_data = array(
+                'user_pass'     => microtime(),
+                'user_login'    => $user_login,
+                'user_nicename' => $user_login,
+                'user_email'    => $user_email,
+                'display_name'  => $display_name,
+                'first_name'    => $first_name,
+                'last_name'     => $last_name
+                );
 
+            $user_id = wp_insert_user($account_data);
+
+            if( is_wp_error( $user_id ) ) {
+                return self::simplesaml_login_error(__('Die Benutzer-Registrierung ist fehlgeschlagen.', self::textdomain));                                                    
             } else {
-                $account_data = array(
-                    'user_pass'     => microtime(),
-                    'user_login'    => $user_login,
-                    'user_nicename' => $user_login,
-                    'user_email'    => $user_email,
-                    'display_name'  => $display_name,
-                    'first_name'    => $first_name,
-                    'last_name'     => $last_name
-                    );
-
-                $user_id = wp_insert_user($account_data);
-
-                if( is_wp_error( $user_id ) ) {
-                    return self::simplesaml_login_error(__('Die Benutzer-Registrierung ist fehlgeschlagen.', self::textdomain));                                                    
-                } else {
-                    $user = new WP_User($user_id);
-                    update_user_meta( $user_id, 'edu_person_affiliation', $edu_person_affiliation );
-                    update_user_meta( $user_id, 'edu_person_entitlement', $edu_person_entitlement );
-                }
+                $user = new WP_User($user_id);
+                update_user_meta( $user_id, 'edu_person_affiliation', $edu_person_affiliation );
+                update_user_meta( $user_id, 'edu_person_entitlement', $edu_person_entitlement );
             }
         }
         
