@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 2.1
+ * Version: 2.2
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -30,7 +30,7 @@ register_activation_hook( __FILE__, array( 'FAU_WebSSO', 'activation' ) );
 
 class FAU_WebSSO {
 
-    const version = '2.1'; // Plugin-Version
+    const version = '2.2'; // Plugin-Version
     
     const option_name = '_fau_websso';
 
@@ -72,7 +72,11 @@ class FAU_WebSSO {
         else
             add_action( 'admin_menu', array( __CLASS__, 'admin_menu' )); 
         
-        add_filter( 'is_fau_websso_active', '__return_true' ); 
+        add_filter( 'is_fau_websso_active', '__return_true' );
+        
+        add_filter('manage_users_columns', array( __CLASS__, 'users_attributes' ));
+        
+        add_action('manage_users_custom_column', array( __CLASS__, 'users_attributes_columns' ), 10, 3);
      }
 
     public static function activation($networkwide) {
@@ -181,7 +185,7 @@ class FAU_WebSSO {
         }
                 
         if(empty($attributes))
-            return self::simplesaml_login_error(__('Die Benutzerattribute fehlen.', self::textdomain));
+            return self::simplesaml_login_error(__('Die Benutzerattribute fehlen.', self::textdomain, false));
         
         $user_login = $attributes['uid'];
 
@@ -206,7 +210,7 @@ class FAU_WebSSO {
                 update_user_meta( $userdata->ID, 'edu_person_affiliation', $edu_person_affiliation );
                 update_user_meta( $userdata->ID, 'edu_person_entitlement', $edu_person_entitlement );                
             } else {
-                return self::simplesaml_login_error(__('Die Benutzerdaten sind nicht im Einklang mit den lokalen Daten.', self::textdomain));
+                return self::simplesaml_login_error(sprintf(__('Die Single Sign-On -Benutzerdaten sind nicht im Einklang mit den Benutzerdaten der &bdquo;%s&ldquo;-Webseite.', self::textdomain), get_bloginfo( 'name' )));
             }
             
         } else {
@@ -265,13 +269,16 @@ class FAU_WebSSO {
         $as->logout(get_option('siteurl'));
     }
     
-    private static function simplesaml_login_error($message) {
+    private static function simplesaml_login_error($message, $simplesaml_authenticated = true) {
         $output = '';
         
         $output .= sprintf('<p><strong>%1$s</strong>: %2$s</p>', __( 'Fehler', self::textdomain ), $message);
-        $output .= sprintf('<p>%s</p>', __( 'Die Anmeldung ist fehlgeschlagen.', self::textdomain ));
+        $output .= sprintf('<p>%s</p>', sprintf(__( 'Die Anmeldung auf der &bdquo;%s&ldquo;-Webseite ist fehlgeschlagen.', self::textdomain ), get_bloginfo( 'name' )));
         $output .= sprintf('<p>%s</p>', __( 'Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an den Ansprechpartner der Webseite.', self::textdomain ));
 
+        if($simplesaml_authenticated)
+            $output .= sprintf('<p><a href="%s">' . __('Single Sign-On -Abmeldung', self::textdomain) . '</a></p>', wp_logout_url());
+        
         $output .= self::get_contact();
         
         wp_die( $output );
@@ -603,6 +610,29 @@ class FAU_WebSSO {
         printf('<p><a href="%s">' . __('Anmeldung über Single Sign-On', self::textdomain) . '</a> ' . __('(zentraler Anmeldedienst der Universität Erlangen-Nürnberg). Anmeldung für zentral-vergebene Kennungen von Studierenden und Beschäftigten der Universität Erlangen-Nürnberg.', self::textdomain) . '</p>', $login_url);
     }
     
+    public static function users_attributes($columns) {
+        $columns['attributes'] = __('Attribute', self::textdomain);
+        return $columns;
+    }
+
+    public static function users_attributes_columns( $value, $column_name, $user_id ) {
+
+        if ( 'attributes' != $column_name )
+            return $value;
+        
+        $attributes = array();
+        
+        $edu_person_affiliation = get_user_meta( $user_id, 'edu_person_affiliation', true );
+        if($edu_person_affiliation)
+            $attributes[] = $edu_person_affiliation;
+        
+        $edu_person_entitlement = get_user_meta( $user_id, 'edu_person_entitlement', true );
+        if($edu_person_entitlement)
+            $attributes[] = $edu_person_entitlement;
+        
+        return implode(', ', $attributes);
+    }
+
     public static function is_user_logged_in() {
         global $as;
 
@@ -612,15 +642,16 @@ class FAU_WebSSO {
             return false;
 
         $options = self::get_options();
-        
-        if (!isset($as)) {
-            require_once(WP_CONTENT_DIR . $options['simplesaml_include']);
-            $as = new SimpleSAML_Auth_Simple($options['simplesaml_auth_source']);
-        }
-        
-        if(!$as->isAuthenticated() && $options['force_websso']) {
-            wp_logout();
-            return false;
+        if($options['force_websso']) {
+            if (!isset($as)) {
+                require_once(WP_CONTENT_DIR . $options['simplesaml_include']);
+                $as = new SimpleSAML_Auth_Simple($options['simplesaml_auth_source']);
+            }
+
+            if(!$as->isAuthenticated()) {
+                wp_logout();
+                return false;
+            }
         }
         
         return true;
