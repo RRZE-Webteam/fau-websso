@@ -660,6 +660,8 @@ class FAU_WebSSO {
     
 }
 
+if ( ! function_exists( 'is_user_logged_in' ) ) :
 function is_user_logged_in() {
     return FAU_WebSSO::is_user_logged_in();
 }
+endif;
