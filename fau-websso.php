@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 2.2
+ * Version: 2.3
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -30,7 +30,7 @@ register_activation_hook( __FILE__, array( 'FAU_WebSSO', 'activation' ) );
 
 class FAU_WebSSO {
 
-    const version = '2.2'; // Plugin-Version
+    const version = '2.3'; // Plugin-Version
     
     const option_name = '_fau_websso';
 
@@ -42,7 +42,7 @@ class FAU_WebSSO {
     
     const php_version = '5.3'; // Minimal erforderliche PHP-Version
     
-    const wp_version = '3.6'; // Minimal erforderliche WordPress-Version
+    const wp_version = '3.8'; // Minimal erforderliche WordPress-Version
     
     public static function init() {
         
@@ -221,8 +221,6 @@ class FAU_WebSSO {
             elseif(!is_multisite() && !get_option( 'users_can_register'))
                 return self::simplesaml_login_error(__('Zurzeit ist die Benutzer-Registrierung nicht erlaubt.', self::textdomain));
             
-            do_action('cms_try_access');
-            
             $account_data = array(
                 'user_pass'     => microtime(),
                 'user_login'    => $user_login,
@@ -259,16 +257,16 @@ class FAU_WebSSO {
     
     public static function simplesaml_logout() {
         global $as;
-
+        
         if (!isset($as)) {
             $options = self::get_options();
             require_once(WP_CONTENT_DIR . $options['simplesaml_include']);
             $as = new SimpleSAML_Auth_Simple($options['simplesaml_auth_source']);
         }
-
-        $as->logout(get_option('siteurl'));
+        
+        $as->logout(site_url());
     }
-    
+        
     private static function simplesaml_login_error($message, $simplesaml_authenticated = true) {
         $output = '';
         
@@ -322,10 +320,12 @@ class FAU_WebSSO {
             add_action( 'admin_init', array( __CLASS__, 'add_user_request' ) );          
             add_action( 'admin_menu', array( __CLASS__, 'add_user_menu' ) );
         } else {
-            add_action( 'admin_menu', function() {
-                remove_submenu_page( 'users.php', 'user-new.php' );
-            });
+            add_action( 'admin_menu', array( __CLASS__, 'remove_usernew_page' ) );
         }        
+    }
+    
+    public static function remove_usernew_page() {
+        remove_submenu_page( 'users.php', 'user-new.php' );
     }
     
     public static function map_meta_cap_filter( $caps, $cap ) {
@@ -342,7 +342,7 @@ class FAU_WebSSO {
     public static function add_user_menu() {
         global $submenu;
         
-        remove_submenu_page( 'users.php', 'user-new.php' );
+        self::remove_usernew_page();
         
         $submenu_page = add_submenu_page( 'users.php', __( 'Neu hinzufügen', self::textdomain ), __( 'Neu hinzufügen', self::textdomain ), 'promote_users', 'user-new', array( __CLASS__, 'add_user_page' ) );
         
@@ -632,36 +632,5 @@ class FAU_WebSSO {
         
         return implode(', ', $attributes);
     }
-
-    public static function is_user_logged_in() {
-        global $as;
-
-        $user = wp_get_current_user();
-        
-        if ( ! $user->exists() )
-            return false;
-
-        $options = self::get_options();
-        if($options['force_websso']) {
-            if (!isset($as)) {
-                require_once(WP_CONTENT_DIR . $options['simplesaml_include']);
-                $as = new SimpleSAML_Auth_Simple($options['simplesaml_auth_source']);
-            }
-
-            if(!$as->isAuthenticated()) {
-                wp_logout();
-                return false;
-            }
-        }
-        
-        return true;
-
-    }
-    
+            
 }
-
-if ( ! function_exists( 'is_user_logged_in' ) ) :
-function is_user_logged_in() {
-    return FAU_WebSSO::is_user_logged_in();
-}
-endif;

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU-WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-11 15:54+0100\n"
+"POT-Creation-Date: 2014-04-22 08:58+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.4\n"
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../fau-websso.php:97
@@ -67,20 +67,20 @@ msgstr ""
 msgid "Zurzeit ist die Benutzer-Registrierung nicht erlaubt."
 msgstr "User registration is currently not allowed."
 
-#: ../fau-websso.php:239
+#: ../fau-websso.php:237
 msgid "Die Benutzer-Registrierung ist fehlgeschlagen."
 msgstr "User registration failed."
 
-#: ../fau-websso.php:275
+#: ../fau-websso.php:273
 msgid "Fehler"
 msgstr "ERROR"
 
-#: ../fau-websso.php:276
+#: ../fau-websso.php:274
 #, php-format
 msgid "Die Anmeldung auf der &bdquo;%s&ldquo;-Webseite ist fehlgeschlagen."
 msgstr "Authentication failed on the \"%s\" website."
 
-#: ../fau-websso.php:277
+#: ../fau-websso.php:275
 msgid ""
 "Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an "
 "den Ansprechpartner der Webseite."
@@ -88,16 +88,16 @@ msgstr ""
 "However, if no login is possible, please contact the contact person of the "
 "Website."
 
-#: ../fau-websso.php:280
+#: ../fau-websso.php:278
 msgid "Single Sign-On -Abmeldung"
 msgstr "Single Sign-On Log Out"
 
-#: ../fau-websso.php:300
+#: ../fau-websso.php:298
 #, php-format
 msgid "Ansprechpartner und Kontakt für die &bdquo;%1$s&ldquo;-Webseite"
 msgstr "Contact persons for the &bdquo;%1$s&ldquo; website"
 
-#: ../fau-websso.php:305
+#: ../fau-websso.php:303
 msgid "E-Mail:"
 msgstr "Email"
 
