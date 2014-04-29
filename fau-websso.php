@@ -58,7 +58,7 @@ class FAU_WebSSO {
         
         add_filter( 'login_url', array( __CLASS__, 'login_url' ), 99, 2);
         
-        add_action( 'wp_logout', array( __CLASS__, 'simplesaml_logout' ));
+        add_action( 'wp_logout', array( __CLASS__, 'simplesaml_logout' ), 0);
         
         add_filter( 'wp_auth_check_same_domain', '__return_false' );     
         
