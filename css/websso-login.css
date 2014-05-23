@@ -1,0 +1,11 @@
+.websso-login {
+    position:absolute;
+    margin: 180px 0 20px -20px !important;
+    width: 290px;
+    overflow: hidden;
+}
+
+.websso-login p:first-child {
+    font-size: 14px;
+    font-weight: bold;
+}
