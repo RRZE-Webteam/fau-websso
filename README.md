@@ -48,10 +48,12 @@ $metadata['https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'] =
 );
 </pre>
 
-Apache-Einstellungen
---------------------
+Webserver-Einstellungen (Apache)
+--------------------------------
 
-- Alias für SimpleSAMLphp einrichten:
+- Standard- und SSL-Virtualhost einrichten.
+
+- Alias für SimpleSAMLphp im SSL-Virtualhost einrichten:
 
 <pre>Alias /simplesaml /Pfad zum simplesamlphp/www-Verzeichnis</pre>
 
@@ -61,14 +63,17 @@ Z.B.: Alias /simplesaml /wordpress/wp-content/simplesamlphp/www
 Anmeldung
 ---------
 
-- Folgende Info an der RRZE-WebSSO-E-Mail-Verteiler versenden:
+- Folgende Info an sso-admins@rrze.fau.de versenden:
 
 <pre>
-Metadata-URL: http(s)://webauftritt-url/simplesaml/module.php/saml/sp/metadata.php/default-sp
-Login-URL: http(s)://webauftritt-url/wp-login.php
-Erforderliche Attribute: 
+Webseite: (URL der Webseite)
+Beschreibung: (Kurze Beschreibung der Webseite)
+Metadata-URL: https://webauftritt-url/simplesaml/saml2/sp/metadata.php
+Login-URL: https://webauftritt-url/wp-login.php
+Erforderliche Attribute:
 	displayname
 	uid
 	mail
-	eduPersonAffiliation
 </pre>
+
+Hinweis: Bitte überprüfen Sie, dass die jeweiligen URLs keine Fehlermeldungen im Browser ausgeben.
