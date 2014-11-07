@@ -2,12 +2,15 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 3.0
+ * Version: 3.1
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
+ * Text Domain: fau-websso
+ * Network: true
  * License: GPLv2 or later
  */
-/*
+
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -29,13 +32,13 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '3.0'; // Plugin-Version
+    const version = '3.1'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
     const textdomain = 'fau-websso';
     const php_version = '5.3'; // Minimal erforderliche PHP-Version
-    const wp_version = '3.9'; // Minimal erforderliche WordPress-Version
+    const wp_version = '4.0'; // Minimal erforderliche WordPress-Version
 
     protected static $instance = null;
 
@@ -87,11 +90,10 @@ class FAU_WebSSO {
         add_filter('is_fau_websso_active', '__return_true');
     }
 
-    public static function activation($networkwide) {
+    public static function activation($network_wide) {
         self::version_compare();
 
-        if (is_multisite()) {
-            self::networkwide_validate($networkwide);
+        if (is_multisite() && $network_wide) {
             update_site_option(self::version_option_name, self::version);
         } else {
             update_option(self::version_option_name, self::version);
@@ -107,23 +109,6 @@ class FAU_WebSSO {
 
         if (version_compare($GLOBALS['wp_version'], self::wp_version, '<')) {
             $error = sprintf(__('Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens auf die Wordpress-Version %s.', self::textdomain), $GLOBALS['wp_version'], self::wp_version);
-        }
-
-        if (!empty($error)) {
-            deactivate_plugins(plugin_basename(__FILE__), false, true);
-            wp_die($error);
-        }
-    }
-
-    private static function networkwide_validate($networkwide) {
-        $error = '';
-
-        if (!$networkwide) {
-            if (is_super_admin()) {
-                $error = __('Dieses Plugin muss für alle Webseiten aktiviert werden.', self::textdomain);
-            } else {
-                $error = __('Sie haben versucht das Plugin zu aktivieren, haben aber nicht die ausreichenden Rechte dazu.', self::textdomain);
-            }
         }
 
         if (!empty($error)) {
@@ -161,10 +146,6 @@ class FAU_WebSSO {
 
     public function authenticate($user, $user_login, $user_pass) {
 
-        if (is_a($user, 'WP_User')) {
-            return $user;
-        }
-
         $options = $this->get_options();
 
         remove_action('authenticate', 'wp_authenticate_username_password', 20);
@@ -178,11 +159,15 @@ class FAU_WebSSO {
         require_once(WP_CONTENT_DIR . $options['simplesaml_include']);
 
         $as = new SimpleSAML_Auth_Simple($options['simplesaml_auth_source']);
-
+        
         if (!$as->isAuthenticated()) {
             $as->requireAuth();
         }
 
+        if (is_a($user, 'WP_User')) {
+            return $user;
+        }
+        
         $attributes = array();
 
         $_attributes = $as->getAttributes();
@@ -278,7 +263,16 @@ class FAU_WebSSO {
         $as = new SimpleSAML_Auth_Simple($options['simplesaml_auth_source']);
 
         if ($as->isAuthenticated()) {
+            if ($options['force_websso']) {
+                $as->logout(site_url());
+            }
+            
             $as->logout();
+        }
+        
+        elseif ($options['force_websso']) {
+            wp_redirect(site_url());
+            exit;
         }
     }
 
