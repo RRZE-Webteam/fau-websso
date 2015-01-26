@@ -334,6 +334,11 @@ class FAU_WebSSO {
         }
     }
 
+    public function disable_function() {
+        $output = __('Gebrauchsunfähige Funktion.', self::textdomain);
+        wp_die($output);
+    }
+    
     public function remove_usernew_page() {
         remove_submenu_page('users.php', 'user-new.php');
     }
