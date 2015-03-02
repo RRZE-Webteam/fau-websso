@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 4.0
+ * Version: 4.0.1
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '4.0'; // Plugin-Version
+    const version = '4.0.1'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -470,9 +470,7 @@ class FAU_WebSSO {
 
         if (is_multisite()) {
             $capability = 'promote_users';
-        }
-        
-        else {
+        } else {
             $capability = 'create_users';
         }
         
@@ -498,7 +496,7 @@ class FAU_WebSSO {
     public function admin_user_new_help_tab() {
         $help = '<p>' . __('Um einen neuen Benutzer zu Ihrer Webseite hinzufügen, füllen Sie das Formular auf dieser Seite aus, und klicken Sie unten auf Neuen Benutzer hinzufügen.', self::textdomain) . '</p>';
 
-        if ( is_multisite() ) {
+        if (is_multisite()) {
             $help .= '<p>' . __('Da dies ein Webseitennetzwerk ist, können Sie in anderen Webseiten dieses Netzwerks existierende Benutzer einfach hinzufügen, in dem Sie deren Nutzernamen oder E-Mail-Adresse angeben, sowie deren Benutzerrolle festlegen. Für weitere Optionen müssen Sie blogübergreifender Administrator sein. Sie können dann über Netzwerkadministrator &gt; Alle Benutzer das Profil des Benutzers verändern.', self::textdomain) . '</p>' .
             '<p>' . __('Neue Benutzer bekommen eine E-Mail, in welcher ihnen mitgeteilt wird, dass sie als Benutzer dieser Website registriert wurden. Sie können allerdings die Checkbox <em>Keine E-Mail versenden</em> markieren, so dass die E-Mail nicht versendet wird.', self::textdomain) . '</p>';
         } else {
@@ -604,7 +602,9 @@ class FAU_WebSSO {
         <?php
     }
     
-    public function admin_user_new() {       
+    public function admin_user_new() {
+        global $wpdb;
+        
         if (isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action']) {
             check_admin_referer('add-user', '_wpnonce_add-user');
 
@@ -760,7 +760,7 @@ class FAU_WebSSO {
         <h2 id="add-new-user"> <?php
         if (current_user_can('create_users')) {
             _e('Neuen Benutzer hinzufügen', self::textdomain);
-        } elseif (current_user_can( 'promote_users')) {
+        } elseif (current_user_can('promote_users')) {
             _e('Bestehenden Benutzer hinzufügen', self::textdomain);
         } ?>
         </h2>
@@ -803,9 +803,7 @@ class FAU_WebSSO {
                 echo '<p>' . __('Tragen Sie die E-Mail-Adresse eines bestehenden Nutzers dieses Netzwerkes ein, um ihn zu dieser Webseite einzuladen.', self::textdomain) . '</p>';
                 $label = __('E-Mail-Adresse', self::textdomain);
                 $type  = 'email';
-            } 
-            
-            else {
+            } else {
                 echo '<p>' . __('Tragen Sie die E-Mail-Adresse eines bestehenden Nutzers dieses Netzwerkes ein, um ihn zu dieser Webseite einzuladen.', self::textdomain) . '</p>';
                 $label = __('E-Mail-Adresse oder Benutzername', self::textdomain);
                 $type  = 'text';
