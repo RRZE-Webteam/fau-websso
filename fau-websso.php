@@ -259,7 +259,9 @@ class FAU_WebSSO {
                 return $this->simplesaml_login_error(__('Zurzeit ist die Benutzer-Registrierung nicht erlaubt.', self::textdomain));
             }
 
-            switch_to_blog(1);
+						if (is_multisite()) {
+            	switch_to_blog(1);
+						}
             
             $account_data = array(
                 'user_pass' => wp_generate_password(12, false),
