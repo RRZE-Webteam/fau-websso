@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 4.0.2
+ * Version: 4.0.3
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '4.0.2'; // Plugin-Version
+    const version = '4.0.3'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -188,7 +188,7 @@ class FAU_WebSSO {
         }
 
         if($this->simplesaml_autoload_error) {
-            return $this->simplesaml_login_error($this->simplesaml_autoload_error);
+            return $this->login_error($this->simplesaml_autoload_error);
         }
         
         include_once(WP_CONTENT_DIR . $options['simplesaml_include']);
@@ -215,14 +215,14 @@ class FAU_WebSSO {
             $attributes['eduPersonEntitlement'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'][0]) ? $_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'][0] : '';
         }
 
-        if (empty($attributes) || empty($attributes['uid']) || empty($attributes['mail'])) {
-            return $this->simplesaml_login_error(__('IdM-Attribute des Benutzers sind nicht verfügbar.', self::textdomain, false));
+        if (empty($attributes['uid']) || empty($attributes['mail'])) {
+            return $this->login_error(__('IdM-Attribute des Benutzers sind nicht verfügbar.', self::textdomain, false));
         }
 
         $user_login = $attributes['uid'];
 
         if ($user_login != substr(sanitize_user($user_login, true), 0, 60)) {
-            return $this->simplesaml_login_error(__('Der eingegebene Benutzername ist nicht gültig.', self::textdomain));
+            return $this->login_error(__('Der eingegebene Benutzername ist nicht gültig.', self::textdomain));
         }
         
         $user_email = $attributes['mail'];
@@ -245,7 +245,7 @@ class FAU_WebSSO {
                 );
 
                 if (is_wp_error($user_id)) {
-                    return $this->simplesaml_login_error(__('Die Benutzerdaten konnten nicht aktualisiert werden.', self::textdomain));
+                    return $this->login_error(__('Die Benutzerdaten konnten nicht aktualisiert werden.', self::textdomain));
                 }
             }
             
@@ -261,10 +261,12 @@ class FAU_WebSSO {
             }
 
             if (!$registration) {
-                return $this->simplesaml_login_error(__('Zurzeit ist die Benutzerregistrierung nicht erlaubt.', self::textdomain));
+                return $this->login_error(__('Zurzeit ist die Benutzerregistrierung nicht erlaubt.', self::textdomain));
             }
             
-            switch_to_blog(1);
+            if (is_multisite()) {
+                switch_to_blog(1);
+            }
             
             $user_id = wp_insert_user(array(
                 'user_pass' => wp_generate_password(12, false),
@@ -275,16 +277,31 @@ class FAU_WebSSO {
                 'last_name' => $last_name
                 )
             );
-
+            
             if (is_wp_error($user_id)) {
-                return $this->simplesaml_login_error(__('Der Benutzer konnte nicht registriert werden.', self::textdomain));
-            } else {
-                $user = new WP_User($user_id);
-                update_user_meta($user_id, 'edu_person_affiliation', $edu_person_affiliation);
-                update_user_meta($user_id, 'edu_person_entitlement', $edu_person_entitlement);
+                if (is_multisite()) {
+                    restore_current_blog();
+                }                
+                return $this->login_error(__('Der Benutzer konnte nicht registriert werden.', self::textdomain));
+            }
+            
+            $user = new WP_User($user_id);
+            update_user_meta($user_id, 'edu_person_affiliation', $edu_person_affiliation);
+            update_user_meta($user_id, 'edu_person_entitlement', $edu_person_entitlement);
+            
+            if (is_multisite()) {
+                restore_current_blog();
+            }                
+            
+        }
+        
+        if (is_multisite()) {
+            $blogs = get_blogs_of_user($user->ID);
+            if (!$this->has_dashboard_access($blogs)) {
+                $this->access_denied($blogs);
             }
         }
-
+        
         return $user;
     }
 
@@ -319,19 +336,61 @@ class FAU_WebSSO {
         }
     }
 
-    private function simplesaml_login_error($message, $simplesaml_authenticated = true) {
+    private function has_dashboard_access($blogs) {
+        if (is_network_admin()) {
+            return true;
+        }
+
+        if (wp_list_filter($blogs, array('userblog_id' => get_current_blog_id()))) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    private function access_denied($blogs) {
+        
+        $blog_name = get_bloginfo('name');
+
+        $output = '<p>' . sprintf(__('Sie haben versucht auf das &bdquo;%1$s&ldquo; Dashboard zuzugreifen, haben aber nicht die ausreichenden Rechte dazu. Falls sie glauben, Sie müssten Zugriff auf das &bdquo;%1$s&ldquo; Dashboard haben, dann wenden Sie sich bitte an den Ansprechpartner der Webseite.', self::textdomain), $blog_name) . '</p>';
+                
+        if (!empty($blogs)) {
+            $output .= '<p>' . __('Falls Sie diese Ansicht aus Versehen aufgerufen haben und eigentlich eine Ihrer eigenen Websites besuchen wollten, hier ein paar hoffentlich hilfreiche Links.', self::textdomain) . '</p>';
+            
+            $output .= '<h3>' . __('Ihre Webseiten', self::textdomain) . '</h3>';
+            $output .= '<table>';
+
+            foreach ($blogs as $blog) {
+                $output .= '<tr>';
+                $output .= "<td>{$blog->blogname}</td>";
+                $output .= '<td><a href="' . esc_url(get_admin_url($blog->userblog_id)) . '">' . __('Dashboard besuchen', self::textdomain) . '</a> | ' .
+                    '<a href="' . esc_url(get_home_url($blog->userblog_id)). '">' . __('Webseite anzeigen', self::textdomain) . '</a></td>';
+                $output .= '</tr>';
+            }
+
+            $output .= '</table>';
+        }
+        
+        $output .= $this->get_contact();
+        
+        $output .= sprintf('<p><a href="%s">' . __('Single Sign-On -Abmeldung', self::textdomain) . '</a></p>', wp_logout_url());
+        
+        wp_die($output, 403);
+    }
+    
+    private function login_error($message, $simplesaml_authenticated = true) {
         $output = '';
 
         $output .= sprintf('<p><strong>%1$s</strong> %2$s</p>', __('Fehler:', self::textdomain), $message);
         $output .= sprintf('<p>%s</p>', sprintf(__('Die Anmeldung auf der Webseite &bdquo;%s&ldquo; ist fehlgeschlagen.', self::textdomain), get_bloginfo('name')));
         $output .= sprintf('<p>%s</p>', __('Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an den Ansprechpartner der Webseite.', self::textdomain));
+        
+        $output .= $this->get_contact();
 
         if ($simplesaml_authenticated) {
             $output .= sprintf('<p><a href="%s">' . __('Single Sign-On -Abmeldung', self::textdomain) . '</a></p>', wp_logout_url());
         }
         
-        $output .= $this->get_contact();
-
         wp_die($output);
     }
 
