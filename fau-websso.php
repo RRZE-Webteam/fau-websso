@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 4.0.4
+ * Version: 4.0.5
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '4.0.4'; // Plugin-Version
+    const version = '4.0.5'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -440,7 +440,9 @@ class FAU_WebSSO {
         add_filter('show_network_site_users_add_new_form', '__return_false');
         
         add_action('network_admin_menu', array($this, 'network_admin_user_new_page'));
-        add_action('admin_menu', array($this, 'admin_user_new_page'));        
+        add_action('admin_menu', array($this, 'admin_user_new_page'));
+        
+        add_action('admin_init', array($this, 'user_new_action'));
     }
 
     public function register_redirect() {
@@ -586,7 +588,9 @@ class FAU_WebSSO {
         ));        
     }
     
-    public function network_admin_user_new() {
+    public function user_new_action() {
+        global $wpdb;
+        
         if (isset($_REQUEST['action']) && 'add-user' == $_REQUEST['action']) {
             check_admin_referer('add-user', '_wpnonce_add-user');
 
@@ -611,58 +615,9 @@ class FAU_WebSSO {
                     exit;
                 }
             }
-        }
-
-        if (isset($_GET['update'])) {
-            $messages = array();
-            if ('added' == $_GET['update']) {
-                $messages[] = __('Benutzer hinzugefügt.', self::textdomain);
-            }
-        }
-        ?>
-        <div class="wrap">
-        <h2 id="add-new-user"><?php _e('Neuen Benutzer hinzufügen', self::textdomain) ?></h2>
-        <?php
-        if (!empty($messages)) {
-            foreach ($messages as $msg) {
-                printf('<div id="message" class="updated"><p>%s</p></div>', $msg);
-            }
-        }
-
-        if (isset($add_user_errors) && is_wp_error($add_user_errors)) { ?>
-            <div class="error">
-                <?php
-                    foreach ($add_user_errors->get_error_messages() as $message) {
-                        echo "<p>$message</p>";
-                    }
-                ?>
-            </div>
-        <?php } ?>
-            <form action="<?php echo network_admin_url('users.php?page=usernew&action=add-user'); ?>" id="adduser" method="post">
-            <table class="form-table">
-                <tr class="form-field form-required">
-                    <th scope="row"><?php _e('Benutzerkennung (IdM)', self::textdomain) ?></th>
-                    <td><input type="text" class="regular-text" name="user[username]" /></td>
-                </tr>
-                <tr class="form-field form-required">
-                    <th scope="row"><?php _e('E-Mail-Adresse (IdM)', self::textdomain) ?></th>
-                    <td><input type="text" class="regular-text" name="user[email]" /></td>
-                </tr>
-                <tr class="form-field">
-                    <td colspan="2"><?php _e('Eine Willkommen-E-Mail mit dem entsprechenden Anmeldelink wird an die angegebene E-Mail-Adresse versandt.', self::textdomain) ?></td>
-                </tr>
-            </table>
-            <?php wp_nonce_field( 'add-user', '_wpnonce_add-user' ); ?>
-            <?php submit_button(__('Benutzer hinzufügen', self::textdomain), 'primary', 'add-user'); ?>
-            </form>
-        </div>
-        <?php
-    }
-    
-    public function admin_user_new() {
-        global $wpdb;
+        } 
         
-        if (isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action']) {
+        elseif (isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action']) {
             check_admin_referer('add-user', '_wpnonce_add-user');
 
             $user_details = null;
@@ -750,7 +705,57 @@ class FAU_WebSSO {
                 }
             }
         }
+        
+    }
+    
+    public function network_admin_user_new() {
+        if (isset($_GET['update'])) {
+            $messages = array();
+            if ('added' == $_GET['update']) {
+                $messages[] = __('Benutzer hinzugefügt.', self::textdomain);
+            }
+        }
+        ?>
+        <div class="wrap">
+        <h2 id="add-new-user"><?php _e('Neuen Benutzer hinzufügen', self::textdomain) ?></h2>
+        <?php
+        if (!empty($messages)) {
+            foreach ($messages as $msg) {
+                printf('<div id="message" class="updated"><p>%s</p></div>', $msg);
+            }
+        }
 
+        if (isset($add_user_errors) && is_wp_error($add_user_errors)) { ?>
+            <div class="error">
+                <?php
+                    foreach ($add_user_errors->get_error_messages() as $message) {
+                        echo "<p>$message</p>";
+                    }
+                ?>
+            </div>
+        <?php } ?>
+            <form action="<?php echo network_admin_url('users.php?page=usernew&action=add-user'); ?>" id="adduser" method="post">
+            <table class="form-table">
+                <tr class="form-field form-required">
+                    <th scope="row"><?php _e('Benutzerkennung (IdM)', self::textdomain) ?></th>
+                    <td><input type="text" class="regular-text" name="user[username]" /></td>
+                </tr>
+                <tr class="form-field form-required">
+                    <th scope="row"><?php _e('E-Mail-Adresse (IdM)', self::textdomain) ?></th>
+                    <td><input type="text" class="regular-text" name="user[email]" /></td>
+                </tr>
+                <tr class="form-field">
+                    <td colspan="2"><?php _e('Eine Willkommen-E-Mail mit dem entsprechenden Anmeldelink wird an die angegebene E-Mail-Adresse versandt.', self::textdomain) ?></td>
+                </tr>
+            </table>
+            <?php wp_nonce_field( 'add-user', '_wpnonce_add-user' ); ?>
+            <?php submit_button(__('Benutzer hinzufügen', self::textdomain), 'primary', 'add-user'); ?>
+            </form>
+        </div>
+        <?php
+    }
+    
+    public function admin_user_new() {
         $title = __('Neuen Benutzer hinzufügen', self::textdomain);
 
         $do_both = false;
