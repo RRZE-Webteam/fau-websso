@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 4.0.5
+ * Version: 4.0.6
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '4.0.5'; // Plugin-Version
+    const version = '4.0.6'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -602,19 +602,22 @@ class FAU_WebSSO {
 
             $user_details = wpmu_validate_user_signup($user['username'], $user['email']);
             if (is_wp_error($user_details['errors']) && !empty($user_details['errors']->errors)) {
-                $add_user_errors = $user_details['errors'];
+                $add_user_errors = base64_encode($user_details['errors']);
+                $redirect = add_query_arg( array('page' => 'usernew', 'update' => 'addusererrors', 'data' => $add_user_errors), 'users.php' );                
             } else {
                 $password = wp_generate_password(12, false);
                 $user_id = wpmu_create_user(esc_html(strtolower($user['username'])), $password, sanitize_email($user['email']));
 
                 if (!$user_id) {
                     $add_user_errors = new WP_Error('add_user_fail', __('Der Benutzer konnte nicht hinzugefügt werden.', self::textdomain));
+                    $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );                    
                 } else {
                     $this->new_user_notification($user_id);
-                    wp_redirect(add_query_arg(array('page' => 'usernew', 'update' => 'added'), 'users.php'));
-                    exit;
+                    $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'added'), 'users.php');
                 }
             }
+            wp_redirect($redirect);
+            die();            
         } 
         
         elseif (isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action']) {
@@ -666,6 +669,7 @@ class FAU_WebSSO {
 
                 if (is_wp_error($user_id)) {
                     $add_user_errors = $user_id;
+                    $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );                    
                 } else {                   
                     $this->new_user_notification($user_id);
                     
@@ -684,6 +688,7 @@ class FAU_WebSSO {
                 
                 if (is_wp_error($user_details['errors']) && !empty($user_details['errors']->errors)) {
                     $add_user_errors = $user_details[ 'errors' ];
+                    $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );
                 } else {
                     $new_user_login = sanitize_user(wp_unslash($_REQUEST['user_login']), true);
                                         
@@ -700,10 +705,11 @@ class FAU_WebSSO {
                         $this->new_user_notification($user_id);
                         $redirect = add_query_arg( array('page' => 'usernew', 'update' => 'newuserconfirmation'), 'users.php' );
                     }
-                    wp_redirect($redirect);
-                    die();
+                    
                 }
             }
+            wp_redirect($redirect);
+            die();            
         }
         
     }
@@ -725,7 +731,12 @@ class FAU_WebSSO {
             }
         }
 
-        if (isset($add_user_errors) && is_wp_error($add_user_errors)) { ?>
+        $add_user_errors = '';
+        if (isset($_GET['error'])) {
+            $add_user_errors = @unserialize(base64_decode($_GET['error']));
+        }
+        
+        if (is_wp_error($add_user_errors)) : ?>
             <div class="error">
                 <?php
                     foreach ($add_user_errors->get_error_messages() as $message) {
@@ -733,7 +744,7 @@ class FAU_WebSSO {
                     }
                 ?>
             </div>
-        <?php } ?>
+        <?php endif; ?>
             <form action="<?php echo network_admin_url('users.php?page=usernew&action=add-user'); ?>" id="adduser" method="post">
             <table class="form-table">
                 <tr class="form-field form-required">
@@ -827,9 +838,15 @@ class FAU_WebSSO {
             foreach ($messages as $msg) {
                 echo '<div id="message" class="updated"><p>' . $msg . '</p></div>';
             }
-        } ?>
+        }
 
-        <?php if (isset($add_user_errors) && is_wp_error($add_user_errors)) : ?>
+        $add_user_errors = '';
+        if (isset($_GET['error'])) {
+            $add_user_errors = @unserialize(base64_decode($_GET['error']));
+        }
+        
+        if (is_wp_error($add_user_errors)) : ?>
+
             <div class="error">
                 <?php
                     foreach ($add_user_errors->get_error_messages() as $message) {
