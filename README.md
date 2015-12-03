@@ -69,7 +69,7 @@ Anmeldung
 Webseite: (URL der Webseite)
 Beschreibung: (Kurze Beschreibung der Webseite)
 Metadata-URL: https://webauftritt-url/simplesaml/module.php/saml/sp/metadata.php/default-sp
-Login-URL: https://webauftritt-url/wp-login.php?action=websso
+Login-URL: https://webauftritt-url/wp-login.php
 Erforderliche Attribute:
 	displayname
 	uid
