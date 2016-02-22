@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.1.0'; // Plugin-Version
+    const version = '5.1.1'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -210,8 +210,8 @@ class FAU_WebSSO {
             $attributes['eduPersonEntitlement'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'][0]) ? $_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'][0] : '';
         }
 
-        if (empty($attributes['uid']) || empty($attributes['mail'])) {
-            return $this->login_error(__('IdM-Attribute des Benutzers sind nicht verfügbar.', self::textdomain, false));
+        if (empty($attributes['uid'])) {
+            return $this->login_error(__('Die IdM-Kennung ist nicht gültig.', self::textdomain, false));
         }
 
         $user_login = $attributes['uid'];
@@ -220,7 +220,7 @@ class FAU_WebSSO {
             return $this->login_error(__('Der eingegebene Benutzername ist nicht gültig.', self::textdomain));
         }
         
-        $user_email = $attributes['mail'];
+        $user_email = is_email($attributes['mail']) ? strtolower($attributes['mail']) : sprintf('%s@fau.de', base_convert(uniqid('', false), 16, 36));
         $display_name = $attributes['displayName'];
         $display_name_array = explode(' ', $attributes['displayName']);
         $first_name = array_shift($display_name_array);
@@ -231,17 +231,16 @@ class FAU_WebSSO {
         
         if(is_multisite()) {
             global $wpdb;
-            $key = $wpdb->get_var($wpdb->prepare("SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s AND user_email = %s", $user_login, $user_email));
+            $key = $wpdb->get_var($wpdb->prepare("SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s", $user_login));
             $this->activate_signup($key);            
         }
 
         $userdata = get_user_by('login', $user_login);
 
         if ($userdata) {
-            if ($userdata->data->display_name == $user_login || strtolower($userdata->data->user_email) != strtolower($user_email)) {                
+            if ((!empty($display_name) && $userdata->data->display_name == $user_login)) {                
                 $user_id = wp_update_user(array(
                     'ID' => $userdata->ID,
-                    'user_email' => $user_email,
                     'display_name' => $display_name
                     ) 
                 );
