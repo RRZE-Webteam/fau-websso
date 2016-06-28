@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU-WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-22 18:10+0100\n"
+"POT-Creation-Date: 2016-06-28 17:01+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../fau-websso.php:115
@@ -41,12 +41,12 @@ msgid "Die Autoload-Datei konnte nicht eingebunden werden."
 msgstr "The autoload file could not be included."
 
 #: ../fau-websso.php:214
-msgid "Die IdM-Kennung ist nicht gültig."
-msgstr "The IdM username is not valid."
+msgid "Die IdM-Benutzerkennung ist nicht gültig."
+msgstr "The IdM Username is not valid."
 
 #: ../fau-websso.php:220
-msgid "Der eingegebene Benutzername ist nicht gültig."
-msgstr "The username you entered is not valid."
+msgid "Die eingegebene IdM-Benutzerkennung ist nicht gültig."
+msgstr "The IdM Username entered is not valid."
 
 #: ../fau-websso.php:249
 msgid "Die Benutzerdaten konnten nicht aktualisiert werden."
@@ -272,12 +272,12 @@ msgid "Neuen Benutzer hinzufügen"
 msgstr "Add new user"
 
 #: ../fau-websso.php:756 ../fau-websso.php:931
-msgid "Benutzerkennung (IdM)"
-msgstr "User name (IdM)"
+msgid "IdM-Benutzerkennung"
+msgstr "IdM Username"
 
-#: ../fau-websso.php:760 ../fau-websso.php:935
-msgid "E-Mail-Adresse (IdM)"
-msgstr "Email (IdM)"
+#: ../fau-websso.php:760 ../fau-websso.php:872 ../fau-websso.php:935
+msgid "E-Mail-Adresse"
+msgstr "Email"
 
 #: ../fau-websso.php:764 ../fau-websso.php:897 ../fau-websso.php:951
 msgid ""
@@ -334,10 +334,6 @@ msgid ""
 msgstr ""
 "Enter the email address of an existing user on this network to invite them "
 "to this website."
-
-#: ../fau-websso.php:872
-msgid "E-Mail-Adresse"
-msgstr "Email"
 
 #: ../fau-websso.php:876
 msgid "E-Mail-Adresse oder Benutzername"
@@ -529,6 +525,18 @@ msgid ""
 msgstr ""
 "That email address is currently reserved but may be available in a couple of "
 "days."
+
+#~ msgid "Die IdM-Kennung ist nicht gültig."
+#~ msgstr "The IdM username is not valid."
+
+#~ msgid "Der eingegebene Benutzername ist nicht gültig."
+#~ msgstr "The username you entered is not valid."
+
+#~ msgid "Benutzerkennung (IdM)"
+#~ msgstr "User name (IdM)"
+
+#~ msgid "E-Mail-Adresse (IdM)"
+#~ msgstr "Email (IdM)"
 
 #~ msgid "IdM-Attribute des Benutzers sind nicht verfügbar."
 #~ msgstr "The IdM user attributes are not available."

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 5.1.1
+ * Version: 5.1.2
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,13 +32,13 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.1.1'; // Plugin-Version
+    const version = '5.1.2'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
     const textdomain = 'fau-websso';
     const php_version = '5.4'; // Minimal erforderliche PHP-Version
-    const wp_version = '4.4'; // Minimal erforderliche WordPress-Version
+    const wp_version = '4.5'; // Minimal erforderliche WordPress-Version
 
     private $simplesaml_autoload_error;
     
@@ -93,7 +93,7 @@ class FAU_WebSSO {
         
         add_filter('is_fau_websso_active', '__return_true');
         
-        add_action('signup_header', array($this, 'signup_header'));
+        add_action('before_signup_header', array($this, 'before_signup_header'));
         
         $this->force_websso();
     }
@@ -171,7 +171,7 @@ class FAU_WebSSO {
         $this->simplesaml_autoload_error = $error;
     }
     
-    public function signup_header() {
+    public function before_signup_header() {
         wp_redirect(site_url());
         die();
     }
@@ -211,13 +211,13 @@ class FAU_WebSSO {
         }
 
         if (empty($attributes['uid'])) {
-            return $this->login_error(__('Die IdM-Kennung ist nicht gültig.', self::textdomain, false));
+            return $this->login_error(__('Die IdM-Benutzerkennung ist nicht gültig.', self::textdomain, false));
         }
 
         $user_login = $attributes['uid'];
 
         if ($user_login != substr(sanitize_user($user_login, true), 0, 60)) {
-            return $this->login_error(__('Der eingegebene Benutzername ist nicht gültig.', self::textdomain));
+            return $this->login_error(__('Die eingegebene IdM-Benutzerkennung ist nicht gültig.', self::textdomain));
         }
         
         $user_email = is_email($attributes['mail']) ? strtolower($attributes['mail']) : sprintf('%s@fau.de', base_convert(uniqid('', false), 16, 36));
@@ -258,7 +258,7 @@ class FAU_WebSSO {
             update_user_meta($userdata->ID, 'edu_person_entitlement', $edu_person_entitlement);           
         } else {            
             $registration = true;
-            if (is_multisite() && (!get_site_option('registration') || get_site_option('registration') == 'none')) {
+            if (is_multisite() && (!get_site_option('registration') || !in_array(get_site_option('registration'), array( 'all', 'user' ) ))) {
                 $registration = false;               
             } elseif (!is_multisite() && !get_option('users_can_register')) {
                 $registration = false;
@@ -753,11 +753,11 @@ class FAU_WebSSO {
             <form action="<?php echo network_admin_url('users.php?page=usernew&action=add-user'); ?>" id="adduser" method="post">
             <table class="form-table">
                 <tr class="form-field form-required">
-                    <th scope="row"><?php _e('Benutzerkennung (IdM)', self::textdomain) ?></th>
+                    <th scope="row"><?php _e('IdM-Benutzerkennung', self::textdomain) ?></th>
                     <td><input type="text" class="regular-text" name="user[username]" /></td>
                 </tr>
                 <tr class="form-field form-required">
-                    <th scope="row"><?php _e('E-Mail-Adresse (IdM)', self::textdomain) ?></th>
+                    <th scope="row"><?php _e('E-Mail-Adresse', self::textdomain) ?></th>
                     <td><input type="text" class="regular-text" name="user[email]" /></td>
                 </tr>
                 <tr class="form-field">
@@ -928,11 +928,11 @@ class FAU_WebSSO {
         ?>
         <table class="form-table">
             <tr class="form-field form-required">
-                <th scope="row"><label for="user_login"><?php _e('Benutzerkennung (IdM)', self::textdomain); ?> <span class="description"><?php _e('(erforderlich)', self::textdomain); ?></span></label></th>
+                <th scope="row"><label for="user_login"><?php _e('IdM-Benutzerkennung', self::textdomain); ?> <span class="description"><?php _e('(erforderlich)', self::textdomain); ?></span></label></th>
                 <td><input name="user_login" type="text" id="user_login" value="<?php echo esc_attr($new_user_login); ?>" aria-required="true" /></td>
             </tr>
             <tr class="form-field form-required">
-                <th scope="row"><label for="email"><?php _e('E-Mail-Adresse (IdM)', self::textdomain); ?> <span class="description"><?php _e('(erforderlich)', self::textdomain); ?></span></label></th>
+                <th scope="row"><label for="email"><?php _e('E-Mail-Adresse', self::textdomain); ?> <span class="description"><?php _e('(erforderlich)', self::textdomain); ?></span></label></th>
                 <td><input name="email" type="email" id="email" value="<?php echo esc_attr( $new_user_email ); ?>" /></td>
             </tr>
             <tr class="form-field">

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU-WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-22 18:12+0100\n"
+"POT-Creation-Date: 2016-06-28 17:01+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../fau-websso.php:115
@@ -38,11 +38,11 @@ msgid "Die Autoload-Datei konnte nicht eingebunden werden."
 msgstr ""
 
 #: ../fau-websso.php:214
-msgid "Die IdM-Kennung ist nicht gültig."
+msgid "Die IdM-Benutzerkennung ist nicht gültig."
 msgstr ""
 
 #: ../fau-websso.php:220
-msgid "Der eingegebene Benutzername ist nicht gültig."
+msgid "Die eingegebene IdM-Benutzerkennung ist nicht gültig."
 msgstr ""
 
 #: ../fau-websso.php:249
@@ -234,11 +234,11 @@ msgid "Neuen Benutzer hinzufügen"
 msgstr ""
 
 #: ../fau-websso.php:756 ../fau-websso.php:931
-msgid "Benutzerkennung (IdM)"
+msgid "IdM-Benutzerkennung"
 msgstr ""
 
-#: ../fau-websso.php:760 ../fau-websso.php:935
-msgid "E-Mail-Adresse (IdM)"
+#: ../fau-websso.php:760 ../fau-websso.php:872 ../fau-websso.php:935
+msgid "E-Mail-Adresse"
 msgstr ""
 
 #: ../fau-websso.php:764 ../fau-websso.php:897 ../fau-websso.php:951
@@ -287,10 +287,6 @@ msgstr ""
 msgid ""
 "Tragen Sie die E-Mail-Adresse eines bestehenden Nutzers dieses Netzwerkes "
 "ein, um ihn zu dieser Webseite einzuladen."
-msgstr ""
-
-#: ../fau-websso.php:872
-msgid "E-Mail-Adresse"
 msgstr ""
 
 #: ../fau-websso.php:876
