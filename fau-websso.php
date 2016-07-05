@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 5.1.2
+ * Version: 5.1.3
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.1.2'; // Plugin-Version
+    const version = '5.1.3'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -44,26 +44,33 @@ class FAU_WebSSO {
     
     private $current_user_can_both;
     
-    protected static $instance = null;
+    private $registration = TRUE;
+    
+    protected static $instance = NULL;
 
     public static function instance() {
 
-        if (null == self::$instance) {
+        if (NULL == self::$instance) {
             self::$instance = new self;
-            self::$instance->init();
         }
 
         return self::$instance;
     }
 
-    private function init() {
+    private function __construct() {
         $options = $this->get_options();
 
-        load_plugin_textdomain(self::textdomain, false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
+        load_plugin_textdomain(self::textdomain, FALSE, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
         
         $this->try_simplesaml_autoload();
         $this->set_current_user_can();
 
+        if (is_multisite() && (!get_site_option('registration') || !in_array(get_site_option('registration'), array('all', 'user')))) {
+            $this->registration = FALSE;               
+        } elseif (!is_multisite() && !get_option('users_can_register')) {
+            $this->registration = FALSE;
+        }
+        
         add_action('init', array($this, 'update_version'));
 
         add_action('admin_init', array($this, 'admin_init'));
@@ -93,7 +100,9 @@ class FAU_WebSSO {
         
         add_filter('is_fau_websso_active', '__return_true');
         
-        add_action('before_signup_header', array($this, 'before_signup_header'));
+        if (!$this->registration) {
+            add_action('before_signup_header', array($this, 'before_signup_header'));
+        }
         
         $this->force_websso();
     }
@@ -120,15 +129,15 @@ class FAU_WebSSO {
         }
 
         if (!empty($error)) {
-            deactivate_plugins(plugin_basename(__FILE__), false, true);
+            deactivate_plugins(plugin_basename(__FILE__), FALSE, TRUE);
             wp_die($error);
         }
     }
 
     public function update_version() {
-        if (is_multisite() && get_site_option(self::version_option_name, null) != self::version) {
+        if (is_multisite() && get_site_option(self::version_option_name, NULL) != self::version) {
             update_site_option(self::version_option_name, self::version);
-        } elseif (!is_multisite() && get_option(self::version_option_name, null) != self::version) {
+        } elseif (!is_multisite() && get_option(self::version_option_name, NULL) != self::version) {
             update_option(self::version_option_name, self::version);
         }
     }
@@ -152,16 +161,16 @@ class FAU_WebSSO {
     }
 
     private function set_current_user_can() {
-        $user_can_both = false;
+        $user_can_both = FALSE;
         if (is_multisite() && current_user_can('promote_users') && current_user_can('create_users')) {
-            $user_can_both = true;
+            $user_can_both = TRUE;
         }
         
         $this->current_user_can_both = $user_can_both;
     }
     
     private function try_simplesaml_autoload() {
-        $error = false;
+        $error = FALSE;
         $options = $this->get_options();
         
         if(!file_exists(WP_CONTENT_DIR . $options['simplesaml_include'])) {
@@ -211,16 +220,16 @@ class FAU_WebSSO {
         }
 
         if (empty($attributes['uid'])) {
-            return $this->login_error(__('Die IdM-Benutzerkennung ist nicht gültig.', self::textdomain, false));
+            return $this->login_error(__('Die IdM-Benutzerkennung ist nicht gültig.', self::textdomain, FALSE));
         }
 
         $user_login = $attributes['uid'];
 
-        if ($user_login != substr(sanitize_user($user_login, true), 0, 60)) {
+        if ($user_login != substr(sanitize_user($user_login, TRUE), 0, 60)) {
             return $this->login_error(__('Die eingegebene IdM-Benutzerkennung ist nicht gültig.', self::textdomain));
         }
         
-        $user_email = is_email($attributes['mail']) ? strtolower($attributes['mail']) : sprintf('%s@fau.de', base_convert(uniqid('', false), 16, 36));
+        $user_email = is_email($attributes['mail']) ? strtolower($attributes['mail']) : sprintf('%s@fau.de', base_convert(uniqid('', FALSE), 16, 36));
         $display_name = $attributes['displayName'];
         $display_name_array = explode(' ', $attributes['displayName']);
         $first_name = array_shift($display_name_array);
@@ -234,7 +243,7 @@ class FAU_WebSSO {
             $key = $wpdb->get_var($wpdb->prepare("SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s", $user_login));
             $this->activate_signup($key);            
         }
-
+        
         $userdata = get_user_by('login', $user_login);
 
         if ($userdata) {
@@ -255,16 +264,16 @@ class FAU_WebSSO {
             
             $user = new WP_User($userdata->ID);            
             update_user_meta($userdata->ID, 'edu_person_affiliation', $edu_person_affiliation);
-            update_user_meta($userdata->ID, 'edu_person_entitlement', $edu_person_entitlement);           
-        } else {            
-            $registration = true;
-            if (is_multisite() && (!get_site_option('registration') || !in_array(get_site_option('registration'), array( 'all', 'user' ) ))) {
-                $registration = false;               
-            } elseif (!is_multisite() && !get_option('users_can_register')) {
-                $registration = false;
+            update_user_meta($userdata->ID, 'edu_person_entitlement', $edu_person_entitlement);
+                      
+            if ($this->registration && is_multisite()) {
+                if (!is_user_member_of_blog($userdata->ID, 1)) {
+                    add_user_to_blog(1, $userdata->ID, 'subscriber');
+                }
             }
-
-            if (!$registration) {
+            
+        } else {
+            if (!$this->registration) {
                 return $this->login_error(__('Zurzeit ist die Benutzerregistrierung nicht erlaubt.', self::textdomain));
             }
                         
@@ -273,7 +282,7 @@ class FAU_WebSSO {
             }
             
             $user_id = wp_insert_user(array(
-                'user_pass' => wp_generate_password(12, false),
+                'user_pass' => wp_generate_password(12, FALSE),
                 'user_login' => $user_login,
                 'user_email' => $user_email,
                 'display_name' => $display_name,
@@ -295,7 +304,12 @@ class FAU_WebSSO {
             update_user_meta($user_id, 'edu_person_entitlement', $edu_person_entitlement);
             
             if (is_multisite()) {
+                add_user_to_blog(1, $user_id, 'subscriber');
                 restore_current_blog();
+                
+                if (!is_user_member_of_blog($user_id, get_current_blog_id())) {
+                    add_user_to_blog(get_current_blog_id(), $user_id, 'subscriber');
+                }
             }                
             
         }
@@ -338,14 +352,14 @@ class FAU_WebSSO {
 
     private function has_dashboard_access($user_id, $blogs) {
         if (is_super_admin($user_id)) {
-            return true;
+            return TRUE;
         }
 
         if (wp_list_filter($blogs, array('userblog_id' => get_current_blog_id()))) {
-            return true;
+            return TRUE;
         }
         
-        return false;
+        return FALSE;
     }
     
     private function access_denied($blogs) {
@@ -378,7 +392,7 @@ class FAU_WebSSO {
         wp_die($output, 403);
     }
     
-    private function login_error($message, $simplesaml_authenticated = true) {
+    private function login_error($message, $simplesaml_authenticated = TRUE) {
         $output = '';
 
         $output .= sprintf('<p><strong>%1$s</strong> %2$s</p>', __('Fehler:', self::textdomain), $message);
@@ -463,14 +477,14 @@ class FAU_WebSSO {
         if(isset($GLOBALS['pagenow'])) {
             return in_array($GLOBALS['pagenow'], array('wp-login.php'));
         }
-        return false;
+        return FALSE;
     }
 
     private function is_user_new_page() {
         if(isset($GLOBALS['pagenow'])) {
             return in_array($GLOBALS['pagenow'], array('user-new.php'));
         }
-        return false;
+        return FALSE;
     }
     
     public function disable_function() {
@@ -605,7 +619,7 @@ class FAU_WebSSO {
                 $add_user_errors = base64_encode(serialize($user_details['errors']));
                 $redirect = add_query_arg( array('page' => 'usernew', 'update' => 'addusererrors', 'error' => $add_user_errors), 'users.php' );                
             } else {
-                $password = wp_generate_password(12, false);
+                $password = wp_generate_password(12, FALSE);
                 $user_id = wpmu_create_user(esc_html(strtolower($user['username'])), $password, sanitize_email($user['email']));
 
                 if (!$user_id) {
@@ -623,9 +637,9 @@ class FAU_WebSSO {
         elseif (isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action']) {
             check_admin_referer('add-user', '_wpnonce_add-user');
 
-            $user_details = null;
+            $user_details = NULL;
             $user_email = wp_unslash($_REQUEST['email']);
-            if (strpos( $user_email, '@') !== false) {
+            if (strpos( $user_email, '@') !== FALSE) {
                 $user_details = get_user_by('email', $user_email);
             } else {
                 if (is_super_admin()) {
@@ -646,7 +660,7 @@ class FAU_WebSSO {
             $username = $user_details->user_login;
             $user_id = $user_details->ID;
             
-            if (($username != null && !is_super_admin($user_id)) && (array_key_exists(get_current_blog_id(), get_blogs_of_user($user_id)))) {
+            if (($username != NULL && !is_super_admin($user_id)) && (array_key_exists(get_current_blog_id(), get_blogs_of_user($user_id)))) {
                 $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'addexisting'), 'users.php');
             } else {
                 add_existing_user_to_blog(array('user_id' => $user_id, 'role' => $_REQUEST[ 'role' ]));
@@ -690,7 +704,7 @@ class FAU_WebSSO {
                     $add_user_errors = $user_details[ 'errors' ];
                     $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );
                 } else {
-                    $new_user_login = sanitize_user(wp_unslash($_REQUEST['user_login']), true);
+                    $new_user_login = sanitize_user(wp_unslash($_REQUEST['user_login']), TRUE);
                                         
                     wpmu_signup_user($new_user_login, $new_user_email, array('add_to_blog' => $wpdb->blogid, 'new_role' => $_REQUEST['role']));
                     
@@ -774,15 +788,15 @@ class FAU_WebSSO {
     public function admin_user_new() {
         $title = __('Neuen Benutzer hinzufügen', self::textdomain);
 
-        $do_both = false;
+        $do_both = FALSE;
         if (is_multisite() && current_user_can('promote_users') && current_user_can('create_users')) {
-            $do_both = true;
+            $do_both = TRUE;
         }
         
         wp_enqueue_script('wp-ajax-response');
         wp_enqueue_script('user-profile');
 
-        if (is_multisite() && current_user_can('promote_users') && !wp_is_large_network('users') && (is_super_admin() || apply_filters('autocomplete_users_for_site_admins', false))) {
+        if (is_multisite() && current_user_can('promote_users') && !wp_is_large_network('users') && (is_super_admin() || apply_filters('autocomplete_users_for_site_admins', FALSE))) {
             wp_enqueue_script('user-suggest');
         }
 
@@ -903,7 +917,7 @@ class FAU_WebSSO {
             </tr>
             <?php } ?>
         </table>
-        <?php submit_button( __('Bestehenden Benutzer hinzufügen', self::textdomain), 'primary', 'adduser', true, array('id' => 'addusersub')); ?>
+        <?php submit_button( __('Bestehenden Benutzer hinzufügen', self::textdomain), 'primary', 'adduser', TRUE, array('id' => 'addusersub')); ?>
         </form>
         <?php
         } // is_multisite()
@@ -958,7 +972,7 @@ class FAU_WebSSO {
             <?php } ?>
         </table>
 
-        <?php submit_button( __('Neuen Benutzer hinzufügen', self::textdomain), 'primary', 'createuser', true, array('id' => 'createusersub')); ?>
+        <?php submit_button( __('Neuen Benutzer hinzufügen', self::textdomain), 'primary', 'createuser', TRUE, array('id' => 'createusersub')); ?>
 
         </form>
         <?php } // current_user_can('create_users') ?>
@@ -1033,7 +1047,7 @@ class FAU_WebSSO {
             register_setting(self::option_group, self::option_name, array($this, 'options_validate'));
         }
         
-        add_settings_section('simplesaml_options_section', false, array($this, 'simplesaml_settings_section'), self::option_group);
+        add_settings_section('simplesaml_options_section', FALSE, array($this, 'simplesaml_settings_section'), self::option_group);
         add_settings_field('simplesaml_include', __('Autoload-Pfad', self::textdomain), array($this, 'simplesaml_include_field'), self::option_group, 'simplesaml_options_section');
         add_settings_field('simplesaml_auth_source', __('Authentifizierungsquelle', self::textdomain), array($this, 'simplesaml_auth_source_field'), self::option_group, 'simplesaml_options_section');
     }
@@ -1077,12 +1091,12 @@ class FAU_WebSSO {
         
         $attributes = array();
 
-        $edu_person_affiliation = get_user_meta($user_id, 'edu_person_affiliation', true);
+        $edu_person_affiliation = get_user_meta($user_id, 'edu_person_affiliation', TRUE);
         if ($edu_person_affiliation) {
             $attributes[] = $edu_person_affiliation;
         }
         
-        $edu_person_entitlement = get_user_meta($user_id, 'edu_person_entitlement', true);
+        $edu_person_entitlement = get_user_meta($user_id, 'edu_person_entitlement', TRUE);
         if ($edu_person_entitlement) {
             $attributes[] = $edu_person_entitlement;
         }
@@ -1099,12 +1113,12 @@ class FAU_WebSSO {
         $user = new stdClass;
 
         if (isset($_POST['user_login'])) {
-            $user->user_login = sanitize_user($_POST['user_login'], true);
+            $user->user_login = sanitize_user($_POST['user_login'], TRUE);
         }
 
         if (isset($_POST['role']) && current_user_can('edit_users')) {
             $new_role = sanitize_text_field( $_POST['role'] );
-            $potential_role = isset($wp_roles->role_objects[$new_role]) ? $wp_roles->role_objects[$new_role] : false;
+            $potential_role = isset($wp_roles->role_objects[$new_role]) ? $wp_roles->role_objects[$new_role] : FALSE;
             
             if ((is_multisite() && current_user_can('manage_sites')) || ($potential_role && $potential_role->has_cap('edit_users'))) {
                 $user->role = $new_role;
@@ -1204,40 +1218,40 @@ class FAU_WebSSO {
         $signup = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->signups WHERE activation_key = %s", $key));
 
         if (empty($signup)) {
-            return false;
+            return FALSE;
         }
 
         if ($signup->active) {
-            return false;
+            return FALSE;
         }
 
         $meta = maybe_unserialize($signup->meta);
-        $password = wp_generate_password(12, false);
+        $password = wp_generate_password(12, FALSE);
 
         $user_id = username_exists($signup->user_login);
 
         if (!$user_id) {
             $user_id = wpmu_create_user($signup->user_login, $password, $signup->user_email);
         } else {
-            $user_already_exists = true;
+            $user_already_exists = TRUE;
         }
         
         if (!$user_id) {
-            return false;
+            return FALSE;
         }
 
-        $now = current_time('mysql', true);
+        $now = current_time('mysql', TRUE);
 
         if (empty($signup->domain)) {
             $wpdb->update($wpdb->signups, array('active' => 1, 'activated' => $now), array('activation_key' => $key));
 
             if (isset($user_already_exists)) {
-                return false;
+                return FALSE;
             }
             
             wpmu_welcome_user_notification($user_id, $password, $meta);
             do_action('wpmu_activate_user', $user_id, $password, $meta);
-            return true;
+            return TRUE;
         }
 
         $blog_id = wpmu_create_blog($signup->domain, $signup->path, $signup->title, $user_id, $meta, $wpdb->siteid);
@@ -1246,13 +1260,13 @@ class FAU_WebSSO {
             if ('blog_taken' == $blog_id->get_error_code()) {
                 $wpdb->update($wpdb->signups, array('active' => 1, 'activated' => $now), array('activation_key' => $key));
             }
-            return false;
+            return FALSE;
         }
 
         $wpdb->update($wpdb->signups, array('active' => 1, 'activated' => $now), array('activation_key' => $key));
         wpmu_welcome_notification($blog_id, $user_id, $password, $signup->title, $meta);
         do_action('wpmu_activate_blog', $blog_id, $user_id, $password, $signup->title, $meta);
-        return true;
+        return TRUE;
     }
  
     private function validate_user_signup($user_name, $user_email) {
@@ -1261,7 +1275,7 @@ class FAU_WebSSO {
         $errors = new WP_Error();
 
         $orig_username = $user_name;
-        $user_name = preg_replace('/\s+/', '', sanitize_user($user_name, true));
+        $user_name = preg_replace('/\s+/', '', sanitize_user($user_name, TRUE));
 
         if ($user_name != $orig_username || preg_match('/[^a-z0-9]/', $user_name)) {
             $errors->add('user_name', __('Es sind nur Kleinbuchstaben und Ziffern erlaubt.', self::textdomain));
@@ -1295,7 +1309,7 @@ class FAU_WebSSO {
             $errors->add('user_name', __('Die Benutzerkennung darf nicht länger als 60 Zeichen sein.', self::textdomain));
         }
 
-        if (strpos($user_name, '_') !== false) {
+        if (strpos($user_name, '_') !== FALSE) {
             $errors->add('user_name', __('Benutzerkennungen dürfen keinen Unterstrich enthalten.', self::textdomain));
         }
         
@@ -1324,9 +1338,9 @@ class FAU_WebSSO {
         }
 
         $signup = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->signups WHERE user_login = %s", $user_name));
-        if ($signup != null) {
+        if ($signup != NULL) {
             $registered_at = mysql2date('U', $signup->registered);
-            $now = current_time('timestamp', true);
+            $now = current_time('timestamp', TRUE);
             $diff = $now - $registered_at;
             if ($signup->active || ($diff > 2 * DAY_IN_SECONDS)) {
                 $wpdb->delete($wpdb->signups, array('user_login' => $user_name));
@@ -1336,8 +1350,8 @@ class FAU_WebSSO {
         }
 
         $signup = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->signups WHERE user_email = %s", $user_email));
-        if ($signup != null) {
-            $diff = current_time('timestamp', true) - mysql2date('U', $signup->registered);
+        if ($signup != NULL) {
+            $diff = current_time('timestamp', TRUE) - mysql2date('U', $signup->registered);
             if ($signup->active || ($diff > 2 * DAY_IN_SECONDS)) {
                 $wpdb->delete($wpdb->signups, array('user_email' => $user_email));
             } else {
