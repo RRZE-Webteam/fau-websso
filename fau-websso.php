@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 5.1.5
+ * Version: 5.2.0
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.1.5'; // Plugin-Version
+    const version = '5.2.0'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -145,7 +145,8 @@ class FAU_WebSSO {
     private function get_options() {
         $defaults = array(
             'simplesaml_include' => '/simplesamlphp/lib/_autoload.php',
-            'simplesaml_auth_source' => 'default-sp'
+            'simplesaml_auth_source' => 'default-sp',
+            'simplesaml_url_scheme' => 'https'
         );
 
         if (is_multisite()) {
@@ -181,7 +182,8 @@ class FAU_WebSSO {
     }
     
     public function before_signup_header() {
-        wp_redirect(site_url('', 'https'));
+        $options = $this->get_options();
+        wp_redirect(site_url('', $options['simplesaml_url_scheme']));
         die();
     }
     
@@ -342,10 +344,10 @@ class FAU_WebSSO {
         $as = new SimpleSAML_Auth_Simple($options['simplesaml_auth_source']);
 
         if ($as->isAuthenticated()) {
-            $as->logout(site_url('', 'https'));
+            $as->logout(site_url('', $options['simplesaml_url_scheme']));
             $as->logout();
         } else {
-            wp_redirect(site_url('', 'https'));
+            wp_redirect(site_url('', $options['simplesaml_url_scheme']));
             die();
         }
     }
@@ -1050,6 +1052,7 @@ class FAU_WebSSO {
         add_settings_section('simplesaml_options_section', FALSE, array($this, 'simplesaml_settings_section'), self::option_group);
         add_settings_field('simplesaml_include', __('Autoload-Pfad', self::textdomain), array($this, 'simplesaml_include_field'), self::option_group, 'simplesaml_options_section');
         add_settings_field('simplesaml_auth_source', __('Authentifizierungsquelle', self::textdomain), array($this, 'simplesaml_auth_source_field'), self::option_group, 'simplesaml_options_section');
+        add_settings_field('simplesaml_url_scheme', __('URL-Schema', self::textdomain), array($this, 'simplesaml_url_scheme_field'), self::option_group, 'simplesaml_options_section');
     }
 
     public function simplesaml_settings_section() {
@@ -1068,12 +1071,20 @@ class FAU_WebSSO {
         echo '<input type="text" id="simplesaml_auth_source" class="regular-text ltr" name="' . self::option_name . '[simplesaml_auth_source]" value="' . esc_attr($options['simplesaml_auth_source']) . '">';
     }
 
+    public function simplesaml_url_scheme_field() {
+        $options = $this->get_options();
+        echo '<select name="' . self::option_name . '[simplesaml_url_scheme]">';
+        echo '<option value="https" ' . selected( $options['simplesaml_url_scheme'], 'https' ) . '>https</option>';
+        echo '<option value="http" ' . selected( $options['simplesaml_url_scheme'], 'http' ) . '>http</option>';
+        echo '</select>';        
+    }
+    
     public function options_validate($input) {
         $options = $this->get_options();
 
-        $input['simplesaml_include'] = !empty($input['simplesaml_include']) ? esc_attr($input['simplesaml_include']) : $options['simplesaml_include'];
-
-        $input['simplesaml_auth_source'] = isset($input['simplesaml_auth_source']) ? esc_attr($input['simplesaml_auth_source']) : $options['simplesaml_auth_source'];
+        $input['simplesaml_include'] = !empty($input['simplesaml_include']) ? esc_attr(trim($input['simplesaml_include'])) : $options['simplesaml_include'];
+        $input['simplesaml_auth_source'] = isset($input['simplesaml_auth_source']) ? esc_attr(trim($input['simplesaml_auth_source'])) : $options['simplesaml_auth_source'];
+        $input['simplesaml_url_scheme'] = isset($input['simplesaml_url_scheme']) && in_array(trim($input['simplesaml_url_scheme']), array('http', 'https')) ? trim($input['simplesaml_url_scheme']) : $options['simplesaml_url_scheme'];
 
         return $input;
     }
