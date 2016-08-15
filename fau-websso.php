@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 5.2.0
+ * Version: 5.2.1
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.2.0'; // Plugin-Version
+    const version = '5.2.1'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -184,7 +184,7 @@ class FAU_WebSSO {
     public function before_signup_header() {
         $options = $this->get_options();
         wp_redirect(site_url('', $options['simplesaml_url_scheme']));
-        die();
+        exit;
     }
     
     public function authenticate($user, $user_login, $user_pass) {
@@ -348,7 +348,7 @@ class FAU_WebSSO {
             $as->logout();
         } else {
             wp_redirect(site_url('', $options['simplesaml_url_scheme']));
-            die();
+            exit;
         }
     }
 
@@ -464,14 +464,14 @@ class FAU_WebSSO {
     public function register_redirect() {
         if ($this->is_login_page() && isset($_REQUEST['action']) && $_REQUEST['action'] == 'register') {
             wp_redirect(site_url('wp-login.php', 'login'));
-            die();
+            exit;
         }        
      }
     
     private function user_new_page_redirect() {
         if ($this->is_user_new_page()) {
             wp_redirect('users.php?page=usernew');
-            die();
+            exit;
         }        
     }
     
@@ -633,10 +633,8 @@ class FAU_WebSSO {
                 }
             }
             wp_redirect($redirect);
-            die();            
-        } 
-        
-        elseif (isset($_REQUEST['action']) && 'adduser' == $_REQUEST['action']) {
+            exit;            
+        } elseif (isset($_REQUEST['action'], $_REQUEST['email']) && 'adduser' == $_REQUEST['action']) {
             check_admin_referer('add-user', '_wpnonce_add-user');
 
             $user_details = NULL;
@@ -648,13 +646,13 @@ class FAU_WebSSO {
                     $user_details = get_user_by('login', $user_email);
                 } else {
                     wp_redirect(add_query_arg(array('page' => 'usernew', 'update' => 'enter_email'), 'users.php'));
-                    die();
+                    exit;
                 }
             }
 
             if (!$user_details) {
                 wp_redirect(add_query_arg(array('page' => 'usernew', 'update' => 'does_not_exist'), 'users.php'));
-                die();
+                exit;
             }
 
             // Bestehenden Benutzer hinzufügen
@@ -674,10 +672,8 @@ class FAU_WebSSO {
                 }
             }
             wp_redirect($redirect);
-            die();
-        }
-        
-        elseif (isset($_REQUEST['action']) && 'createuser' == $_REQUEST['action']) {
+            exit;
+        } elseif (isset($_REQUEST['action']) && 'createuser' == $_REQUEST['action']) {
             check_admin_referer('create-user', '_wpnonce_create-user');
 
             if (!is_multisite()) {
@@ -685,7 +681,7 @@ class FAU_WebSSO {
 
                 if (is_wp_error($user_id)) {
                     $add_user_errors = $user_id;
-                    $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );                    
+                    $redirect = add_query_arg(array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php');                    
                 } else {                   
                     $this->new_user_notification($user_id);
                     
@@ -695,7 +691,7 @@ class FAU_WebSSO {
                         $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'add'), 'users.php');
                     }
                     wp_redirect( $redirect );
-                    die();
+                    exit;
                 }
             } else {
                 // Neuen Benutzer hinzufügen
@@ -730,7 +726,7 @@ class FAU_WebSSO {
                 }
             }
             wp_redirect($redirect);
-            die();            
+            exit;            
         }
         
     }
