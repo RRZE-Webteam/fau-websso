@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU-WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-27 14:20+0200\n"
+"POT-Creation-Date: 2016-08-26 15:51+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../fau-websso.php:124
+#: ../fau-websso.php:141
 #, php-format
 msgid ""
 "Ihre PHP-Version %s ist veraltet. Bitte aktualisieren Sie mindestens auf die "
@@ -27,7 +27,7 @@ msgstr ""
 "Your server is running PHP version %s. Please upgrade at least to PHP "
 "version %s."
 
-#: ../fau-websso.php:128
+#: ../fau-websso.php:145
 #, php-format
 msgid ""
 "Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
@@ -36,31 +36,31 @@ msgstr ""
 "Your Wordpress version is %s. Please upgrade at least to Wordpress version "
 "%s."
 
-#: ../fau-websso.php:178
+#: ../fau-websso.php:196
 msgid "Die Autoload-Datei konnte nicht eingebunden werden."
 msgstr "The autoload file could not be included."
 
-#: ../fau-websso.php:225
+#: ../fau-websso.php:249
 msgid "Die IdM-Benutzerkennung ist nicht gültig."
 msgstr "The IdM Username is not valid."
 
-#: ../fau-websso.php:231
+#: ../fau-websso.php:255
 msgid "Die eingegebene IdM-Benutzerkennung ist nicht gültig."
 msgstr "The IdM Username entered is not valid."
 
-#: ../fau-websso.php:260
+#: ../fau-websso.php:284
 msgid "Die Benutzerdaten konnten nicht aktualisiert werden."
 msgstr "The user data could not be updated."
 
-#: ../fau-websso.php:279
+#: ../fau-websso.php:303
 msgid "Zurzeit ist die Benutzerregistrierung nicht erlaubt."
 msgstr "User registration is currently not allowed."
 
-#: ../fau-websso.php:301
+#: ../fau-websso.php:325
 msgid "Der Benutzer konnte nicht registriert werden."
 msgstr "The user could not be added."
 
-#: ../fau-websso.php:371
+#: ../fau-websso.php:395
 #, php-format
 msgid ""
 "Sie haben versucht auf das &bdquo;%1$s&ldquo; Dashboard zuzugreifen, haben "
@@ -73,7 +73,7 @@ msgstr ""
 "access the &ldquo;%1$s&rdquo; dashboard, please contact the contact person "
 "of the Website."
 
-#: ../fau-websso.php:374
+#: ../fau-websso.php:398
 msgid ""
 "Falls Sie diese Ansicht aus Versehen aufgerufen haben und eigentlich eine "
 "Ihrer eigenen Websites besuchen wollten, hier ein paar hoffentlich "
@@ -82,32 +82,32 @@ msgstr ""
 "If you reached this screen by accident and meant to visit one of your own "
 "sites, here are some shortcuts to help you find your way."
 
-#: ../fau-websso.php:376
+#: ../fau-websso.php:400
 msgid "Ihre Webseiten"
 msgstr "Your Websites"
 
-#: ../fau-websso.php:382
+#: ../fau-websso.php:406
 msgid "Dashboard besuchen"
 msgstr "Visit Dashboard"
 
-#: ../fau-websso.php:383
+#: ../fau-websso.php:407
 msgid "Webseite anzeigen"
 msgstr "View Website"
 
-#: ../fau-websso.php:392 ../fau-websso.php:407
+#: ../fau-websso.php:416 ../fau-websso.php:431
 msgid "Single Sign-On -Abmeldung"
 msgstr "Single Sign-On Log Out"
 
-#: ../fau-websso.php:400
+#: ../fau-websso.php:424
 msgid "Fehler:"
 msgstr "ERROR:"
 
-#: ../fau-websso.php:401
+#: ../fau-websso.php:425
 #, php-format
 msgid "Die Anmeldung auf der Webseite &bdquo;%s&ldquo; ist fehlgeschlagen."
 msgstr "Authentication failed on the &ldquo;%s&rdquo; website."
 
-#: ../fau-websso.php:402
+#: ../fau-websso.php:426
 msgid ""
 "Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an "
 "den Ansprechpartner der Webseite."
@@ -115,31 +115,31 @@ msgstr ""
 "However, if no login is possible, please contact the contact person of the "
 "Website."
 
-#: ../fau-websso.php:427
+#: ../fau-websso.php:451
 #, php-format
 msgid "Ansprechpartner und Kontakt für die Webseite &bdquo;%s&ldquo;"
 msgstr "Contact persons for the &ldquo;%s&rdquo; website"
 
-#: ../fau-websso.php:432
+#: ../fau-websso.php:456
 msgid "E-Mail:"
 msgstr "Email"
 
-#: ../fau-websso.php:493
+#: ../fau-websso.php:517
 msgid "Gebrauchsunfähige Funktion."
 msgstr "Disabled function."
 
-#: ../fau-websso.php:502 ../fau-websso.php:508 ../fau-websso.php:556
-#: ../fau-websso.php:562
+#: ../fau-websso.php:526 ../fau-websso.php:532 ../fau-websso.php:580
+#: ../fau-websso.php:586
 msgid "Neu hinzufügen"
 msgstr "Add new"
 
-#: ../fau-websso.php:522
+#: ../fau-websso.php:546
 msgid ""
 "Die Funktion \"Benutzer hinzufügen\" erstellt ein neues Benutzerkonto im "
 "Netzwerk."
 msgstr "Add User will set up a new user account on the network."
 
-#: ../fau-websso.php:523
+#: ../fau-websso.php:547
 msgid ""
 "Benutzer, die im Netzwerk registriert sind, aber keine eigene Webseite "
 "haben, werden automatisch in der Netzwerk-Webseite hinzugefügt und haben so "
@@ -151,15 +151,15 @@ msgstr ""
 "accounts. These users will only see Dashboard and My Sites in the main "
 "navigation until a site is created for them."
 
-#: ../fau-websso.php:527 ../fau-websso.php:589
+#: ../fau-websso.php:551 ../fau-websso.php:613
 msgid "Übersicht"
 msgstr "Overall view"
 
-#: ../fau-websso.php:533 ../fau-websso.php:595
+#: ../fau-websso.php:557 ../fau-websso.php:619
 msgid "Benutzerrollen"
 msgstr "User Roles"
 
-#: ../fau-websso.php:534 ../fau-websso.php:596
+#: ../fau-websso.php:558 ../fau-websso.php:620
 msgid ""
 "Hier ist ein grober Überblick über die verschiedenen Benutzerrollen und die "
 "jeweils damit verknüpften Berechtigungen:"
@@ -167,7 +167,7 @@ msgstr ""
 "Here is a basic overview of the different user roles and the permissions "
 "associated with each one:"
 
-#: ../fau-websso.php:536 ../fau-websso.php:598
+#: ../fau-websso.php:560 ../fau-websso.php:622
 msgid ""
 "Abonennten können nur Kommentare lesen und abgeben, aber keine eigenen "
 "Inhalte erstellen."
@@ -175,7 +175,7 @@ msgstr ""
 "Subscribers can read comments/comment/receive newsletters, etc. but cannot "
 "create regular site content."
 
-#: ../fau-websso.php:537 ../fau-websso.php:599
+#: ../fau-websso.php:561 ../fau-websso.php:623
 msgid ""
 "Mitarbeiter können eigene Artikel schreiben und bearbeiten, sie jedoch nicht "
 "veröffentlichen. Auch dürfen sie keine Dateien hochladen."
@@ -183,14 +183,14 @@ msgstr ""
 "Contributors can write and manage their posts but not publish posts or "
 "upload media files."
 
-#: ../fau-websso.php:538 ../fau-websso.php:600
+#: ../fau-websso.php:562 ../fau-websso.php:624
 msgid ""
 "Autoren können ihre eigenen Artikel veröffentlichen und verwalten sowie "
 "Dateien hochladen."
 msgstr ""
 "Authors can publish and manage their own posts, and are able to upload files."
 
-#: ../fau-websso.php:539 ../fau-websso.php:601
+#: ../fau-websso.php:563 ../fau-websso.php:625
 msgid ""
 "Redakteure können Artikel und Seiten anlegen und veröffentlichen, sowie die "
 "Artikel, Seiten, etc. von anderen Benutzern verwalten (ändern, löschen, "
@@ -199,11 +199,11 @@ msgstr ""
 "Editors can publish posts, manage posts as well as manage other people&#8217;"
 "s posts, etc."
 
-#: ../fau-websso.php:540 ../fau-websso.php:602
+#: ../fau-websso.php:564 ../fau-websso.php:626
 msgid "Administratoren haben die komplette Macht und sehen alle Optionen."
 msgstr "Administrators have access to all the administration features."
 
-#: ../fau-websso.php:576
+#: ../fau-websso.php:600
 msgid ""
 "Um einen neuen Benutzer zu Ihrer Webseite hinzufügen, füllen Sie das "
 "Formular auf dieser Seite aus, und klicken Sie unten auf Neuen Benutzer "
@@ -212,7 +212,7 @@ msgstr ""
 "To add a new user to your website, fill out the form on this page, and click "
 "below to add a new user."
 
-#: ../fau-websso.php:579
+#: ../fau-websso.php:603
 msgid ""
 "Da dies ein Webseitennetzwerk ist, können Sie in anderen Webseiten dieses "
 "Netzwerks existierende Benutzer einfach hinzufügen, in dem Sie deren "
@@ -227,7 +227,7 @@ msgstr ""
 "link under an existing user&#8217;s name to Edit the user profile under "
 "Network Admin &gt; All Users."
 
-#: ../fau-websso.php:580
+#: ../fau-websso.php:604
 msgid ""
 "Neue Benutzer bekommen eine E-Mail, in welcher ihnen mitgeteilt wird, dass "
 "sie als Benutzer dieser Website registriert wurden. Sie können allerdings "
@@ -238,7 +238,7 @@ msgstr ""
 "as a user for your site. Check the box if you don&#8217;t want the user "
 "receive a welcome email."
 
-#: ../fau-websso.php:582
+#: ../fau-websso.php:606
 msgid ""
 "Neue Benutzer bekommen eine E-Mail, in welcher ihnen mitgeteilt wird, dass "
 "sie als Benutzer dieser Website registriert wurden."
@@ -246,7 +246,7 @@ msgstr ""
 "New users will receive an email letting them know they&#8217;ve been added "
 "as a user for your site."
 
-#: ../fau-websso.php:585
+#: ../fau-websso.php:609
 msgid ""
 "Vergessen Sie nicht, unten auf dieser Seite auf Neuen Benutzer hinzufügen zu "
 "klicken, wenn Sie fertig sind."
@@ -254,32 +254,32 @@ msgstr ""
 "Remember to click the Add New User button at the bottom of this screen when "
 "you are finished."
 
-#: ../fau-websso.php:614
+#: ../fau-websso.php:638
 msgid "Es kann kein leerer Benutzer angelegt werden."
 msgstr "Cannot create an empty user."
 
-#: ../fau-websso.php:628
+#: ../fau-websso.php:652
 msgid "Der Benutzer konnte nicht hinzugefügt werden."
 msgstr "The user could not be added."
 
-#: ../fau-websso.php:742 ../fau-websso.php:832
+#: ../fau-websso.php:762 ../fau-websso.php:852
 msgid "Benutzer hinzugefügt."
 msgstr "User added."
 
-#: ../fau-websso.php:747 ../fau-websso.php:791 ../fau-websso.php:840
-#: ../fau-websso.php:929 ../fau-websso.php:977
+#: ../fau-websso.php:767 ../fau-websso.php:811 ../fau-websso.php:860
+#: ../fau-websso.php:949 ../fau-websso.php:997
 msgid "Neuen Benutzer hinzufügen"
 msgstr "Add new user"
 
-#: ../fau-websso.php:772 ../fau-websso.php:947
+#: ../fau-websso.php:792 ../fau-websso.php:967
 msgid "IdM-Benutzerkennung"
 msgstr "IdM Username"
 
-#: ../fau-websso.php:776 ../fau-websso.php:888 ../fau-websso.php:951
+#: ../fau-websso.php:796 ../fau-websso.php:908 ../fau-websso.php:971
 msgid "E-Mail-Adresse"
 msgstr "Email"
 
-#: ../fau-websso.php:780 ../fau-websso.php:913 ../fau-websso.php:967
+#: ../fau-websso.php:800 ../fau-websso.php:933 ../fau-websso.php:987
 msgid ""
 "Eine Willkommen-E-Mail mit dem entsprechenden Anmeldelink wird an die "
 "angegebene E-Mail-Adresse versandt."
@@ -287,11 +287,11 @@ msgstr ""
 "A welcome email with the sign in link will be sent to the specified e-mail "
 "address."
 
-#: ../fau-websso.php:784
+#: ../fau-websso.php:804
 msgid "Benutzer hinzufügen"
 msgstr "Add user"
 
-#: ../fau-websso.php:810
+#: ../fau-websso.php:830
 msgid ""
 "Das Benutzerkonto wurde erfolgreich angelegt. Die Einladungs-E-Mail wurde "
 "zum neuen Benutzer versandt."
@@ -299,7 +299,7 @@ msgstr ""
 "The user account has been succesfully created. An invitation email has been "
 "sent to the user."
 
-#: ../fau-websso.php:813
+#: ../fau-websso.php:833
 msgid ""
 "Der Benutzer wurde zu Ihrer Webseite hinzugefügt. Die Einladungs-E-Mail "
 "wurde zum Benutzer versandt."
@@ -307,27 +307,27 @@ msgstr ""
 "The user has been added to your website. An invitation email has been sent "
 "to the user."
 
-#: ../fau-websso.php:816
+#: ../fau-websso.php:836
 msgid "Der Benutzer wurde zu Ihrer Webseite hinzugefügt."
 msgstr "User has been added to your website."
 
-#: ../fau-websso.php:819
+#: ../fau-websso.php:839
 msgid "Dieser Benutzer ist bereits ein Mitglied dieser Webseite."
 msgstr "This user is already a member of this website."
 
-#: ../fau-websso.php:822
+#: ../fau-websso.php:842
 msgid "Der angeforderte Benutzer existiert nicht."
 msgstr "The requested user does not exist."
 
-#: ../fau-websso.php:825 ../fau-websso.php:1332
+#: ../fau-websso.php:845 ../fau-websso.php:1373
 msgid "Bitte geben Sie eine gültige E-Mail-Adresse ein."
 msgstr "Please enter a valid email address."
 
-#: ../fau-websso.php:842 ../fau-websso.php:884 ../fau-websso.php:922
+#: ../fau-websso.php:862 ../fau-websso.php:904 ../fau-websso.php:942
 msgid "Bestehenden Benutzer hinzufügen"
 msgstr "Add Existing User"
 
-#: ../fau-websso.php:887 ../fau-websso.php:891
+#: ../fau-websso.php:907 ../fau-websso.php:911
 msgid ""
 "Tragen Sie die E-Mail-Adresse eines bestehenden Nutzers dieses Netzwerkes "
 "ein, um ihn zu dieser Webseite einzuladen."
@@ -335,79 +335,107 @@ msgstr ""
 "Enter the email address of an existing user on this network to invite them "
 "to this website."
 
-#: ../fau-websso.php:892
+#: ../fau-websso.php:912
 msgid "E-Mail-Adresse oder Benutzername"
 msgstr "Email or Username"
 
-#: ../fau-websso.php:906 ../fau-websso.php:955
+#: ../fau-websso.php:926 ../fau-websso.php:975
 msgid "Rolle"
 msgstr "Role"
 
-#: ../fau-websso.php:917 ../fau-websso.php:971
+#: ../fau-websso.php:937 ../fau-websso.php:991
 msgid "Keine E-Mail versenden"
 msgstr "Skip Email"
 
-#: ../fau-websso.php:918 ../fau-websso.php:972
+#: ../fau-websso.php:938 ../fau-websso.php:992
 msgid "Nutzer hinzufügen ohne eine E-Mail zu versenden."
 msgstr "Add the user without sending an email."
 
-#: ../fau-websso.php:932
+#: ../fau-websso.php:952
 msgid "Legen Sie einen neuen Nutzer an und fügen Sie ihn dieser Website zu."
 msgstr "Create a brand new user and add them to this website."
 
-#: ../fau-websso.php:947 ../fau-websso.php:951
+#: ../fau-websso.php:967 ../fau-websso.php:971
 msgid "(erforderlich)"
 msgstr "required"
 
-#: ../fau-websso.php:986 ../fau-websso.php:990
+#: ../fau-websso.php:1006 ../fau-websso.php:1010
 msgid "FAU-WebSSO"
 msgstr "FAU-WebSSO"
 
-#: ../fau-websso.php:1004
+#: ../fau-websso.php:1024
 msgid "Einstellungen gespeichert."
 msgstr "Settings saved."
 
-#: ../fau-websso.php:1009 ../fau-websso.php:1030
+#: ../fau-websso.php:1029 ../fau-websso.php:1050
 msgid "Einstellungen &rsaquo; FAU-WebSSO"
 msgstr "FAU-WebSSO Settings"
 
-#: ../fau-websso.php:1053
+#: ../fau-websso.php:1073
+msgid "Erlaube WebSSO"
+msgstr "Allow WebSSO"
+
+#: ../fau-websso.php:1076
 msgid "Autoload-Pfad"
 msgstr "Autoload path"
 
-#: ../fau-websso.php:1054
+#: ../fau-websso.php:1077
 msgid "Authentifizierungsquelle"
 msgstr "Authentication source"
 
-#: ../fau-websso.php:1055
+#: ../fau-websso.php:1078
 msgid "URL-Schema"
 msgstr "URL scheme"
 
-#: ../fau-websso.php:1059
+#: ../fau-websso.php:1082
+msgid "Single Sign-On"
+msgstr "Single Sign-On"
+
+#: ../fau-websso.php:1083
+msgid "Allgemeine WebSSO-Einstellungen."
+msgstr "General WebSSO Settings"
+
+#: ../fau-websso.php:1090
+msgid "WebSSO-Einstellungen."
+msgstr "WebSSO Settings"
+
+#: ../fau-websso.php:1091
+msgid "WebSSO ist deaktiviert."
+msgstr "WebSSO has been disabled."
+
+#: ../fau-websso.php:1092
+msgid "Benutzer können sich lokal und WebSSO anmelden."
+msgstr "Users can log on locally and WebSSO."
+
+#: ../fau-websso.php:1093
+msgid "Benutzer dürfen sich nur per WebSSO anmelden."
+msgstr "Users may log in only via WebSSO."
+
+#: ../fau-websso.php:1098
 msgid "SimpleSAMLphp"
 msgstr "SimpleSAMLphp"
 
-#: ../fau-websso.php:1060
-msgid "Einstellungen des Service Provider."
-msgstr "Service Provider Settings"
+#: ../fau-websso.php:1099
+msgid "Einstellungen des Service Providers."
+msgstr "Service Provider Settings."
 
-#: ../fau-websso.php:1066
+#: ../fau-websso.php:1105
 msgid "Relative Pfad ausgehend vom wp-content-Verzeichnis."
 msgstr "Relative path starting from the wp-content directory."
 
-#: ../fau-websso.php:1093
+#: ../fau-websso.php:1134
 msgid "Attribute"
 msgstr "Attributes"
 
-#: ../fau-websso.php:1140
+#: ../fau-websso.php:1181
 msgid "Sie können keinem Benutzer diese Rolle geben."
 msgstr "You can't give users that role."
 
-#: ../fau-websso.php:1164
+#: ../fau-websso.php:1205
 msgid "<strong>Fehler:</strong> Bitte geben Sie einen Benutzernamen ein."
 msgstr "<strong>ERROR</strong>: Please enter a username."
 
-#: ../fau-websso.php:1168
+#: ../fau-websso.php:1209
 msgid ""
 "<strong>Fehler:</strong> Dieser Benutzername kann nicht verwendet werden, da "
 "er ungültige Zeichen enthält. Bitte geben Sie einen gültigen Benutzernamen "
@@ -416,7 +444,7 @@ msgstr ""
 "<strong>ERROR</strong>: This username is invalid because it uses illegal "
 "characters. Please enter a valid username."
 
-#: ../fau-websso.php:1172
+#: ../fau-websso.php:1213
 msgid ""
 "<strong>Fehler:</strong>: Dieser Benutzername ist bereits registriert. Bitte "
 "wähle Sie einen anderen."
@@ -424,15 +452,15 @@ msgstr ""
 "<strong>ERROR</strong>: This username is already registered. Please choose "
 "another one."
 
-#: ../fau-websso.php:1176
+#: ../fau-websso.php:1217
 msgid "<strong>Fehler:</strong> Bitte eine E-Mail-Adresse eingeben."
 msgstr "<strong>ERROR</strong>: Please enter an e-mail address."
 
-#: ../fau-websso.php:1178
+#: ../fau-websso.php:1219
 msgid "<strong>Fehler:</strong>: Die E-Mail-Adresse ist ungültig."
 msgstr "<strong>ERROR</strong>: The email address isn&#8217;t correct."
 
-#: ../fau-websso.php:1180
+#: ../fau-websso.php:1221
 msgid ""
 "<strong>Fehler:</strong>: Diese E-Mail-Adresse wurde bereits registriert, "
 "bitte wählen Sie eine andere."
@@ -440,7 +468,7 @@ msgstr ""
 "<strong>ERROR</strong>: This email is already registered, please choose "
 "another one."
 
-#: ../fau-websso.php:1200
+#: ../fau-websso.php:1241
 #, php-format
 msgid ""
 "Hallo,%5$s%5$sSie wurden eingeladen, %1$s (%2$s) als %3$s beizutreten."
@@ -450,12 +478,12 @@ msgstr ""
 "Hi,%5$s%5$sYou've been invited to join '%1$s' at%5$s%2$s with the role of "
 "%3$s.%5$s%5$sPlease sign in using the following link to the website:%5$s %4$s"
 
-#: ../fau-websso.php:1203
+#: ../fau-websso.php:1244
 #, php-format
 msgid "[%s] Sie wurden eingeladen"
 msgstr "[%s] You've been invited"
 
-#: ../fau-websso.php:1211 ../fau-websso.php:1220
+#: ../fau-websso.php:1252 ../fau-websso.php:1261
 #, php-format
 msgid ""
 "Hallo,%4$s%4$sIhr Benutzerkonto %1$s wurde angelegt.%4$sBitte melden Sie "
@@ -466,69 +494,87 @@ msgstr ""
 "the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The "
 "Team @ %2$s"
 
-#: ../fau-websso.php:1214 ../fau-websso.php:1223
+#: ../fau-websso.php:1255 ../fau-websso.php:1264
 #, php-format
 msgid "[%s] Ihr Benutzerkonto"
 msgstr "[%s] Your user account"
 
-#: ../fau-websso.php:1292
+#: ../fau-websso.php:1333
 msgid "Es sind nur Kleinbuchstaben und Ziffern erlaubt."
 msgstr "Only lowercase letters (a-z) and numbers are allowed."
 
-#: ../fau-websso.php:1299
+#: ../fau-websso.php:1340
 msgid "Bitte geben Sie eine Benutzerkennung ein."
 msgstr "Please enter a username."
 
-#: ../fau-websso.php:1309
+#: ../fau-websso.php:1350
 msgid "Die Benutzerkennung ist nicht erlaubt."
 msgstr "User registration is currently not allowed."
 
-#: ../fau-websso.php:1313
+#: ../fau-websso.php:1354
 msgid "Die E-Mail-Adresse ist nicht erlaubt."
 msgstr "Email or Username is not allowed."
 
-#: ../fau-websso.php:1317
+#: ../fau-websso.php:1358
 msgid "Die Benutzerkennung muss aus mindestens 4 Zeichen bestehen."
 msgstr "Username must be at least 4 characters."
 
-#: ../fau-websso.php:1320
+#: ../fau-websso.php:1361
 msgid "Die Benutzerkennung darf nicht länger als 60 Zeichen sein."
 msgstr "Username may not be longer than 60 characters."
 
-#: ../fau-websso.php:1324
+#: ../fau-websso.php:1365
 msgid "Benutzerkennungen dürfen keinen Unterstrich enthalten."
 msgstr "Usernames may not contain the character &#8220;_&#8221;!"
 
-#: ../fau-websso.php:1328
+#: ../fau-websso.php:1369
 msgid "Benutzerkennungen müssen auch Buchstaben enthalten!"
 msgstr "Usernames must have letters too!"
 
-#: ../fau-websso.php:1339
+#: ../fau-websso.php:1380
 msgid "Diese E-Mail-Adresse ist nicht erlaubt!"
 msgstr "That email address is not allowed!"
 
-#: ../fau-websso.php:1344
+#: ../fau-websso.php:1385
 msgid "Die Benutzerkennung existiert bereits!"
 msgstr "Username already exists!"
 
-#: ../fau-websso.php:1348
+#: ../fau-websso.php:1389
 msgid "Die E-Mail-Adresse wird bereits verwendet!"
 msgstr "The email address is already used!"
 
-#: ../fau-websso.php:1359
+#: ../fau-websso.php:1400
 msgid ""
 "Diese Benutzerkennung ist derzeit reserviert, ist aber möglicherweise in den "
 "nächsten Tagen verfügbar."
 msgstr ""
 "That username is currently reserved but may be available in a couple of days."
 
-#: ../fau-websso.php:1369
+#: ../fau-websso.php:1410
 msgid ""
 "Diese E-Mail-Adresse ist derzeit reserviert, ist aber möglicherweise in den "
 "nächsten Tagen verfügbar."
 msgstr ""
 "That email address is currently reserved but may be available in a couple of "
 "days."
+
+#: ../fau-websso.php:1426
+msgid "Sie haben Ihr IdM-Benutzerkonto bereits aktiviert?"
+msgstr "You have already activated your account?"
+
+#: ../fau-websso.php:1427
+#, php-format
+msgid ""
+"Bitte melden Sie sich mittels des folgenden Links an den %s-Webauftritt an."
+msgstr "Please login to the website %s using the link below."
+
+#: ../fau-websso.php:1428
+#, php-format
+msgid "Anmelden an den %2$s-Webauftritt"
+msgstr "Login to the %2$s website"
+
+#~ msgid "Einstellungen des Service Provider."
+#~ msgstr "Service Provider Settings"
 
 #~ msgid "Die IdM-Kennung ist nicht gültig."
 #~ msgstr "The IdM username is not valid."
@@ -548,22 +594,8 @@ msgstr ""
 #~ msgid "Zum SSO zwingen"
 #~ msgstr "Force SSO"
 
-#~ msgid "Single Sign-On"
-#~ msgstr "Single Sign-On"
-
 #~ msgid "Allgemeine SSO-Einstellungen."
 #~ msgstr "General SSO Settings."
-
-#~ msgid "Sie haben Ihr IdM-Benutzerkonto bereits aktiviert?"
-#~ msgstr "You have already activated your account?"
-
-#~ msgid ""
-#~ "Bitte melden Sie sich mittels des folgenden Links an den %s-Webauftritt "
-#~ "an."
-#~ msgstr "Please login to the website %s using the link below."
-
-#~ msgid "Anmelden an den %2$s-Webauftritt"
-#~ msgstr "Login to the %2$s website"
 
 #~ msgid "Die Benutzerattribute fehlen."
 #~ msgstr "The user attributes are missing."

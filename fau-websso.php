@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 5.2.1
+ * Version: 5.3.0
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,13 +32,13 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.2.1'; // Plugin-Version
+    const version = '5.3.0'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
     const textdomain = 'fau-websso';
-    const php_version = '5.4'; // Minimal erforderliche PHP-Version
-    const wp_version = '4.5'; // Minimal erforderliche WordPress-Version
+    const php_version = '5.6'; // Minimal erforderliche PHP-Version
+    const wp_version = '4.6'; // Minimal erforderliche WordPress-Version
 
     private $simplesaml_autoload_error;
     
@@ -64,25 +64,40 @@ class FAU_WebSSO {
         
         $this->try_simplesaml_autoload();
         $this->set_current_user_can();
-
+        
+        add_action('init', array($this, 'update_version'));
+        
+        if($this->simplesaml_autoload_error) {
+            return;
+        }
+        
+        $force_websso = FALSE;
+        switch ($options['force_websso']) {
+            case 1:
+                add_action('login_enqueue_scripts', array($this, 'login_enqueue_scripts'));
+                add_action('login_form', array($this, 'login_form'));
+                $force_websso = TRUE;
+                break;
+            case 2:
+                $force_websso = TRUE;
+                break;
+            default:
+                return;
+                break;
+        }
+        
         if (is_multisite() && (!get_site_option('registration') || get_site_option('registration') == 'none')) {
             $this->registration = FALSE;               
         } elseif (!is_multisite() && !get_option('users_can_register')) {
             $this->registration = FALSE;
         }
         
-        add_action('init', array($this, 'update_version'));
-
         add_action('admin_init', array($this, 'admin_init'));
 
         if (is_multisite()) {
             add_action('network_admin_menu', array($this, 'network_admin_menu'));
         } else {
             add_action('admin_menu', array($this, 'admin_menu'));
-        }
-        
-        if($this->simplesaml_autoload_error) {
-            return;
         }
         
         add_filter('authenticate', array($this, 'authenticate'), 99, 3);
@@ -103,8 +118,10 @@ class FAU_WebSSO {
         if (!$this->registration) {
             add_action('before_signup_header', array($this, 'before_signup_header'));
         }
-        
-        $this->force_websso();
+       
+        if ($force_websso) {
+            $this->force_websso();
+        }
     }
 
     public static function activation($network_wide) {
@@ -146,6 +163,7 @@ class FAU_WebSSO {
         $defaults = array(
             'simplesaml_include' => '/simplesamlphp/lib/_autoload.php',
             'simplesaml_auth_source' => 'default-sp',
+            'force_websso' => 2,
             'simplesaml_url_scheme' => 'https'
         );
 
@@ -193,6 +211,12 @@ class FAU_WebSSO {
 
         remove_action('authenticate', 'wp_authenticate_username_password', 20);
 
+        $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+        
+        if ($options['force_websso'] == 1 && $action != 'websso') {
+            return wp_authenticate_username_password(NULL, $user_login, $user_pass);
+        }
+        
         if($this->simplesaml_autoload_error) {
             return $this->login_error($this->simplesaml_autoload_error);
         }
@@ -1045,15 +1069,34 @@ class FAU_WebSSO {
             register_setting(self::option_group, self::option_name, array($this, 'options_validate'));
         }
         
+        add_settings_section('websso_options_section', FALSE, array($this, 'websso_settings_section'), self::option_group);
+        add_settings_field('force_websso', __('Erlaube WebSSO', self::textdomain), array($this, 'websso_field'), self::option_group, 'websso_options_section');
+        
         add_settings_section('simplesaml_options_section', FALSE, array($this, 'simplesaml_settings_section'), self::option_group);
         add_settings_field('simplesaml_include', __('Autoload-Pfad', self::textdomain), array($this, 'simplesaml_include_field'), self::option_group, 'simplesaml_options_section');
         add_settings_field('simplesaml_auth_source', __('Authentifizierungsquelle', self::textdomain), array($this, 'simplesaml_auth_source_field'), self::option_group, 'simplesaml_options_section');
         add_settings_field('simplesaml_url_scheme', __('URL-Schema', self::textdomain), array($this, 'simplesaml_url_scheme_field'), self::option_group, 'simplesaml_options_section');
     }
 
+    public function websso_settings_section() {
+        echo '<h3 class="title">' . __('Single Sign-On', self::textdomain) . '</h3>';
+        echo '<p>' . __('Allgemeine WebSSO-Einstellungen.', self::textdomain) . '</p>';
+    }
+
+    public function websso_field() {
+        $options = $this->get_options();
+
+        echo '<fieldset>';
+        echo '<legend class="screen-reader-text">' . __('WebSSO-Einstellungen.', self::textdomain) . '</legend>';
+        echo '<label><input name="' . self::option_name . '[force_websso]" id="force_websso0" value="0" type="radio" ', checked($options['force_websso'], 0), '>' . __('WebSSO ist deaktiviert.', self::textdomain) . '</label><br>';
+        echo '<label><input name="' . self::option_name . '[force_websso]" id="force_websso1" value="1" type="radio" ', checked($options['force_websso'], 1), '>' . __('Benutzer können sich lokal und WebSSO anmelden.', self::textdomain) . '</label><br>';
+        echo '<label><input name="' . self::option_name . '[force_websso]" id="force_websso2" value="2" type="radio" ', checked($options['force_websso'], 2), '>' . __('Benutzer dürfen sich nur per WebSSO anmelden.', self::textdomain) . '</label><br>';
+        echo '</fieldset>';
+    }
+    
     public function simplesaml_settings_section() {
         echo '<h3 class="title">' . __('SimpleSAMLphp', self::textdomain) . '</h3>';
-        echo '<p>' . __('Einstellungen des Service Provider.', self::textdomain) . '</p>';
+        echo '<p>' . __('Einstellungen des Service Providers.', self::textdomain) . '</p>';
     }
 
     public function simplesaml_include_field() {
@@ -1078,6 +1121,8 @@ class FAU_WebSSO {
     public function options_validate($input) {
         $options = $this->get_options();
 
+        $input['force_websso'] = isset($input['force_websso']) && in_array(absint($input['force_websso']), array(0, 1, 2)) ? absint($input['force_websso']) : $options['force_websso'];
+        
         $input['simplesaml_include'] = !empty($input['simplesaml_include']) ? esc_attr(trim($input['simplesaml_include'])) : $options['simplesaml_include'];
         $input['simplesaml_auth_source'] = isset($input['simplesaml_auth_source']) ? esc_attr(trim($input['simplesaml_auth_source'])) : $options['simplesaml_auth_source'];
         $input['simplesaml_url_scheme'] = isset($input['simplesaml_url_scheme']) && in_array(trim($input['simplesaml_url_scheme']), array('http', 'https')) ? trim($input['simplesaml_url_scheme']) : $options['simplesaml_url_scheme'];
@@ -1368,6 +1413,20 @@ class FAU_WebSSO {
 
         $result = array('user_name' => $user_name, 'orig_username' => $orig_username, 'user_email' => $user_email, 'errors' => $errors);
         return apply_filters('wpmu_validate_user_signup', $result);
+    }
+ 
+    public function login_enqueue_scripts() {
+        wp_enqueue_style('fau-websso-login-form', plugins_url('/', __FILE__) . 'css/login-form.css', FALSE, self::version, 'all');
+    }
+    
+    public function login_form() {
+        $options = $this->get_options();
+        $login_url = add_query_arg('action', 'websso', site_url('/wp-login.php', $options['simplesaml_url_scheme']));
+        echo '<div class="message rrze-websso-login-form">';
+        echo '<p>' . __('Sie haben Ihr IdM-Benutzerkonto bereits aktiviert?', self::textdomain) . '</p>';
+        printf('<p>' . __('Bitte melden Sie sich mittels des folgenden Links an den %s-Webauftritt an.', self::textdomain) . '</p>', get_bloginfo('name'));
+        printf('<p><a href="%1$s">' . __('Anmelden an den %2$s-Webauftritt', self::textdomain) . '</a></p>', $login_url, get_bloginfo('name'));
+        echo '</div>';
     }
     
 }
