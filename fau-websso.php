@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 5.3.1
+ * Version: 5.3.2
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.3.1'; // Plugin-Version
+    const version = '5.3.2'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -99,7 +99,7 @@ class FAU_WebSSO {
             add_action('admin_menu', array($this, 'admin_menu'));
         }
         
-        add_filter('authenticate', array($this, 'authenticate'), 99, 3);
+        add_filter('authenticate', array($this, 'authenticate'), 30, 3);
 
         add_filter('login_url', array($this, 'login_url'), 10, 2);
 
