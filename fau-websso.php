@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAU-WebSSO
  * Description: Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version: 5.3.2
+ * Version: 5.3.3
  * Author: Rolf v. d. Forst
  * Author URI: http://blogs.fau.de/webworking/
  * Text Domain: fau-websso
@@ -32,7 +32,7 @@ register_activation_hook(__FILE__, array('FAU_WebSSO', 'activation'));
 
 class FAU_WebSSO {
 
-    const version = '5.3.2'; // Plugin-Version
+    const version = '5.3.3'; // Plugin-Version
     const option_name = '_fau_websso';
     const version_option_name = '_fau_websso_version';
     const option_group = 'fau-websso';
@@ -1002,11 +1002,11 @@ class FAU_WebSSO {
     }
 
     public function network_admin_menu() {
-        add_submenu_page('settings.php', __('FAU-WebSSO', self::textdomain), __('FAU-WebSSO', self::textdomain), 'manage_network_options', self::option_group, array($this, 'network_options_page'));
+        add_submenu_page('settings.php', __('WebSSO', self::textdomain), __('WebSSO', self::textdomain), 'manage_network_options', self::option_group, array($this, 'network_options_page'));
     }
 
     public function admin_menu() {
-        add_options_page(__('FAU-WebSSO', self::textdomain), __('FAU-WebSSO', self::textdomain), 'manage_options', self::option_group, array($this, 'options_page'));
+        add_options_page(__('WebSSO', self::textdomain), __('WebSSO', self::textdomain), 'manage_options', self::option_group, array($this, 'options_page'));
     }
 
     public function network_options_page() {
@@ -1025,7 +1025,7 @@ class FAU_WebSSO {
         ?>
         <div class="wrap">
         <?php screen_icon('options-general'); ?>
-            <h2><?php echo esc_html(__('Einstellungen &rsaquo; FAU-WebSSO', self::textdomain)); ?></h2>
+            <h2><?php echo esc_html(__('WebSSO', self::textdomain)); ?></h2>
             <?php if($this->simplesaml_autoload_error): ?>
             <div class="error">
                 <p><?php _e($this->simplesaml_autoload_error, self::textdomain); ?></p>
@@ -1046,7 +1046,7 @@ class FAU_WebSSO {
         ?>
         <div class="wrap">
         <?php screen_icon(); ?>
-            <h2><?php echo esc_html(__('Einstellungen &rsaquo; FAU-WebSSO', self::textdomain)); ?></h2>
+            <h2><?php echo esc_html(__('Einstellungen &rsaquo; WebSSO', self::textdomain)); ?></h2>
             <?php if($this->simplesaml_autoload_error): ?>
             <div class="error">
                 <p><?php _e($this->simplesaml_autoload_error, self::textdomain); ?></p>
@@ -1078,7 +1078,7 @@ class FAU_WebSSO {
     }
 
     public function websso_settings_section() {
-        echo '<h3 class="title">' . __('Single Sign-On', self::textdomain) . '</h3>';
+        echo '<h3 class="title">' . __('Web Single Sign-On', self::textdomain) . '</h3>';
         echo '<p>' . __('Allgemeine WebSSO-Einstellungen.', self::textdomain) . '</p>';
     }
 

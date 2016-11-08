@@ -6,7 +6,7 @@ Wordpress-Plugin: Anmeldung für zentral-vergebene Kennungen von Studierenden un
 WP-Einstellungsmenü
 ------------------- 
 
-Einstellungen › FAU-WebSSO
+Einstellungen › WebSSO
 
 Bereitstellung eines FAU-SP (Service Provider) mittels SimpleSAMLphp
 --------------------------------------------------------------------
@@ -28,7 +28,7 @@ Bereitstellung eines FAU-SP (Service Provider) mittels SimpleSAMLphp
 'idp' = 'https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'
 </pre>
 
-- 5. Alle IPs von der Datei /simplesamlphp/metadata/saml20-idp-remote.php entfernen und dann den folgenden Code hinzufügen:
+- 5. Alle IdPs von der Datei /simplesamlphp/metadata/saml20-idp-remote.php entfernen und dann den folgenden Code hinzufügen:
 
 <pre>
 $metadata['https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'] = array (
