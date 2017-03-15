@@ -11,7 +11,7 @@ Einstellungen › WebSSO
 Bereitstellung eines FAU-SP (Service Provider) mittels SimpleSAMLphp
 --------------------------------------------------------------------
 
-- 1. Letzte version des SimpleSAMLphp herunterladen. Siehe http://code.google.com/p/simplesamlphp/downloads/list
+- 1. Letzte version des SimpleSAMLphp herunterladen. Siehe https://simplesamlphp.org/download
 - 2. Das simplesamlphp-Verzeichnis kopieren und unter dem wp-content-Verzeichnis des WordPress einsetzen
 - 3. Folgenden Attribute in der Datei /simplesamlphp/config/config.php ändern/bearbeiten:
 
