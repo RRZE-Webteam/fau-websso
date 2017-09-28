@@ -86,7 +86,7 @@ class Main {
 
         add_filter('login_url', array($this, 'login_url'), 10, 2);
         
-        add_action('auth_cookie_valid', array($this, 'auth_cookie_valid_action'), 0);
+        //add_action('auth_cookie_valid', array($this, 'auth_cookie_valid_action'), 0);
         
         add_action('wp_logout', array($this, 'wp_logout_action'), 0);        
 
