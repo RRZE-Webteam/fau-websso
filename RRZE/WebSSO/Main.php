@@ -4,6 +4,8 @@ namespace RRZE\WebSSO;
 
 use RRZE\WebSSO\Core\Options;
 use RRZE\WebSSO\Core\Settings;
+use WP_User;
+use WP_Error;
 
 defined('ABSPATH') || exit;
 
@@ -127,7 +129,7 @@ class Main {
     
     public function authenticate($user, $user_login, $user_pass) {
         
-        if (is_a($user, '\WP_User')) {
+        if (is_a($user, 'WP_User')) {
             return $user;
         }
 
@@ -204,7 +206,7 @@ class Main {
                 update_user_meta($user_id, 'last_name', $last_name);
             }
             
-            $user = new \WP_User($userdata->ID);            
+            $user = new WP_User($userdata->ID);            
             update_user_meta($userdata->ID, 'edu_person_affiliation', $edu_person_affiliation);
             update_user_meta($userdata->ID, 'edu_person_entitlement', $edu_person_entitlement);
                       
@@ -241,7 +243,7 @@ class Main {
                 return $this->login_error(__("The user could not be added.", 'fau-websso'));
             }
             
-            $user = new \WP_User($user_id);
+            $user = new WP_User($user_id);
             update_user_meta($user_id, 'edu_person_affiliation', $edu_person_affiliation);
             update_user_meta($user_id, 'edu_person_entitlement', $edu_person_entitlement);
             
@@ -561,7 +563,7 @@ class Main {
                 $user_id = wpmu_create_user(esc_html(strtolower($user['username'])), $password, sanitize_email($user['email']));
 
                 if (!$user_id) {
-                    $add_user_errors = new \WP_Error('add_user_fail', __("The user could not be added.", 'fau-websso'));
+                    $add_user_errors = new WP_Error('add_user_fail', __("The user could not be added.", 'fau-websso'));
                     $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );                    
                 } else {
                     $this->new_user_notification($user_id);
@@ -974,7 +976,7 @@ class Main {
             $user->use_ssl = 1;
         }
 
-        $errors = new \WP_Error();
+        $errors = new WP_Error();
 
         if ($user->user_login == '') {
             $errors->add( 'user_login', __("<strong>ERROR</strong>: Please enter a username.", 'fau-websso'));
@@ -1099,7 +1101,7 @@ class Main {
     private function validate_user_signup($user_name, $user_email) {
         global $wpdb;
 
-        $errors = new \WP_Error();
+        $errors = new WP_Error();
 
         $orig_username = $user_name;
         $user_name = preg_replace('/\s+/', '', sanitize_user($user_name, TRUE));
@@ -1129,8 +1131,9 @@ class Main {
             $errors->add('user_email', __("Email Address or Username is not allowed.", 'fau-websso'));
         }
         
-        if (strlen($user_name) < 4)
+        if (strlen($user_name) < 4) {
             $errors->add('user_name', __("The username must be at least 4 characters.", 'fau-websso'));
+        }
 
         if (strlen($user_name) > 60) {
             $errors->add('user_name', __("Username may not be longer than 60 characters.", 'fau-websso'));
@@ -1164,27 +1167,7 @@ class Main {
             $errors->add('user_email', __("The email address is already used!", 'fau-websso'));
         }
 
-        $signup = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->signups WHERE user_login = %s", $user_name));
-        if ($signup != NULL) {
-            $registered_at = mysql2date('U', $signup->registered);
-            $now = current_time('timestamp', TRUE);
-            $diff = $now - $registered_at;
-            if ($signup->active || ($diff > 2 * DAY_IN_SECONDS)) {
-                $wpdb->delete($wpdb->signups, array('user_login' => $user_name));
-            } else {
-                $errors->add('user_name', __("That username is currently reserved but may be available in a couple of days.", 'fau-websso'));
-            }
-        }
-
-        $signup = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->signups WHERE user_email = %s", $user_email));
-        if ($signup != NULL) {
-            $diff = current_time('timestamp', TRUE) - mysql2date('U', $signup->registered);
-            if ($signup->active || ($diff > 2 * DAY_IN_SECONDS)) {
-                $wpdb->delete($wpdb->signups, array('user_email' => $user_email));
-            } else {
-                $errors->add('user_email', __("That email address is currently reserved but may be available in a couple of days.", 'fau-websso'));
-            }
-        }
+        $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->signups WHERE user_login = %s OR user_email = %s", $user_name, $user_email));
 
         $result = array('user_name' => $user_name, 'orig_username' => $orig_username, 'user_email' => $user_email, 'errors' => $errors);
         return apply_filters('wpmu_validate_user_signup', $result);
