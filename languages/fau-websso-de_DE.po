@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: FAU-WebSSO\n"
+"Project-Id-Version: FAU WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-28 14:51+0200\n"
+"POT-Creation-Date: 2017-10-05 10:18+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -79,31 +79,31 @@ msgstr "Relative Pfad ausgehend vom wp-content-Verzeichnis."
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
-#: ../RRZE/WebSSO/Main.php:119
+#: ../RRZE/WebSSO/Main.php:121
 msgid "The autoload file could not be included."
 msgstr "Die Autoload-Datei konnte nicht eingebunden werden."
 
-#: ../RRZE/WebSSO/Main.php:165
+#: ../RRZE/WebSSO/Main.php:167
 msgid "The IdM Username is not valid."
 msgstr "Die IdM-Kennung ist nicht gültig."
 
-#: ../RRZE/WebSSO/Main.php:171
+#: ../RRZE/WebSSO/Main.php:173
 msgid "The IdM Username entered is not valid."
 msgstr "Die eingegebene IdM-Kennung ist nicht gültig."
 
-#: ../RRZE/WebSSO/Main.php:200
+#: ../RRZE/WebSSO/Main.php:202
 msgid "The user data could not be updated."
 msgstr "Die Benutzerdaten konnten nicht aktualisiert werden."
 
-#: ../RRZE/WebSSO/Main.php:219
+#: ../RRZE/WebSSO/Main.php:221
 msgid "User registration is currently not allowed."
 msgstr "Zurzeit ist die Benutzerregistrierung nicht erlaubt."
 
-#: ../RRZE/WebSSO/Main.php:241 ../RRZE/WebSSO/Main.php:564
+#: ../RRZE/WebSSO/Main.php:243 ../RRZE/WebSSO/Main.php:566
 msgid "The user could not be added."
 msgstr "Der Benutzer konnte nicht registriert werden."
 
-#: ../RRZE/WebSSO/Main.php:313
+#: ../RRZE/WebSSO/Main.php:315
 #, php-format
 msgid ""
 "You attempted to access the &ldquo;%1$s&rdquo; dashboard, but you do not "
@@ -116,7 +116,7 @@ msgstr ""
 "Zugriff auf das &bdquo;%1$s&ldquo; Dashboard haben, dann wenden Sie sich "
 "bitte an den Ansprechpartner der Website."
 
-#: ../RRZE/WebSSO/Main.php:316
+#: ../RRZE/WebSSO/Main.php:318
 msgid ""
 "If you reached this screen by accident and meant to visit one of your own "
 "websites, here are some shortcuts to help you find your way."
@@ -125,32 +125,32 @@ msgstr ""
 "Ihrer eigenen Websites besuchen wollten, hier ein paar hoffentlich "
 "hilfreiche Links."
 
-#: ../RRZE/WebSSO/Main.php:318
+#: ../RRZE/WebSSO/Main.php:320
 msgid "Your Websites"
 msgstr "Ihre Websites"
 
-#: ../RRZE/WebSSO/Main.php:324
+#: ../RRZE/WebSSO/Main.php:326
 msgid "Visit the Dashboard"
 msgstr "Dashboard besuchen"
 
-#: ../RRZE/WebSSO/Main.php:325
+#: ../RRZE/WebSSO/Main.php:327
 msgid "View the website"
 msgstr "Webseite anzeigen"
 
-#: ../RRZE/WebSSO/Main.php:334 ../RRZE/WebSSO/Main.php:349
+#: ../RRZE/WebSSO/Main.php:336 ../RRZE/WebSSO/Main.php:351
 msgid "Single Sign-On Log Out"
 msgstr "Single Sign-On Abmeldung"
 
-#: ../RRZE/WebSSO/Main.php:342
+#: ../RRZE/WebSSO/Main.php:344
 msgid "ERROR:"
 msgstr "Fehler:"
 
-#: ../RRZE/WebSSO/Main.php:343
+#: ../RRZE/WebSSO/Main.php:345
 #, php-format
 msgid "Authentication failed on the &ldquo;%s&rdquo; website."
 msgstr "Die Anmeldung auf der Website &bdquo;%s&ldquo; ist fehlgeschlagen."
 
-#: ../RRZE/WebSSO/Main.php:344
+#: ../RRZE/WebSSO/Main.php:346
 msgid ""
 "However, if no login is possible, please contact the contact person of the "
 "website."
@@ -158,42 +158,47 @@ msgstr ""
 "Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an "
 "den Ansprechpartner der Website."
 
-#: ../RRZE/WebSSO/Main.php:369
+#: ../RRZE/WebSSO/Main.php:371
 #, php-format
 msgid "Contact persons for the &ldquo;%s&rdquo; website"
 msgstr "Ansprechpartner und Kontakt für die &bdquo;%s&ldquo; Website"
 
-#: ../RRZE/WebSSO/Main.php:374
+#: ../RRZE/WebSSO/Main.php:376
 msgid "Email Address:"
 msgstr "E-Mail-Adresse:"
 
-#: ../RRZE/WebSSO/Main.php:390
+#: ../RRZE/WebSSO/Main.php:392
 msgid "You have already activated your IdM Username?"
 msgstr "Sie haben Ihr IdM-Kennung bereits aktiviert?"
 
-#: ../RRZE/WebSSO/Main.php:391
+#: ../RRZE/WebSSO/Main.php:393
 #, php-format
 msgid "Please login to the website %s using the link below."
 msgstr ""
 "Bitte melden Sie sich mittels des folgenden Links an die &bdquo;%s&ldquo; "
 "Website an."
 
-#: ../RRZE/WebSSO/Main.php:429
+#: ../RRZE/WebSSO/Main.php:394
+#, php-format
+msgid "Login to the %2$s website"
+msgstr "Anmelden an die &bdquo;%2$s&ldquo; Website"
+
+#: ../RRZE/WebSSO/Main.php:431
 msgid "Disabled function."
 msgstr "Gebrauchsunfähige Funktion."
 
-#: ../RRZE/WebSSO/Main.php:438 ../RRZE/WebSSO/Main.php:444
-#: ../RRZE/WebSSO/Main.php:492 ../RRZE/WebSSO/Main.php:498
+#: ../RRZE/WebSSO/Main.php:440 ../RRZE/WebSSO/Main.php:446
+#: ../RRZE/WebSSO/Main.php:494 ../RRZE/WebSSO/Main.php:500
 msgid "Add New"
 msgstr "Neu hinzufügen"
 
-#: ../RRZE/WebSSO/Main.php:458
+#: ../RRZE/WebSSO/Main.php:460
 msgid "Add User will set up a new user account on the network."
 msgstr ""
 "Die Funktion &bdquo;Benutzer hinzufügen&ldquo; erstellt ein neues "
 "Benutzerkonto im Netzwerk."
 
-#: ../RRZE/WebSSO/Main.php:459
+#: ../RRZE/WebSSO/Main.php:461
 msgid ""
 "Users who are signed up to the network without a site are added as "
 "subscribers to the main website, giving them profile pages to manage their "
@@ -205,15 +210,15 @@ msgstr ""
 "die Möglichkeit, ihr Profil zu bearbeiten und zu sehen, in welchen Webseiten "
 "sie noch als Abonennten geführt sind."
 
-#: ../RRZE/WebSSO/Main.php:463 ../RRZE/WebSSO/Main.php:525
+#: ../RRZE/WebSSO/Main.php:465 ../RRZE/WebSSO/Main.php:527
 msgid "Overall view"
 msgstr "Übersicht"
 
-#: ../RRZE/WebSSO/Main.php:469 ../RRZE/WebSSO/Main.php:531
+#: ../RRZE/WebSSO/Main.php:471 ../RRZE/WebSSO/Main.php:533
 msgid "User Roles"
 msgstr "Benutzerrollen"
 
-#: ../RRZE/WebSSO/Main.php:470 ../RRZE/WebSSO/Main.php:532
+#: ../RRZE/WebSSO/Main.php:472 ../RRZE/WebSSO/Main.php:534
 msgid ""
 "Here is a basic overview of the different user roles and the permissions "
 "associated with each one:"
@@ -221,7 +226,7 @@ msgstr ""
 "Hier ist ein grober Überblick über die verschiedenen Benutzerrollen und die "
 "jeweils damit verknüpften Berechtigungen:"
 
-#: ../RRZE/WebSSO/Main.php:472 ../RRZE/WebSSO/Main.php:534
+#: ../RRZE/WebSSO/Main.php:474 ../RRZE/WebSSO/Main.php:536
 msgid ""
 "Subscribers can read comments/comment/receive newsletters, etc. but cannot "
 "create regular site content."
@@ -229,7 +234,7 @@ msgstr ""
 "Abonennten können nur Kommentare lesen und abgeben, aber keine eigenen "
 "Inhalte erstellen."
 
-#: ../RRZE/WebSSO/Main.php:473 ../RRZE/WebSSO/Main.php:535
+#: ../RRZE/WebSSO/Main.php:475 ../RRZE/WebSSO/Main.php:537
 msgid ""
 "Contributors can write and manage their posts but not publish posts or "
 "upload media files."
@@ -237,14 +242,14 @@ msgstr ""
 "Mitarbeiter können eigene Artikel schreiben und bearbeiten, sie jedoch nicht "
 "veröffentlichen. Auch dürfen sie keine Dateien hochladen."
 
-#: ../RRZE/WebSSO/Main.php:474 ../RRZE/WebSSO/Main.php:536
+#: ../RRZE/WebSSO/Main.php:476 ../RRZE/WebSSO/Main.php:538
 msgid ""
 "Authors can publish and manage their own posts, and are able to upload files."
 msgstr ""
 "Autoren können ihre eigenen Artikel veröffentlichen und verwalten sowie "
 "Dateien hochladen."
 
-#: ../RRZE/WebSSO/Main.php:475 ../RRZE/WebSSO/Main.php:537
+#: ../RRZE/WebSSO/Main.php:477 ../RRZE/WebSSO/Main.php:539
 msgid ""
 "Editors can publish posts, manage posts as well as manage other people's "
 "posts, etc."
@@ -253,11 +258,11 @@ msgstr ""
 "Artikel, Seiten, usw. von anderen Benutzern verwalten (bearbeiten, löschen, "
 "veröffentlichen)."
 
-#: ../RRZE/WebSSO/Main.php:476 ../RRZE/WebSSO/Main.php:538
+#: ../RRZE/WebSSO/Main.php:478 ../RRZE/WebSSO/Main.php:540
 msgid "Administrators have access to all the administration features."
 msgstr "Administratoren haben die komplette Macht und sehen alle Optionen."
 
-#: ../RRZE/WebSSO/Main.php:512
+#: ../RRZE/WebSSO/Main.php:514
 msgid ""
 "To add a new user to your website, fill out the form on this page, and click "
 "below to add a new user."
@@ -266,7 +271,7 @@ msgstr ""
 "Formular auf dieser Seite aus, und klicken Sie unten auf Neuen Benutzer "
 "hinzufügen."
 
-#: ../RRZE/WebSSO/Main.php:515
+#: ../RRZE/WebSSO/Main.php:517
 msgid ""
 "Because this is a multisite installation, you may add accounts that already "
 "exist on the Network by specifying a username or email, and defining a role. "
@@ -281,7 +286,7 @@ msgstr ""
 "können dann über Netzwerkverwaltung &gt; Benutzer das Profil des Benutzers "
 "verändern."
 
-#: ../RRZE/WebSSO/Main.php:516
+#: ../RRZE/WebSSO/Main.php:518
 msgid ""
 "New users will receive an email letting them know they've been added as a "
 "user for your site. Check the box if you don't want the user receive a "
@@ -292,7 +297,7 @@ msgstr ""
 "die Checkbox <em>Keine E-Mail versenden</em> markieren, so dass die E-Mail "
 "nicht versendet wird."
 
-#: ../RRZE/WebSSO/Main.php:518
+#: ../RRZE/WebSSO/Main.php:520
 msgid ""
 "New users will receive an email letting them know they've been added as a "
 "user for your website."
@@ -300,7 +305,7 @@ msgstr ""
 "Neue Benutzer erhalten eine E-Mail, in welcher ihnen mitgeteilt wird, dass "
 "sie als Benutzer dieser Website hinzugefügt wurden."
 
-#: ../RRZE/WebSSO/Main.php:521
+#: ../RRZE/WebSSO/Main.php:523
 msgid ""
 "Remember to click the Add New User button at the bottom of this screen when "
 "you are finished."
@@ -308,30 +313,30 @@ msgstr ""
 "Vergessen Sie nicht, unten auf dieser Seite auf Neuen Benutzer hinzufügen zu "
 "klicken, wenn Sie fertig sind."
 
-#: ../RRZE/WebSSO/Main.php:550
+#: ../RRZE/WebSSO/Main.php:552
 msgid "Cannot create an empty user."
 msgstr "Es kann kein leerer Benutzer angelegt werden."
 
-#: ../RRZE/WebSSO/Main.php:674 ../RRZE/WebSSO/Main.php:761
+#: ../RRZE/WebSSO/Main.php:676 ../RRZE/WebSSO/Main.php:763
 msgid "User added."
 msgstr "Benutzer hinzugefügt."
 
-#: ../RRZE/WebSSO/Main.php:679 ../RRZE/WebSSO/Main.php:713
-#: ../RRZE/WebSSO/Main.php:720 ../RRZE/WebSSO/Main.php:769
-#: ../RRZE/WebSSO/Main.php:855 ../RRZE/WebSSO/Main.php:900
+#: ../RRZE/WebSSO/Main.php:681 ../RRZE/WebSSO/Main.php:715
+#: ../RRZE/WebSSO/Main.php:722 ../RRZE/WebSSO/Main.php:771
+#: ../RRZE/WebSSO/Main.php:857 ../RRZE/WebSSO/Main.php:902
 msgid "Add New User"
 msgstr "Neuen Benutzer hinzufügen"
 
-#: ../RRZE/WebSSO/Main.php:704 ../RRZE/WebSSO/Main.php:873
+#: ../RRZE/WebSSO/Main.php:706 ../RRZE/WebSSO/Main.php:875
 msgid "IdM Username"
 msgstr "IdM-Kennung"
 
-#: ../RRZE/WebSSO/Main.php:708 ../RRZE/WebSSO/Main.php:817
-#: ../RRZE/WebSSO/Main.php:877
+#: ../RRZE/WebSSO/Main.php:710 ../RRZE/WebSSO/Main.php:819
+#: ../RRZE/WebSSO/Main.php:879
 msgid "Email Address"
 msgstr "E-Mail-Adresse"
 
-#: ../RRZE/WebSSO/Main.php:739
+#: ../RRZE/WebSSO/Main.php:741
 msgid ""
 "The user account has been succesfully created. An invitation email has been "
 "sent to the user."
@@ -339,7 +344,7 @@ msgstr ""
 "Das Benutzerkonto wurde erfolgreich angelegt. Die Einladungs-E-Mail wurde "
 "zum neuen Benutzer versandt."
 
-#: ../RRZE/WebSSO/Main.php:742
+#: ../RRZE/WebSSO/Main.php:744
 msgid ""
 "The user has been added to your website. An invitation email has been sent "
 "to the user."
@@ -347,28 +352,28 @@ msgstr ""
 "Der Benutzer wurde zu Ihrer Website hinzugefügt. Die Einladungs-E-Mail wurde "
 "zum Benutzer versandt."
 
-#: ../RRZE/WebSSO/Main.php:745
+#: ../RRZE/WebSSO/Main.php:747
 msgid "The user has been added to your website."
 msgstr "Der Benutzer wurde zu Ihrer Website hinzugefügt."
 
-#: ../RRZE/WebSSO/Main.php:748
+#: ../RRZE/WebSSO/Main.php:750
 msgid "This user is already a member of this website."
 msgstr "Dieser Benutzer ist bereits ein Mitglied dieser Website."
 
-#: ../RRZE/WebSSO/Main.php:751
+#: ../RRZE/WebSSO/Main.php:753
 msgid "The requested user does not exist."
 msgstr "Der angeforderte Benutzer existiert nicht."
 
-#: ../RRZE/WebSSO/Main.php:754 ../RRZE/WebSSO/Main.php:1148
+#: ../RRZE/WebSSO/Main.php:756 ../RRZE/WebSSO/Main.php:1151
 msgid "Please enter a valid email address."
 msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
 
-#: ../RRZE/WebSSO/Main.php:771 ../RRZE/WebSSO/Main.php:813
-#: ../RRZE/WebSSO/Main.php:848
+#: ../RRZE/WebSSO/Main.php:773 ../RRZE/WebSSO/Main.php:815
+#: ../RRZE/WebSSO/Main.php:850
 msgid "Add Existing User"
 msgstr "Bestehenden Benutzer hinzufügen"
 
-#: ../RRZE/WebSSO/Main.php:816
+#: ../RRZE/WebSSO/Main.php:818
 msgid ""
 "Enter the email address of an existing user on this network to invite them "
 "to this site. That person will be sent an email asking them to confirm the "
@@ -378,7 +383,7 @@ msgstr ""
 "ein, um ihn zu dieser Website einzuladen. Dieser Person wird eine Mail "
 "gesendet um die Einladung zu bestätigen."
 
-#: ../RRZE/WebSSO/Main.php:820
+#: ../RRZE/WebSSO/Main.php:822
 msgid ""
 "Enter the email address or username of an existing user on this network to "
 "invite them to this site. That person will be sent an email asking them to "
@@ -388,45 +393,45 @@ msgstr ""
 "Nutzers dieses Netzwerkes ein um ihn zu dieser Website einzuladen. Dieser "
 "Person wird eine Mail gesendet um die Einladung zu bestätigen."
 
-#: ../RRZE/WebSSO/Main.php:821
+#: ../RRZE/WebSSO/Main.php:823
 msgid "Email Address or Username"
 msgstr "E-Mail-Adresse oder Benutzername"
 
-#: ../RRZE/WebSSO/Main.php:835 ../RRZE/WebSSO/Main.php:881
+#: ../RRZE/WebSSO/Main.php:837 ../RRZE/WebSSO/Main.php:883
 msgid "Role"
 msgstr "Rolle"
 
-#: ../RRZE/WebSSO/Main.php:843 ../RRZE/WebSSO/Main.php:894
+#: ../RRZE/WebSSO/Main.php:845 ../RRZE/WebSSO/Main.php:896
 msgid "Skip Confirmation Email"
 msgstr "Keine Bestätigungs-E-Mail"
 
-#: ../RRZE/WebSSO/Main.php:844 ../RRZE/WebSSO/Main.php:895
+#: ../RRZE/WebSSO/Main.php:846 ../RRZE/WebSSO/Main.php:897
 msgid "Add the user without sending an email that requires their confirmation."
 msgstr ""
 "Benutzer hinzufügen ohne eine E-Mail zu versenden, die bestätigt werden muss."
 
-#: ../RRZE/WebSSO/Main.php:858
+#: ../RRZE/WebSSO/Main.php:860
 msgid "Create a brand new user and add them to this website."
 msgstr ""
 "Legen Sie einen neuen Benutzer an und fügen Sie ihn dieser Website hinzu."
 
-#: ../RRZE/WebSSO/Main.php:873 ../RRZE/WebSSO/Main.php:877
+#: ../RRZE/WebSSO/Main.php:875 ../RRZE/WebSSO/Main.php:879
 msgid "(required)"
 msgstr "(erforderlich)"
 
-#: ../RRZE/WebSSO/Main.php:909
+#: ../RRZE/WebSSO/Main.php:911
 msgid "Attributes"
 msgstr "Attribute"
 
-#: ../RRZE/WebSSO/Main.php:956
+#: ../RRZE/WebSSO/Main.php:958
 msgid "You can't give users that role."
 msgstr "Sie können keinem Benutzer diese Rolle geben."
 
-#: ../RRZE/WebSSO/Main.php:980
+#: ../RRZE/WebSSO/Main.php:982
 msgid "<strong>ERROR</strong>: Please enter a username."
 msgstr "<strong>Fehler:</strong> Bitte geben Sie einen Benutzernamen ein."
 
-#: ../RRZE/WebSSO/Main.php:984
+#: ../RRZE/WebSSO/Main.php:986
 msgid ""
 "<strong>ERROR</strong>: This username is invalid because it uses illegal "
 "characters. Please enter a valid username."
@@ -435,7 +440,7 @@ msgstr ""
 "er ungültige Zeichen enthält. Bitte geben Sie einen gültigen Benutzernamen "
 "an."
 
-#: ../RRZE/WebSSO/Main.php:988
+#: ../RRZE/WebSSO/Main.php:990
 msgid ""
 "<strong>ERROR</strong>: This username is already registered. Please choose "
 "another one."
@@ -443,15 +448,15 @@ msgstr ""
 "<strong>Fehler:</strong>: Dieser Benutzername ist bereits registriert. Bitte "
 "wähle Sie einen anderen."
 
-#: ../RRZE/WebSSO/Main.php:992
+#: ../RRZE/WebSSO/Main.php:994
 msgid "<strong>ERROR</strong>: Please enter an email address."
 msgstr "<strong>Fehler:</strong> Bitte eine E-Mail-Adresse eingeben."
 
-#: ../RRZE/WebSSO/Main.php:994
+#: ../RRZE/WebSSO/Main.php:996
 msgid "<strong>ERROR</strong>: The email address isn't correct."
 msgstr "<strong>Fehler:</strong>: Die E-Mail-Adresse ist ungültig."
 
-#: ../RRZE/WebSSO/Main.php:996
+#: ../RRZE/WebSSO/Main.php:998
 msgid ""
 "<strong>ERROR</strong>: This email address is already registered, please "
 "choose another one."
@@ -459,7 +464,7 @@ msgstr ""
 "<strong>Fehler:</strong>: Diese E-Mail-Adresse wurde bereits registriert, "
 "bitte wählen Sie eine andere."
 
-#: ../RRZE/WebSSO/Main.php:1016
+#: ../RRZE/WebSSO/Main.php:1018
 #, php-format
 msgid ""
 "Hi,%5$s%5$sYou've been invited to join '%1$s' at %2$s with the role of %3$s."
@@ -469,12 +474,12 @@ msgstr ""
 "%5$sBitte melden Sie sich mittels des folgenden Links an die Website %1$s an:"
 "%5$s %4$s"
 
-#: ../RRZE/WebSSO/Main.php:1019
+#: ../RRZE/WebSSO/Main.php:1021
 #, php-format
 msgid "[%s] You've been invited"
 msgstr "[%s] Sie wurden eingeladen"
 
-#: ../RRZE/WebSSO/Main.php:1027 ../RRZE/WebSSO/Main.php:1036
+#: ../RRZE/WebSSO/Main.php:1029 ../RRZE/WebSSO/Main.php:1038
 #, php-format
 msgid ""
 "Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using "
@@ -485,69 +490,54 @@ msgstr ""
 "sich mittels des folgenden Links an die Website %2$s an:%4$s%3$s%4$s%4$sViel "
 "Spaß!%4$s%4$s—Das Team von %2$s"
 
-#: ../RRZE/WebSSO/Main.php:1030 ../RRZE/WebSSO/Main.php:1039
+#: ../RRZE/WebSSO/Main.php:1032 ../RRZE/WebSSO/Main.php:1041
 #, php-format
 msgid "[%s] Your user account"
 msgstr "[%s] Ihr Benutzerkonto"
 
-#: ../RRZE/WebSSO/Main.php:1108
+#: ../RRZE/WebSSO/Main.php:1110
 msgid "Only lowercase letters (a-z) and numbers are allowed."
 msgstr "Es sind nur Kleinbuchstaben und Ziffern erlaubt."
 
-#: ../RRZE/WebSSO/Main.php:1115
+#: ../RRZE/WebSSO/Main.php:1117
 msgid "Please enter a username."
 msgstr "Bitte geben Sie eine Benutzername ein."
 
-#: ../RRZE/WebSSO/Main.php:1125
+#: ../RRZE/WebSSO/Main.php:1127
 msgid "Username is not allowed."
 msgstr "Der Benutzername ist nicht erlaubt."
 
-#: ../RRZE/WebSSO/Main.php:1129
+#: ../RRZE/WebSSO/Main.php:1131
 msgid "Email Address or Username is not allowed."
 msgstr "Die E-Mail-Adresse ist nicht erlaubt."
 
-#: ../RRZE/WebSSO/Main.php:1133
+#: ../RRZE/WebSSO/Main.php:1135
 msgid "The username must be at least 4 characters."
 msgstr "Der Benutzername muss aus mindestens 4 Zeichen bestehen."
 
-#: ../RRZE/WebSSO/Main.php:1136
+#: ../RRZE/WebSSO/Main.php:1139
 msgid "Username may not be longer than 60 characters."
 msgstr "Der Benutzername darf nicht länger als 60 Zeichen sein."
 
-#: ../RRZE/WebSSO/Main.php:1140
+#: ../RRZE/WebSSO/Main.php:1143
 msgid "Usernames may not contain the underscore character."
 msgstr "Benutzernamen dürfen keinen Unterstrich enthalten."
 
-#: ../RRZE/WebSSO/Main.php:1144
+#: ../RRZE/WebSSO/Main.php:1147
 msgid "Usernames must have letters too!"
 msgstr "Benutzernamen müssen auch Buchstaben enthalten!"
 
-#: ../RRZE/WebSSO/Main.php:1155
+#: ../RRZE/WebSSO/Main.php:1158
 msgid "That email address is not allowed!"
 msgstr "Diese E-Mail-Adresse ist nicht erlaubt!"
 
-#: ../RRZE/WebSSO/Main.php:1160
+#: ../RRZE/WebSSO/Main.php:1163
 msgid "Username already exists!"
 msgstr "Der Benutzername existiert bereits!"
 
-#: ../RRZE/WebSSO/Main.php:1164
+#: ../RRZE/WebSSO/Main.php:1167
 msgid "The email address is already used!"
 msgstr "Die E-Mail-Adresse wird bereits verwendet!"
-
-#: ../RRZE/WebSSO/Main.php:1175
-msgid ""
-"That username is currently reserved but may be available in a couple of days."
-msgstr ""
-"Dieser Benutzername ist derzeit reserviert, ist aber möglicherweise in den "
-"nächsten Tagen verfügbar."
-
-#: ../RRZE/WebSSO/Main.php:1185
-msgid ""
-"That email address is currently reserved but may be available in a couple of "
-"days."
-msgstr ""
-"Diese E-Mail-Adresse ist derzeit reserviert, ist aber möglicherweise in den "
-"nächsten Tagen verfügbar."
 
 #: ../fau-websso.php:58
 #, php-format
@@ -568,6 +558,20 @@ msgstr ""
 "auf die Wordpress-Version %s."
 
 #~ msgid ""
+#~ "That username is currently reserved but may be available in a couple of "
+#~ "days."
+#~ msgstr ""
+#~ "Dieser Benutzername ist derzeit reserviert, ist aber möglicherweise in "
+#~ "den nächsten Tagen verfügbar."
+
+#~ msgid ""
+#~ "That email address is currently reserved but may be available in a couple "
+#~ "of days."
+#~ msgstr ""
+#~ "Diese E-Mail-Adresse ist derzeit reserviert, ist aber möglicherweise in "
+#~ "den nächsten Tagen verfügbar."
+
+#~ msgid ""
 #~ "Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in "
 #~ "using the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4s"
 #~ "%4s--The Team @ %2$s"
@@ -575,9 +579,6 @@ msgstr ""
 #~ "Hallo,%4$s%4$sIhr Benutzerkonto %1$s wurde angelegt.%4$sBitte melden Sie "
 #~ "sich mittels des folgenden Links an die Website %2$s an:%4$s%3$s%4$s"
 #~ "%4$sViel Spaß!%4$s%4$s—Das Team von %2$s"
-
-#~ msgid "Login to the %2$s website"
-#~ msgstr "Anmelden an die &bdquo;%2$s&ldquo; Website"
 
 #~ msgid ""
 #~ "A welcome email with the sign in link will be sent to the specified email "
