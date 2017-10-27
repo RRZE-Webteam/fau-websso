@@ -81,6 +81,7 @@ Erforderliche Attribute:
 	displayname
 	uid
 	mail
+        eduPersonAffiliation
 </pre>
 
 Hinweis: Bitte überprüfen Sie, dass die jeweiligen URLs keine Fehlermeldungen im Browser ausgeben.
