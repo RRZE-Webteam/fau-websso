@@ -265,6 +265,9 @@ class Main {
             }
         }
         
+        $sso_attributes = !empty($_attributes) ? $_attributes : '';
+        update_user_meta($user->ID, 'sso_attributes', $sso_attributes);
+        
         return $user;
     }
 
