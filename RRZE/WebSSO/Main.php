@@ -84,11 +84,11 @@ class Main {
             $this->registration = TRUE;
         }
         
-        add_filter('authenticate', array($this, 'authenticate'), 30, 3);
-
-        add_filter('login_url', array($this, 'login_url'), 10, 2);
+        add_filter('authenticate', array($this, 'authenticate'), 10, 3);
+        remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
+        remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
         
-        //add_action('auth_cookie_valid', array($this, 'auth_cookie_valid_action'), 0);
+        add_filter('login_url', array($this, 'login_url'), 10, 2);
         
         add_action('wp_logout', array($this, 'wp_logout_action'), 0);        
 
@@ -128,12 +128,9 @@ class Main {
     }
     
     public function authenticate($user, $user_login, $user_pass) {
-        
         if (is_a($user, 'WP_User')) {
             return $user;
         }
-
-        remove_action('authenticate', 'wp_authenticate_username_password', 20);
 
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
         
@@ -144,7 +141,7 @@ class Main {
         }
         
         if($this->simplesaml_autoload_error) {
-            return $this->login_error($this->simplesaml_autoload_error);
+            $this->login_die($this->simplesaml_autoload_error);
         }
         
         if (!$this->simplesaml_auth_simple->isAuthenticated()) {
@@ -159,23 +156,24 @@ class Main {
             $attributes['uid'] = isset($_attributes['urn:mace:dir:attribute-def:uid'][0]) ? $_attributes['urn:mace:dir:attribute-def:uid'][0] : '';
             $attributes['mail'] = isset($_attributes['urn:mace:dir:attribute-def:mail'][0]) ? $_attributes['urn:mace:dir:attribute-def:mail'][0] : '';
             $attributes['displayName'] = isset($_attributes['urn:mace:dir:attribute-def:displayName'][0]) ? $_attributes['urn:mace:dir:attribute-def:displayName'][0] : '';            
-            $attributes['eduPersonAffiliation'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonAffiliation'][0]) ? $_attributes['urn:mace:dir:attribute-def:eduPersonAffiliation'][0] : '';
-            $attributes['eduPersonEntitlement'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'][0]) ? $_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'][0] : '';
+            $attributes['eduPersonAffiliation'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonAffiliation']) ? $_attributes['urn:mace:dir:attribute-def:eduPersonAffiliation'] : '';
+            $attributes['eduPersonEntitlement'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement']) ? $_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'] : '';
         }
 
         if (empty($attributes['uid'])) {
-            return $this->login_error(__("The IdM Username is not valid.", 'fau-websso', FALSE));
+            $this->login_die(__("The IdM Username is not valid.", 'fau-websso', FALSE));
         }
 
         $user_login = $attributes['uid'];
 
         if ($user_login != substr(sanitize_user($user_login, TRUE), 0, 60)) {
-            return $this->login_error(__("The IdM Username entered is not valid.", 'fau-websso'));
+            $this->login_die(__("The IdM Username entered is not valid.", 'fau-websso'));
         }
         
         $user_email = is_email($attributes['mail']) ? strtolower($attributes['mail']) : sprintf('%s@fau.de', base_convert(uniqid('', FALSE), 16, 36));
+        
         $display_name = $attributes['displayName'];
-        $display_name_array = explode(' ', $attributes['displayName']);
+        $display_name_array = explode(' ', $display_name);
         $first_name = array_shift($display_name_array);
         $last_name = implode(' ', $display_name_array);
 
@@ -199,7 +197,7 @@ class Main {
                 );
 
                 if (is_wp_error($user_id)) {
-                    return $this->login_error(__("The user data could not be updated.", 'fau-websso'));
+                    $this->login_die(__("The user data could not be updated.", 'fau-websso'));
                 }
                 
                 update_user_meta($user_id, 'first_name', $first_name);
@@ -218,7 +216,7 @@ class Main {
             
         } else {
             if (!$this->registration) {
-                return $this->login_error(__("User registration is currently not allowed.", 'fau-websso'));
+                $this->login_die(__("User registration is currently not allowed.", 'fau-websso'));
             }
                         
             if (is_multisite()) {
@@ -240,7 +238,7 @@ class Main {
                 if (is_multisite()) {
                     restore_current_blog();
                 }                
-                return $this->login_error(__("The user could not be added.", 'fau-websso'));
+                $this->login_die(__("The user could not be added.", 'fau-websso'));
             }
             
             $user = new WP_User($user_id);
@@ -261,7 +259,7 @@ class Main {
         if (is_multisite()) {
             $blogs = get_blogs_of_user($user->ID);
             if (!$this->has_dashboard_access($user->ID, $blogs)) {
-                $this->access_denied($blogs);
+                $this->access_die($blogs);
             }
         }
         
@@ -279,16 +277,6 @@ class Main {
         }
         
         return $login_url;
-    }
-
-    public function auth_cookie_valid_action($cookie_elements) {
-        if ($this->options->force_websso == 1 && !get_option('websso_action')) {
-            return;
-        }
-        
-        if (!$this->simplesaml_auth_simple->isAuthenticated()) {
-            wp_logout();
-        }
     }
     
     public function wp_logout_action() {
@@ -311,7 +299,7 @@ class Main {
         return FALSE;
     }
     
-    private function access_denied($blogs) {
+    private function access_die($blogs) {
         
         $blog_name = get_bloginfo('name');
 
@@ -341,7 +329,7 @@ class Main {
         wp_die($output, 403);
     }
     
-    private function login_error($message, $simplesaml_authenticated = TRUE) {
+    private function login_die($message, $simplesaml_authenticated = TRUE) {
         $output = '';
 
         $output .= sprintf('<p><strong>%1$s</strong> %2$s</p>', __("ERROR:", 'fau-websso'), $message);
@@ -925,15 +913,10 @@ class Main {
 
         $edu_person_affiliation = get_user_meta($user_id, 'edu_person_affiliation', TRUE);
         if ($edu_person_affiliation) {
-            $attributes[] = $edu_person_affiliation;
+            $attributes[] = is_array($edu_person_affiliation) ? implode('<br/>', $edu_person_affiliation) : $edu_person_affiliation;
         }
         
-        $edu_person_entitlement = get_user_meta($user_id, 'edu_person_entitlement', TRUE);
-        if ($edu_person_entitlement) {
-            $attributes[] = $edu_person_entitlement;
-        }
-        
-        return implode(', ', $attributes);
+        return implode('<br/>', $attributes);
     }
 
     public function wpmu_new_user() {

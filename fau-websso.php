@@ -4,7 +4,7 @@
  * Plugin Name:     FAU WebSSO
  * Plugin URI:      https://github.com/RRZE-Webteam/fau-websso
  * Description:     Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version:         6.0.3
+ * Version:         6.0.4
  * Author:          RRZE-Webteam
  * Author URI:      https://blogs.fau.de/webworking/
  * License:         GNU General Public License v2
@@ -21,7 +21,7 @@ use RRZE\WebSSO\Main;
 defined('ABSPATH') || exit;
 
 const RRZE_PHP_VERSION = '5.5';
-const RRZE_WP_VERSION = '4.8';
+const RRZE_WP_VERSION = '4.9';
 
 register_activation_hook(__FILE__, 'RRZE\WebSSO\activation');
 
