@@ -130,9 +130,9 @@ class Main {
         exit;
     }
     
-    public function wp_logout_action() {        
+    public function wp_logout_action() {
+        wp_destroy_other_sessions();
         if (!$this->simplesaml_autoload_error && $this->simplesaml_auth_simple->isAuthenticated()) {
-            wp_destroy_other_sessions();
             $this->simplesaml_auth_simple->logout(site_url('', $this->options->simplesaml_url_scheme));
         }
     }
