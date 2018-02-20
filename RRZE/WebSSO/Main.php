@@ -36,6 +36,10 @@ class Main {
                 
         $this->settings = new Settings($this);
         
+        if(!$this->options->force_websso) {
+            return;
+        }
+        
         $this->simplesaml_autoload();
         $this->set_current_user_can();
         
@@ -71,7 +75,6 @@ class Main {
                 break;
             default:
                 return;
-                break;
         }
         
         add_filter('is_fau_websso_active', '__return_true');
@@ -84,24 +87,24 @@ class Main {
             $this->registration = TRUE;
         }
         
+        if (!$this->registration) {
+            add_action('before_signup_header', array($this, 'before_signup_header'));
+        }
+        
         add_filter('authenticate', array($this, 'authenticate'), 10, 3);
         remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
         remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
         
         add_filter('login_url', array($this, 'login_url'), 10, 2);
         
-        add_action('wp_logout', array($this, 'wp_logout_action'), 0);        
+        add_action('wp_logout', array($this, 'wp_logout_action'));
 
         add_filter('wp_auth_check_same_domain', '__return_false');
 
         add_filter('manage_users_columns', array($this, 'users_attributes'));
         add_action('manage_users_custom_column', array($this, 'users_attributes_columns'), 10, 3);
         add_filter('wpmu_users_columns', array($this, 'users_attributes'));
-        add_action('wpmu_users_custom_column', array($this, 'users_attributes_columns'), 10, 3);
-        
-        if (!$this->registration) {
-            add_action('before_signup_header', array($this, 'before_signup_header'));
-        }
+        add_action('wpmu_users_custom_column', array($this, 'users_attributes_columns'), 10, 3);        
     }
 
     private function set_current_user_can() {
@@ -127,6 +130,13 @@ class Main {
         exit;
     }
     
+    public function wp_logout_action() {        
+        if (!$this->simplesaml_autoload_error && $this->simplesaml_auth_simple->isAuthenticated()) {
+            wp_destroy_other_sessions();
+            $this->simplesaml_auth_simple->logout(site_url('', $this->options->simplesaml_url_scheme));
+        }
+    }
+    
     public function authenticate($user, $user_login, $user_pass) {
         if (is_a($user, 'WP_User')) {
             return $user;
@@ -136,8 +146,6 @@ class Main {
         
         if ($this->options->force_websso == 1 && $action != 'websso') {
             return wp_authenticate_username_password(NULL, $user_login, $user_pass);
-        } elseif ($this->options->force_websso == 1 && $action == 'websso') {
-            update_option('websso_action', 1);
         }
         
         if($this->simplesaml_autoload_error) {
@@ -268,7 +276,7 @@ class Main {
         
         return $user;
     }
-
+    
     public function login_url($login_url, $redirect) {
         $login_url = site_url('wp-login.php', 'login');
 
@@ -278,15 +286,7 @@ class Main {
         
         return $login_url;
     }
-    
-    public function wp_logout_action() {
-        delete_option('websso_action');
         
-        if ($this->simplesaml_auth_simple->isAuthenticated()) {
-            $this->simplesaml_auth_simple->logout(site_url('', $this->options->simplesaml_url_scheme));
-        }
-    }
-    
     private function has_dashboard_access($user_id, $blogs) {
         if (is_super_admin($user_id)) {
             return TRUE;
@@ -574,8 +574,9 @@ class Main {
                 if (is_super_admin()) {
                     $user_details = get_user_by('login', $user_email);
                 } else {
-                    wp_redirect(add_query_arg(array('page' => 'usernew', 'update' => 'enter_email'), 'users.php'));
-                    exit;
+                    //wp_redirect(add_query_arg(array('page' => 'usernew', 'update' => 'enter_email'), 'users.php'));
+                    //exit;
+                    $user_details = get_user_by('login', $user_email);
                 }
             }
 
@@ -806,9 +807,12 @@ class Main {
                 echo '<h3 id="add-existing-user">' . __("Add Existing User", 'fau-websso') . '</h3>';
             }
             if (!is_super_admin()) {
-                echo '<p>' . __("Enter the email address of an existing user on this network to invite them to this site. That person will be sent an email asking them to confirm the invite.", 'fau-websso') . '</p>';
-                $label = __("Email Address", 'fau-websso');
-                $type  = 'email';
+                //echo '<p>' . __("Enter the email address of an existing user on this network to invite them to this site. That person will be sent an email asking them to confirm the invite.", 'fau-websso') . '</p>';
+                //$label = __("Email Address", 'fau-websso');
+                //$type  = 'email';                
+                echo '<p>' . __("Enter the email address or username of an existing user on this network to invite them to this site. That person will be sent an email asking them to confirm the invite.", 'fau-websso') . '</p>';
+                $label = __("Email Address or Username", 'fau-websso');
+                $type  = 'text';
             } else {
                 echo '<p>' . __("Enter the email address or username of an existing user on this network to invite them to this site. That person will be sent an email asking them to confirm the invite.", 'fau-websso') . '</p>';
                 $label = __("Email Address or Username", 'fau-websso');
