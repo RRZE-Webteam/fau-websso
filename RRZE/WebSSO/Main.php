@@ -223,7 +223,11 @@ class Main {
             }
             
         } else {
-            if (!$this->registration) {
+            // Do not allow registration if these plugins are active
+            $rrze_auth = is_plugin_active('rrze-auth/rrze-auth.php');
+            $rrze_private_site = is_plugin_active('rrze-private-site/rrze-private-site.php');
+            
+            if (!$this->registration || $rrze_auth || $rrze_private_site) {
                 $this->login_die(__("User registration is currently not allowed.", 'fau-websso'));
             }
                         
