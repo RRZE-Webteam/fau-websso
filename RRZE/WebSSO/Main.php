@@ -87,6 +87,8 @@ class Main {
             $this->registration = TRUE;
         }
         
+        $this->registration = apply_filters('fau_websso_registration', $this->registration);
+        
         if (!$this->registration) {
             add_action('before_signup_header', array($this, 'before_signup_header'));
         }
@@ -223,11 +225,7 @@ class Main {
             }
             
         } else {
-            // Do not allow registration if these plugins are active
-            $rrze_auth = is_plugin_active('rrze-auth/rrze-auth.php');
-            $rrze_private_site = is_plugin_active('rrze-private-site/rrze-private-site.php');
-            
-            if (!$this->registration || $rrze_auth || $rrze_private_site) {
+            if (!$this->registration) {
                 $this->login_die(__("User registration is currently not allowed.", 'fau-websso'));
             }
                         
