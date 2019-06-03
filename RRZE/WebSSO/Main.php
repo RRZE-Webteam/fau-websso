@@ -10,43 +10,43 @@ use WP_Error;
 defined('ABSPATH') || exit;
 
 class Main {
-    
+
     public $plugin_basename;
 
     public $ops;
     public $options;
     public $option_name;
-    
+
     public $settings;
-    
+
     public $simplesaml_auth_simple;
-    
+
     public $simplesaml_autoload_error = FALSE;
-    
+
     public $current_user_can_both;
-    
-    public $registration;    
-    
+
+    public $registration;
+
     public function __construct($plugin_basename = NULL) {
         $this->plugin_basename = $plugin_basename;
 
         $this->ops = new Options();
         $this->options = $this->ops->get_options();
         $this->option_name = $this->ops->get_option_name();
-                
+
         $this->settings = new Settings($this);
-        
+
         if(!$this->options->force_websso) {
             return;
         }
-        
+
         $this->simplesaml_autoload();
         $this->set_current_user_can();
-        
+
         if($this->simplesaml_autoload_error) {
             return;
         }
-        
+
         switch ($this->options->force_websso) {
             case 1:
                 add_action('login_enqueue_scripts', array($this, 'login_enqueue_scripts'));
@@ -76,29 +76,29 @@ class Main {
             default:
                 return;
         }
-        
+
         add_filter('is_fau_websso_active', '__return_true');
-        
+
         if (is_multisite() && (!get_site_option('registration') || get_site_option('registration') == 'none')) {
-            $this->registration = FALSE;               
+            $this->registration = FALSE;
         } elseif (!is_multisite() && !get_option('users_can_register')) {
             $this->registration = FALSE;
         } else {
             $this->registration = TRUE;
         }
-        
+
         $this->registration = apply_filters('fau_websso_registration', $this->registration);
-        
+
         if (!$this->registration) {
             add_action('before_signup_header', array($this, 'before_signup_header'));
         }
-        
+
         add_filter('authenticate', array($this, 'authenticate'), 10, 3);
         remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
         remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
-        
+
         add_filter('login_url', array($this, 'login_url'), 10, 2);
-        
+
         add_action('wp_logout', array($this, 'wp_logout_action'));
 
         add_filter('wp_auth_check_same_domain', '__return_false');
@@ -106,7 +106,7 @@ class Main {
         add_filter('manage_users_columns', array($this, 'users_attributes'));
         add_action('manage_users_custom_column', array($this, 'users_attributes_columns'), 10, 3);
         add_filter('wpmu_users_columns', array($this, 'users_attributes'));
-        add_action('wpmu_users_custom_column', array($this, 'users_attributes_columns'), 10, 3);        
+        add_action('wpmu_users_custom_column', array($this, 'users_attributes_columns'), 10, 3);
     }
 
     private function set_current_user_can() {
@@ -114,58 +114,59 @@ class Main {
         if (is_multisite() && current_user_can('promote_users') && current_user_can('create_users')) {
             $user_can_both = TRUE;
         }
-        
+
         $this->current_user_can_both = $user_can_both;
     }
-    
+
     private function simplesaml_autoload() {
         if(file_exists(WP_CONTENT_DIR . $this->options->simplesaml_include)) {
             require_once(WP_CONTENT_DIR . $this->options->simplesaml_include);
             $this->simplesaml_auth_simple = new \SimpleSAML_Auth_Simple($this->options->simplesaml_auth_source);
         } else {
-            $this->simplesaml_autoload_error = __("The autoload file could not be included.", 'fau-websso');            
+            $this->simplesaml_autoload_error = __("The autoload file could not be included.", 'fau-websso');
         }
     }
-    
+
     public function before_signup_header() {
         wp_redirect(site_url('', $this->options->simplesaml_url_scheme));
         exit;
     }
-    
+
     public function wp_logout_action() {
         wp_destroy_other_sessions();
         if (!$this->simplesaml_autoload_error && $this->simplesaml_auth_simple->isAuthenticated()) {
             $this->simplesaml_auth_simple->logout(site_url('', $this->options->simplesaml_url_scheme));
         }
     }
-    
+
     public function authenticate($user, $user_login, $user_pass) {
         if (is_a($user, 'WP_User')) {
             return $user;
         }
 
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
-        
+
         if ($this->options->force_websso == 1 && $action != 'websso') {
             return wp_authenticate_username_password(NULL, $user_login, $user_pass);
         }
-        
+
         if($this->simplesaml_autoload_error) {
             $this->login_die($this->simplesaml_autoload_error);
         }
-        
+
         if (!$this->simplesaml_auth_simple->isAuthenticated()) {
             $this->simplesaml_auth_simple->requireAuth();
         }
-        
+
         $attributes = array();
 
         $_attributes = $this->simplesaml_auth_simple->getAttributes();
 
         if (!empty($_attributes)) {
+            do_action('rrze.log.info', ['plugin' => 'fau-websso', 'method' => __METHOD__, 'attributes' => $_attributes]);
             $attributes['uid'] = isset($_attributes['urn:mace:dir:attribute-def:uid'][0]) ? $_attributes['urn:mace:dir:attribute-def:uid'][0] : '';
             $attributes['mail'] = isset($_attributes['urn:mace:dir:attribute-def:mail'][0]) ? $_attributes['urn:mace:dir:attribute-def:mail'][0] : '';
-            $attributes['displayName'] = isset($_attributes['urn:mace:dir:attribute-def:displayName'][0]) ? $_attributes['urn:mace:dir:attribute-def:displayName'][0] : '';            
+            $attributes['displayName'] = isset($_attributes['urn:mace:dir:attribute-def:displayName'][0]) ? $_attributes['urn:mace:dir:attribute-def:displayName'][0] : '';
             $attributes['eduPersonAffiliation'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonAffiliation']) ? $_attributes['urn:mace:dir:attribute-def:eduPersonAffiliation'] : '';
             $attributes['eduPersonEntitlement'] = isset($_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement']) ? $_attributes['urn:mace:dir:attribute-def:eduPersonEntitlement'] : '';
         }
@@ -179,9 +180,9 @@ class Main {
         if ($user_login != substr(sanitize_user($user_login, TRUE), 0, 60)) {
             $this->login_die(__("The IdM Username entered is not valid.", 'fau-websso'));
         }
-        
+
         $user_email = is_email($attributes['mail']) ? strtolower($attributes['mail']) : sprintf('%s@fau.de', base_convert(uniqid('', FALSE), 16, 36));
-        
+
         $display_name = $attributes['displayName'];
         $display_name_array = explode(' ', $display_name);
         $first_name = array_shift($display_name_array);
@@ -189,50 +190,50 @@ class Main {
 
         $edu_person_affiliation = $attributes['eduPersonAffiliation'];
         $edu_person_entitlement = $attributes['eduPersonEntitlement'];
-        
+
         if(is_multisite()) {
             global $wpdb;
             $key = $wpdb->get_var($wpdb->prepare("SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s", $user_login));
-            $this->activate_signup($key);            
+            $this->activate_signup($key);
         }
-        
+
         $userdata = get_user_by('login', $user_login);
 
         if ($userdata) {
-            if ((!empty($display_name) && $userdata->data->display_name == $user_login)) {                
+            if ((!empty($display_name) && $userdata->data->display_name == $user_login)) {
                 $user_id = wp_update_user(array(
                     'ID' => $userdata->ID,
                     'display_name' => $display_name
-                    ) 
+                    )
                 );
 
                 if (is_wp_error($user_id)) {
                     $this->login_die(__("The user data could not be updated.", 'fau-websso'));
                 }
-                
+
                 update_user_meta($user_id, 'first_name', $first_name);
                 update_user_meta($user_id, 'last_name', $last_name);
             }
-            
-            $user = new WP_User($userdata->ID);            
+
+            $user = new WP_User($userdata->ID);
             update_user_meta($userdata->ID, 'edu_person_affiliation', $edu_person_affiliation);
             update_user_meta($userdata->ID, 'edu_person_entitlement', $edu_person_entitlement);
-                      
+
             if ($this->registration && is_multisite()) {
                 if (!is_user_member_of_blog($userdata->ID, 1)) {
                     add_user_to_blog(1, $userdata->ID, 'subscriber');
                 }
             }
-            
+
         } else {
             if (!$this->registration) {
                 $this->login_die(__("User registration is currently not allowed.", 'fau-websso'));
             }
-                        
+
             if (is_multisite()) {
                 switch_to_blog(1);
             }
-            
+
             $user_id = wp_insert_user(array(
                 'user_pass' => wp_generate_password(12, FALSE),
                 'user_login' => $user_login,
@@ -243,52 +244,52 @@ class Main {
                 'role' => 'subscriber'
                 )
             );
-            
+
             if (is_wp_error($user_id)) {
                 if (is_multisite()) {
                     restore_current_blog();
-                }                
+                }
                 $this->login_die(__("The user could not be added.", 'fau-websso'));
             }
-            
+
             $user = new WP_User($user_id);
             update_user_meta($user_id, 'edu_person_affiliation', $edu_person_affiliation);
             update_user_meta($user_id, 'edu_person_entitlement', $edu_person_entitlement);
-            
+
             if (is_multisite()) {
                 add_user_to_blog(1, $user_id, 'subscriber');
                 restore_current_blog();
-                
+
                 if (!is_user_member_of_blog($user_id, get_current_blog_id())) {
                     add_user_to_blog(get_current_blog_id(), $user_id, 'subscriber');
                 }
-            }                
-            
+            }
+
         }
-        
+
         if (is_multisite()) {
             $blogs = get_blogs_of_user($user->ID);
             if (!$this->has_dashboard_access($user->ID, $blogs)) {
                 $this->access_die($blogs);
             }
         }
-        
+
         $sso_attributes = !empty($_attributes) ? $_attributes : '';
         update_user_meta($user->ID, 'sso_attributes', $sso_attributes);
-        
+
         return $user;
     }
-    
+
     public function login_url($login_url, $redirect) {
         $login_url = site_url('wp-login.php', 'login');
 
         if (!empty($redirect)) {
             $login_url = add_query_arg('redirect_to', urlencode($redirect), $login_url);
         }
-        
+
         return $login_url;
     }
-        
+
     private function has_dashboard_access($user_id, $blogs) {
         if (is_super_admin($user_id)) {
             return TRUE;
@@ -297,19 +298,19 @@ class Main {
         if (wp_list_filter($blogs, array('userblog_id' => get_current_blog_id()))) {
             return TRUE;
         }
-        
+
         return FALSE;
     }
-    
+
     private function access_die($blogs) {
-        
+
         $blog_name = get_bloginfo('name');
 
         $output = '<p>' . sprintf(__('You attempted to access the &ldquo;%1$s&rdquo; dashboard, but you do not currently have privileges on this website. If you believe you should be able to access the &ldquo;%1$s&rdquo; dashboard, please contact the contact person of the website.', 'fau-websso'), $blog_name) . '</p>';
-                
+
         if (!empty($blogs)) {
             $output .= '<p>' . __("If you reached this screen by accident and meant to visit one of your own websites, here are some shortcuts to help you find your way.", 'fau-websso') . '</p>';
-            
+
             $output .= '<h3>' . __("Your Websites", 'fau-websso') . '</h3>';
             $output .= '<table>';
 
@@ -323,27 +324,27 @@ class Main {
 
             $output .= '</table>';
         }
-        
+
         $output .= $this->get_contact();
-        
+
         $output .= sprintf('<p><a href="%s">' . __("Single Sign-On Log Out", 'fau-websso') . '</a></p>', wp_logout_url());
-        
+
         wp_die($output, 403);
     }
-    
+
     private function login_die($message, $simplesaml_authenticated = TRUE) {
         $output = '';
 
         $output .= sprintf('<p><strong>%1$s</strong> %2$s</p>', __("ERROR:", 'fau-websso'), $message);
         $output .= sprintf('<p>%s</p>', sprintf(__("Authentication failed on the &ldquo;%s&rdquo; website.", 'fau-websso'), get_bloginfo('name')));
         $output .= sprintf('<p>%s</p>', __("However, if no login is possible, please contact the contact person of the website.", 'fau-websso'));
-        
+
         $output .= $this->get_contact();
 
         if ($simplesaml_authenticated) {
             $output .= sprintf('<p><a href="%s">' . __("Single Sign-On Log Out", 'fau-websso') . '</a></p>', wp_logout_url());
         }
-        
+
         wp_die($output);
     }
 
@@ -372,13 +373,13 @@ class Main {
 
         return $output;
     }
-    
+
     // Start Case 1
-    
+
     public function login_enqueue_scripts() {
         wp_enqueue_style('fau-websso-login-form', plugins_url('css/login-form.css', $this->plugin_basename ), 'all', NULL);
     }
-    
+
     public function login_form() {
         $login_url = add_query_arg('action', 'websso', site_url('/wp-login.php', $this->options->simplesaml_url_scheme));
         echo '<div class="message rrze-websso-login-form">';
@@ -387,25 +388,25 @@ class Main {
         printf('<p><a href="%1$s">' . __('Login to the %2$s website', 'fau-websso') . '</a></p>', $login_url, get_bloginfo('name'));
         echo '</div>';
     }
-    
+
     // End Case 1
 
     // Start Case 2
-    
+
     public function register_redirect() {
         if ($this->is_login_page() && isset($_REQUEST['action']) && $_REQUEST['action'] == 'register') {
             wp_redirect(site_url('wp-login.php', 'login'));
             exit;
-        }        
+        }
      }
-    
+
     private function user_new_page_redirect() {
         if (is_admin() && $this->is_user_new_page()) {
             wp_redirect('users.php?page=usernew');
             exit;
-        }        
+        }
     }
-    
+
     private function is_login_page() {
         if(isset($GLOBALS['pagenow'])) {
             return in_array($GLOBALS['pagenow'], array('wp-login.php'));
@@ -419,12 +420,12 @@ class Main {
         }
         return FALSE;
     }
-    
+
     public function disable_function() {
         $output = __("Disabled function.", 'fau-websso');
         wp_die($output);
     }
-        
+
     public function network_admin_user_new_page() {
         global $submenu;
 
@@ -440,13 +441,13 @@ class Main {
                     break;
                 }
             }
-            
+
             $submenu['users.php'][10] = $submenu['users.php'][$key];
             unset($submenu['users.php'][$key]);
 
-            ksort($submenu['users.php']);            
+            ksort($submenu['users.php']);
         }
-        
+
     }
 
     public function network_admin_user_new_help_tab() {
@@ -466,13 +467,13 @@ class Main {
             '<ul>' .
             '<li>' . __("Subscribers can read comments/comment/receive newsletters, etc. but cannot create regular site content.", 'fau-websso') . '</li>' .
             '<li>' . __("Contributors can write and manage their posts but not publish posts or upload media files.", 'fau-websso') . '</li>' .
-            '<li>' . __("Authors can publish and manage their own posts, and are able to upload files.", 'fau-websso') . '</li>' .            
+            '<li>' . __("Authors can publish and manage their own posts, and are able to upload files.", 'fau-websso') . '</li>' .
             '<li>' . __("Editors can publish posts, manage posts as well as manage other people's posts, etc.", 'fau-websso') . '</li>' .
             '<li>' . __("Administrators have access to all the administration features.", 'fau-websso') . '</li>' .
             '</ul>'
-        ));        
+        ));
     }
-    
+
     public function admin_user_new_page() {
         global $submenu;
 
@@ -483,7 +484,7 @@ class Main {
         } else {
             $capability = 'create_users';
         }
-        
+
         $submenu_page = add_submenu_page('users.php', __("Add New", 'fau-websso'), __("Add New", 'fau-websso'), $capability, 'usernew', array($this, 'admin_user_new'));
 
         add_action(sprintf('load-%s', $submenu_page), array($this, 'admin_user_new_help_tab'));
@@ -494,13 +495,13 @@ class Main {
                     break;
                 }
             }
-            
+
             $submenu['users.php'][10] = $submenu['users.php'][$key];
             unset($submenu['users.php'][$key]);
 
-            ksort($submenu['users.php']);            
+            ksort($submenu['users.php']);
         }
-        
+
     }
 
     public function admin_user_new_help_tab() {
@@ -528,16 +529,16 @@ class Main {
             '<ul>' .
             '<li>' . __("Subscribers can read comments/comment/receive newsletters, etc. but cannot create regular site content.", 'fau-websso') . '</li>' .
             '<li>' . __("Contributors can write and manage their posts but not publish posts or upload media files.", 'fau-websso') . '</li>' .
-            '<li>' . __("Authors can publish and manage their own posts, and are able to upload files.", 'fau-websso') . '</li>' .            
+            '<li>' . __("Authors can publish and manage their own posts, and are able to upload files.", 'fau-websso') . '</li>' .
             '<li>' . __("Editors can publish posts, manage posts as well as manage other people's posts, etc.", 'fau-websso') . '</li>' .
             '<li>' . __("Administrators have access to all the administration features.", 'fau-websso') . '</li>' .
             '</ul>'
-        ));        
+        ));
     }
-    
+
     public function user_new_action() {
         global $wpdb;
-        
+
         if (isset($_REQUEST['action']) && 'add-user' == $_REQUEST['action']) {
             check_admin_referer('add-user', '_wpnonce_add-user');
 
@@ -550,21 +551,21 @@ class Main {
             $user_details = $this->validate_user_signup($user['username'], $user['email']);
             if (is_wp_error($user_details['errors']) && !empty($user_details['errors']->errors)) {
                 $add_user_errors = base64_encode(serialize($user_details['errors']));
-                $redirect = add_query_arg( array('page' => 'usernew', 'update' => 'addusererrors', 'error' => $add_user_errors), 'users.php' );                
+                $redirect = add_query_arg( array('page' => 'usernew', 'update' => 'addusererrors', 'error' => $add_user_errors), 'users.php' );
             } else {
                 $password = wp_generate_password(12, FALSE);
                 $user_id = wpmu_create_user(esc_html(strtolower($user['username'])), $password, sanitize_email($user['email']));
 
                 if (!$user_id) {
                     $add_user_errors = new WP_Error('add_user_fail', __("The user could not be added.", 'fau-websso'));
-                    $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );                    
+                    $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );
                 } else {
                     $this->new_user_notification($user_id);
                     $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'added'), 'users.php');
                 }
             }
             wp_redirect($redirect);
-            exit;            
+            exit;
         } elseif (isset($_REQUEST['action'], $_REQUEST['email']) && 'adduser' == $_REQUEST['action']) {
             check_admin_referer('add-user', '_wpnonce_add-user');
 
@@ -591,12 +592,12 @@ class Main {
             $redirect = add_query_arg(array('page' => 'usernew'), 'users.php');
             $username = $user_details->user_login;
             $user_id = $user_details->ID;
-            
+
             if (($username != NULL && !is_super_admin($user_id)) && (array_key_exists(get_current_blog_id(), get_blogs_of_user($user_id)))) {
                 $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'addexisting'), 'users.php');
             } else {
                 add_existing_user_to_blog(array('user_id' => $user_id, 'role' => $_REQUEST[ 'role' ]));
-                if ( isset( $_POST['noconfirmation']) && is_super_admin()) {                   
+                if ( isset( $_POST['noconfirmation']) && is_super_admin()) {
                     $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'addnoconfirmation'), 'users.php');
                 } else {
                     $this->add_existing_user_notification($user_id);
@@ -613,10 +614,10 @@ class Main {
 
                 if (is_wp_error($user_id)) {
                     $add_user_errors = $user_id;
-                    $redirect = add_query_arg(array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php');                    
-                } else {                   
+                    $redirect = add_query_arg(array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php');
+                } else {
                     $this->new_user_notification($user_id);
-                    
+
                     if (current_user_can('list_users')) {
                         $redirect = add_query_arg(array('update' => 'add', 'id' => $user_id), 'users.php');
                     } else {
@@ -629,15 +630,15 @@ class Main {
                 // Neuen Benutzer hinzufügen
                 $new_user_email = wp_unslash($_REQUEST['email']);
                 $user_details = $this->validate_user_signup($_REQUEST['user_login'], $new_user_email);
-                
+
                 if (is_wp_error($user_details['errors']) && !empty($user_details['errors']->errors)) {
                     $add_user_errors = $user_details[ 'errors' ];
                     $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );
                 } else {
                     $new_user_login = sanitize_user(wp_unslash($_REQUEST['user_login']), TRUE);
-                                        
+
                     wpmu_signup_user($new_user_login, $new_user_email, array('add_to_blog' => $wpdb->blogid, 'new_role' => $_REQUEST['role']));
-                    
+
                     if(is_super_admin()) {
                         $key = $wpdb->get_var($wpdb->prepare("SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s AND user_email = %s", $new_user_login, $new_user_email));
                         $signup = wpmu_activate_signup($key);
@@ -647,22 +648,22 @@ class Main {
                             $redirect = add_query_arg( array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php' );
                         }
                     }
-                    
+
                     if (isset($_POST['noconfirmation']) && is_super_admin()) {
                         $redirect = add_query_arg( array('page' => 'usernew', 'update' => 'addnoconfirmation'), 'users.php' );
                     } else {
                         $this->invite_user_notification($new_user_login, $new_user_email);
                         $redirect = add_query_arg( array('page' => 'usernew', 'update' => 'newuserconfirmation'), 'users.php' );
                     }
-                    
+
                 }
             }
             wp_redirect($redirect);
-            exit;            
+            exit;
         }
-        
+
     }
-    
+
     public function network_admin_user_new() {
         if (isset($_GET['update'])) {
             $messages = array();
@@ -684,7 +685,7 @@ class Main {
         if (isset($_GET['error'])) {
             $add_user_errors = @unserialize(base64_decode($_GET['error']));
         }
-        
+
         if (is_wp_error($add_user_errors)) : ?>
             <div class="error">
                 <?php
@@ -711,7 +712,7 @@ class Main {
         </div>
         <?php
     }
-    
+
     public function admin_user_new() {
         $title = __("Add New User", 'fau-websso');
 
@@ -719,7 +720,7 @@ class Main {
         if (is_multisite() && current_user_can('promote_users') && current_user_can('create_users')) {
             $do_both = TRUE;
         }
-        
+
         wp_enqueue_script('wp-ajax-response');
         wp_enqueue_script('user-profile');
 
@@ -730,13 +731,13 @@ class Main {
         if (isset($_GET['update'])) {
             $messages = array();
             if (is_multisite()) {
-                switch ($_GET['update']) {                   
+                switch ($_GET['update']) {
                     case "newuserconfirmation":
                         $messages[] = __("The user account has been succesfully created. An invitation email has been sent to the user.", 'fau-websso');
                         break;
                     case "add":
                         $messages[] = __("The user has been added to your website. An invitation email has been sent to the user.", 'fau-websso');
-                        break;                   
+                        break;
                     case "addnoconfirmation":
                         $messages[] = __("The user has been added to your website.", 'fau-websso');
                         break;
@@ -751,7 +752,7 @@ class Main {
                         break;
                 }
             }
-            
+
             else {
                 if ('add' == $_GET['update']) {
                     $messages[] = __("User added.", 'fau-websso');
@@ -790,7 +791,7 @@ class Main {
         if (isset($_GET['error'])) {
             $add_user_errors = @unserialize(base64_decode($_GET['error']));
         }
-        
+
         if (is_wp_error($add_user_errors)) : ?>
 
             <div class="error">
@@ -811,7 +812,7 @@ class Main {
             if (!is_super_admin()) {
                 //echo '<p>' . __("Enter the email address of an existing user on this network to invite them to this site. That person will be sent an email asking them to confirm the invite.", 'fau-websso') . '</p>';
                 //$label = __("Email Address", 'fau-websso');
-                //$type  = 'email';                
+                //$type  = 'email';
                 echo '<p>' . __("Enter the email address or username of an existing user on this network to invite them to this site. That person will be sent an email asking them to confirm the invite.", 'fau-websso') . '</p>';
                 $label = __("Email Address or Username", 'fau-websso');
                 $type  = 'text';
@@ -836,7 +837,7 @@ class Main {
                     <?php wp_dropdown_roles( get_option('default_role')); ?>
                     </select>
                 </td>
-            </tr>          
+            </tr>
             <?php if (is_super_admin()) { ?>
             <tr>
                 <th scope="row"><label for="adduser-noconfirmation"><?php _e("Skip Confirmation Email", 'fau-websso') ?></label></th>
@@ -914,21 +915,21 @@ class Main {
         if ('attributes' != $column_name) {
             return $value;
         }
-        
+
         $attributes = array();
 
         $edu_person_affiliation = get_user_meta($user_id, 'edu_person_affiliation', TRUE);
         if ($edu_person_affiliation) {
             $attributes[] = is_array($edu_person_affiliation) ? implode('<br/>', $edu_person_affiliation) : $edu_person_affiliation;
         }
-        
+
         return implode('<br/>', $attributes);
     }
 
     public function wpmu_new_user() {
-        
+
     }
-    
+
     private function create_user() {
         global $wp_roles;
         $user = new stdClass;
@@ -940,7 +941,7 @@ class Main {
         if (isset($_POST['role']) && current_user_can('edit_users')) {
             $new_role = sanitize_text_field( $_POST['role'] );
             $potential_role = isset($wp_roles->role_objects[$new_role]) ? $wp_roles->role_objects[$new_role] : FALSE;
-            
+
             if ((is_multisite() && current_user_can('manage_sites')) || ($potential_role && $potential_role->has_cap('edit_users'))) {
                 $user->role = $new_role;
             }
@@ -954,7 +955,7 @@ class Main {
         if (isset($_POST['email'])) {
             $user->user_email = sanitize_text_field(wp_unslash($_POST['email']));
         }
-        
+
         foreach (wp_get_user_contact_methods($user) as $method => $name) {
             if (isset($_POST[$method])) {
                 $user->$method = sanitize_text_field($_POST[$method]);
@@ -977,7 +978,7 @@ class Main {
         if (isset( $_POST['user_login']) && !validate_username($_POST['user_login'])) {
             $errors->add('user_login', __("<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.", 'fau-websso'));
         }
-        
+
         if (username_exists($user->user_login)) {
             $errors->add('user_login', __("<strong>ERROR</strong>: This username is already registered. Please choose another one.", 'fau-websso'));
         }
@@ -998,7 +999,7 @@ class Main {
 
         return $user_id;
     }
-    
+
     private function add_existing_user_notification($user_id) {
         $user = get_userdata($user_id);
 
@@ -1010,29 +1011,29 @@ class Main {
         $strf = __('Hi,%5$s%5$sYou\'ve been invited to join \'%1$s\' at %2$s with the role of %3$s.%5$s%5$sPlease sign in using the following link to the website:%5$s%4$s', 'fau-websso');
         $message = sprintf($strf, $blogname, home_url(), wp_specialchars_decode(translate_user_role($role['name'])), wp_login_url(), PHP_EOL);
 
-        wp_mail($user->user_email, sprintf(__("[%s] You've been invited", 'fau-websso'), $blogname), $message);       
+        wp_mail($user->user_email, sprintf(__("[%s] You've been invited", 'fau-websso'), $blogname), $message);
     }
-    
+
     private function new_user_notification($user_id) {
         $user = get_userdata($user_id);
 
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
-        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');       
+        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');
         $message = sprintf($strf, $user->user_login, $blogname, wp_login_url(), PHP_EOL);
 
         wp_mail($user->user_email, sprintf(__("[%s] Your user account", 'fau-websso'), $blogname), $message);
     }
- 
+
     private function invite_user_notification($user_login, $user_email) {
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
-        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');       
+        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');
         $message = sprintf($strf, $user_login, $blogname, wp_login_url(), PHP_EOL);
 
         wp_mail($user_email, sprintf(__("[%s] Your user account", 'fau-websso'), $blogname), $message);
     }
-    
+
     private function activate_signup($key) {
         global $wpdb;
 
@@ -1056,7 +1057,7 @@ class Main {
         } else {
             $user_already_exists = TRUE;
         }
-        
+
         if (!$user_id) {
             return FALSE;
         }
@@ -1069,7 +1070,7 @@ class Main {
             if (isset($user_already_exists)) {
                 return FALSE;
             }
-            
+
             wpmu_welcome_user_notification($user_id, $password, $meta);
             do_action('wpmu_activate_user', $user_id, $password, $meta);
             return TRUE;
@@ -1089,7 +1090,7 @@ class Main {
         do_action('wpmu_activate_blog', $blog_id, $user_id, $password, $signup->title, $meta);
         return TRUE;
     }
- 
+
     private function validate_user_signup($user_name, $user_email) {
         global $wpdb;
 
@@ -1108,21 +1109,21 @@ class Main {
         if (empty($user_name)) {
             $errors->add('user_name', __("Please enter a username.", 'fau-websso'));
         }
-        
+
         $illegal_names = get_site_option('illegal_names');
         if (!is_array($illegal_names)) {
             $illegal_names = array('www', 'web', 'root', 'admin', 'main', 'invite', 'administrator');
             add_site_option('illegal_names', $illegal_names);
         }
-        
+
         if (in_array($user_name, $illegal_names)) {
             $errors->add('user_name', __("Username is not allowed.", 'fau-websso'));
         }
-        
+
         if (is_email_address_unsafe($user_email)) {
             $errors->add('user_email', __("Email Address or Username is not allowed.", 'fau-websso'));
         }
-        
+
         if (strlen($user_name) < 4) {
             $errors->add('user_name', __("The username must be at least 4 characters.", 'fau-websso'));
         }
@@ -1134,15 +1135,15 @@ class Main {
         if (strpos($user_name, '_') !== FALSE) {
             $errors->add('user_name', __("Usernames may not contain the underscore character.", 'fau-websso'));
         }
-        
+
         if (preg_match('/^[0-9]*$/', $user_name)) {
             $errors->add('user_name', __("Usernames must have letters too!"), 'fau-websso');
         }
-        
+
         if (!is_email($user_email)) {
             $errors->add('user_email', __("Please enter a valid email address.", 'fau-websso'));
         }
-        
+
         $limited_email_domains = get_site_option('limited_email_domains');
         if (is_array($limited_email_domains) && !empty($limited_email_domains)) {
             $emaildomain = substr($user_email, 1 + strpos($user_email, '@'));
@@ -1154,7 +1155,7 @@ class Main {
         if (username_exists($user_name)) {
             $errors->add('user_name', __("Username already exists!", 'fau-websso'));
         }
-        
+
         if (email_exists($user_email)) {
             $errors->add('user_email', __("The email address is already used!", 'fau-websso'));
         }
@@ -1164,6 +1165,6 @@ class Main {
         $result = array('user_name' => $user_name, 'orig_username' => $orig_username, 'user_email' => $user_email, 'errors' => $errors);
         return apply_filters('wpmu_validate_user_signup', $result);
     }
-    
+
     // End Case 2
 }
