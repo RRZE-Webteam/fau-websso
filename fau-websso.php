@@ -1,18 +1,18 @@
 <?php
 
-/**
- * Plugin Name:     FAU WebSSO
- * Plugin URI:      https://github.com/RRZE-Webteam/fau-websso
- * Description:     Anmeldung für zentral vergebene Kennungen von Studierenden und Beschäftigten.
- * Version:         6.3.1
- * Author:          RRZE-Webteam
- * Author URI:      https://blogs.fau.de/webworking/
- * License:         GNU General Public License v2
- * License URI:     http://www.gnu.org/licenses/gpl-2.0.html
- * Domain Path:     /languages
- * Text Domain:     fau-websso
- * Network:         TRUE
- */
+/*
+Plugin Name:     FAU WebSSO
+Plugin URI:      https://github.com/RRZE-Webteam/fau-websso
+Description:     Registration for centrally assigned identifiers of students and employees.
+Version:         6.4.0
+Author:          RRZE Webteam
+Author URI:      https://blogs.fau.de/webworking/
+License:         GNU General Public License v2
+License URI:     http://www.gnu.org/licenses/gpl-2.0.html
+Domain Path:     /languages
+Text Domain:     fau-websso
+Network:         true
+*/
 
 namespace RRZE\WebSSO;
 
@@ -23,70 +23,88 @@ defined('ABSPATH') || exit;
 const RRZE_PHP_VERSION = '7.1';
 const RRZE_WP_VERSION = '5.2';
 
-register_activation_hook(__FILE__, 'RRZE\WebSSO\activation');
+const RRZE_PLUGIN_FILE = __FILE__;
 
-add_action('plugins_loaded', 'RRZE\WebSSO\loaded');
+spl_autoload_register(function ($class) {
+    $prefix = __NAMESPACE__;
+    $base_dir = __DIR__ . '/includes/';
 
-/*
- * Einbindung der Sprachdateien.
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+
+    $relative_class = substr($class, $len);
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+    if (file_exists($file)) {
+        require $file;
+    }
+});
+
+register_activation_hook(__FILE__, __NAMESPACE__ . '\activation');
+
+add_action('plugins_loaded', __NAMESPACE__ . '\loaded');
+
+/**
+ * Loads languages files into the list of text domains.
  * @return void
  */
-function load_textdomain() {
-    load_plugin_textdomain('fau-websso', FALSE, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
+function load_textdomain()
+{
+    load_plugin_textdomain('fau-websso', false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
 }
 
-/*
-* Wird durchgeführt, nachdem das Plugin aktiviert wurde.
-* @return void
-*/
-function activation() {
-    // Sprachdateien werden eingebunden.
+/**
+ * System requirements.
+ * @return string The error text.
+ */
+function systemRequirements()
+{
+    $error = '';
+    if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
+        /* Translator: 1: current PHP version, 2: required PHP version */
+        $error = sprintf(__('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'rrze-private-site'), PHP_VERSION, RRZE_PHP_VERSION);
+    } elseif (version_compare($GLOBALS['wp_version'], RRZE_WP_VERSION, '<')) {
+        /* Translator: 1: current WP version, 2: required WP version */
+        $error = sprintf(__('The server is running WordPress version %1$s. The Plugin requires at least WordPress version %2$s.', 'rrze-private-site'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
+    }
+    return $error;
+}
+
+/**
+ * Runs when the plugin is registered.
+ * @return void
+ */
+function activation()
+{
     load_textdomain();
 
-    // Überprüft die minimal erforderliche PHP- u. WP-Version.
-    system_requirements();
- }
-
- /*
-  * Überprüft die minimal erforderliche PHP- u. WP-Version.
-  * @return void
-  */
-function system_requirements() {
-    $error = '';
-
-    if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
-        $error = sprintf(__('Your server is running PHP version %s. Please upgrade at least to PHP version %s.', 'fau-websso'), PHP_VERSION, RRZE_PHP_VERSION);
-    }
-
-    if (version_compare($GLOBALS['wp_version'], RRZE_WP_VERSION, '<')) {
-        $error = sprintf(__('Your Wordpress version is %s. Please upgrade at least to Wordpress version %s.', 'fau-websso'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
-    }
-
-    // Wenn die Überprüfung fehlschlägt, dann wird das Plugin automatisch deaktiviert.
-    if (!empty($error)) {
-        deactivate_plugins(plugin_basename(__FILE__), FALSE, TRUE);
+    if ($error = systemRequirements()) {
+        deactivate_plugins(plugin_basename(__FILE__));
         wp_die($error);
     }
- }
-
-/*
-* Wird durchgeführt, nachdem das WP-Grundsystem hochgefahren
-* und alle Plugins eingebunden wurden.
-* @return void
-*/
-function loaded() {
-    // Sprachdateien werden eingebunden.
-    load_textdomain();
-
-    // Automatische Laden von Klassen.
-    autoload();
 }
 
-/*
- * Automatische Laden von Klassen.
+/**
+ * Runs when the plugin has been loaded.
  * @return void
  */
-function autoload() {
-    require 'autoload.php';
-    $main = new Main(plugin_basename(__FILE__));
+function loaded()
+{
+    load_textdomain();
+
+    if ($error = systemRequirements()) {
+        if (is_admin()) {
+            $pluginData = get_plugin_data(__FILE__);
+            $pluginName = $pluginData['Name'];
+            $tag = is_plugin_active_for_network(plugin_basename(__FILE__)) ? 'network_admin_notices' : 'admin_notices';
+            add_action($tag, function () use ($pluginName, $error) {
+                printf('<div class="notice notice-error"><p>' . __('Plugins: %1$s: %2$s', 'cms-basis') . '</p></div>', esc_html($pluginName), esc_html($error));
+            });
+        }
+        return;
+    }
+
+    new Main;
 }
