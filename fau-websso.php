@@ -4,7 +4,7 @@
 Plugin Name:     FAU WebSSO
 Plugin URI:      https://github.com/RRZE-Webteam/fau-websso
 Description:     Registration for centrally assigned identifiers of students and employees.
-Version:         6.4.0
+Version:         6.4.1
 Author:          RRZE Webteam
 Author URI:      https://blogs.fau.de/webworking/
 License:         GNU General Public License v2
@@ -64,10 +64,10 @@ function systemRequirements()
     $error = '';
     if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
         /* Translator: 1: current PHP version, 2: required PHP version */
-        $error = sprintf(__('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'rrze-private-site'), PHP_VERSION, RRZE_PHP_VERSION);
+        $error = sprintf(__('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'fau-websso'), PHP_VERSION, RRZE_PHP_VERSION);
     } elseif (version_compare($GLOBALS['wp_version'], RRZE_WP_VERSION, '<')) {
         /* Translator: 1: current WP version, 2: required WP version */
-        $error = sprintf(__('The server is running WordPress version %1$s. The Plugin requires at least WordPress version %2$s.', 'rrze-private-site'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
+        $error = sprintf(__('The server is running WordPress version %1$s. The Plugin requires at least WordPress version %2$s.', 'fau-websso'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
     }
     return $error;
 }
@@ -100,7 +100,7 @@ function loaded()
             $pluginName = $pluginData['Name'];
             $tag = is_plugin_active_for_network(plugin_basename(__FILE__)) ? 'network_admin_notices' : 'admin_notices';
             add_action($tag, function () use ($pluginName, $error) {
-                printf('<div class="notice notice-error"><p>' . __('Plugins: %1$s: %2$s', 'cms-basis') . '</p></div>', esc_html($pluginName), esc_html($error));
+                printf('<div class="notice notice-error"><p>' . __('Plugins: %1$s: %2$s', 'fau-websso') . '</p></div>', esc_html($pluginName), esc_html($error));
             });
         }
         return;
