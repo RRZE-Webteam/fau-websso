@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-17 07:47+0000\n"
-"PO-Revision-Date: 2019-06-17 07:49+0000\n"
+"POT-Creation-Date: 2019-06-17 08:30+0000\n"
+"PO-Revision-Date: 2019-06-17 08:32+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
-"Language-Team: \n"
+"Language-Team: Deutsch (Sie)\n"
 "Language: de_DE_formal\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,6 +19,29 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 "X-Loco-Version: 2.3.0; wp-5.2.1\n"
 "X-Loco-Template: languages/fau-websso-de_DE.po"
+
+#: fau-websso.php:67
+#, php-format
+msgid ""
+"The server is running PHP version %1$s. The Plugin requires at least PHP "
+"version %2$s."
+msgstr ""
+"Auf dem Server läuft PHP Version %1$s. Das Plugin benötigt mindestens PHP "
+"Version %2$s."
+
+#: fau-websso.php:70
+#, php-format
+msgid ""
+"The server is running WordPress version %1$s. The Plugin requires at least "
+"WordPress version %2$s."
+msgstr ""
+"Auf dem Server läuft WordPress Version %1$s. Das Plugin benötigt mindestens "
+"WordPress Version %2$s."
+
+#: fau-websso.php:103
+#, php-format
+msgid "Plugins: %1$s: %2$s"
+msgstr "Plugins: %1$s: %2$s"
 
 #: includes/Settings.php:51 includes/Settings.php:60 includes/Settings.php:60
 #: includes/Settings.php:71
