@@ -6,6 +6,7 @@ defined('ABSPATH') || exit;
 
 use RRZE\WebSSO\Options;
 use SimpleSAML_Auth_Simple;
+use WP_Error;
 
 class SimpleSAML
 {

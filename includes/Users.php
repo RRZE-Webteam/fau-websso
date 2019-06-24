@@ -4,6 +4,8 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
+use WP_Error;
+
 class Users
 {
     public static function userNewAction()
