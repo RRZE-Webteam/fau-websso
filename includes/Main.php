@@ -2,14 +2,14 @@
 
 namespace RRZE\WebSSO;
 
+defined('ABSPATH') || exit;
+
 use RRZE\WebSSO\Options;
 use RRZE\WebSSO\Settings;
 use RRZE\WebSSO\SimpleSAML;
 use RRZE\WebSSO\Users;
 use WP_User;
 use WP_Error;
-
-defined('ABSPATH') || exit;
 
 class Main
 {
