@@ -4,16 +4,18 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
+use RRZE\WebSSO\Options;
+
 class Settings
 {
     /**
-     * Optionsname
+     * [protected description]
      * @var string
      */
     protected $optionName;
 
     /**
-     * Einstellungsoptionen
+     * [protected description]
      * @var object
      */
     protected $options;
@@ -31,7 +33,10 @@ class Settings
     {
         $this->optionName = Options::getOptionName();
         $this->options = Options::getOptions();
+    }
 
+    public function onLoaded()
+    {
         if (is_multisite()) {
             add_action('admin_init', [$this, 'networkSettingsUpdate']);
             add_action('network_admin_menu', [$this, 'networkAdminMenu']);
@@ -106,7 +111,7 @@ class Settings
             register_setting($this->menuPage, $this->optionName, [$this, 'optionsValidate']);
         }
 
-        add_settings_section('websso_options_section', false,[$this, 'websso_settings_section'], $this->menuPage);
+        add_settings_section('websso_options_section', false, [$this, 'websso_settings_section'], $this->menuPage);
         add_settings_field('force_websso', __("Allow WebSSO", 'fau-websso'), [$this, 'webssoField'], $this->menuPage, 'websso_options_section');
 
         add_settings_section('simplesaml_options_section', false, [$this, 'simpleSAMLSettingsSection'], $this->menuPage);
