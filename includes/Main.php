@@ -15,6 +15,12 @@ class Main
 {
     /**
      * [protected description]
+     * @var string
+     */
+    protected $pluginFile;
+
+    /**
+     * [protected description]
      * @var object
      */
     protected $options;
@@ -39,14 +45,26 @@ class Main
 
     /**
      * [__construct description]
+     * @param string $pluginFile [description]
      */
-    public function __construct()
+    public function __construct($pluginFile)
     {
+        $this->pluginFile = $pluginFile;
+
         $this->options = Options::getOptions();
+    }
 
-        new Settings;
+    public function onLoaded()
+    {
+        $settings = new Settings();
+        $settings->onLoaded();
 
-        if (!$this->loadSimpleSAML()) {
+        $userList = new UsersList();
+        $userList->onLoaded();
+
+        $simplesaml = new SimpleSAML($this->pluginFile);
+        $this->simplesaml = $simplesaml->onLoaded();
+        if ($this->simplesaml === false) {
             return;
         }
 
@@ -106,26 +124,6 @@ class Main
         add_action('wp_logout', [$this, 'wpLogout']);
 
         add_filter('wp_auth_check_same_domain', '__return_false');
-
-        UsersList::init();
-    }
-
-    protected function loadSimpleSAML()
-    {
-        $this->simplesaml = SimpleSAML::load();
-        if (is_wp_error($this->simplesaml)) {
-            if (is_admin()) {
-                $error = $this->simplesaml->get_error_message();
-                $pluginData = get_plugin_data(__FILE__);
-                $pluginName = $pluginData['Name'];
-                $tag = is_plugin_active_for_network(plugin_basename(__FILE__)) ? 'network_admin_notices' : 'admin_notices';
-                add_action($tag, function () use ($pluginName, $error) {
-                    printf('<div class="notice notice-error"><p>' . __('Plugins: %1$s: %2$s', 'cms-basis') . '</p></div>', esc_html($pluginName), esc_html($error));
-                });
-            }
-            return false;
-        }
-        return true;
     }
 
     public function beforeSignupHeader()
