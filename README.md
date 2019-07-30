@@ -30,7 +30,7 @@ Bereitstellung eines FAU-SP (Service Provider) mittels SimpleSAMLphp
 
 - 5. Alle IdPs von der Datei /simplesamlphp/metadata/saml20-idp-remote.php entfernen und dann den folgenden Code hinzufügen:
 
-<pre>
+```php
 <?php
 $metadata['https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'] =
 [
@@ -92,7 +92,7 @@ $metadata['https://www.sso.uni-erlangen.de/simplesaml/saml2/idp/metadata.php'] =
     ],
   ],
 ];
-</pre>
+```
 
 Webserver-Einstellungen (Apache)
 --------------------------------
