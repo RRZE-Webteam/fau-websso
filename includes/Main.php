@@ -116,8 +116,8 @@ class Main
         }
 
         add_filter('authenticate', [$this, 'authenticate'], 10, 3);
-        remove_action('authenticate', 'wpAuthenticateUsernamePassword', 20, 3);
-        remove_action('authenticate', 'wpAuthenticateEmailPassword', 20, 3);
+        remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
+        remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
 
         add_filter('login_url', [$this, 'loginUrl'], 10, 2);
 
@@ -149,7 +149,7 @@ class Main
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 
         if ($this->options->force_websso == 1 && $action != 'websso') {
-            return wpAuthenticateUsernamePassword(null, $user_login, $user_pass);
+            return wp_authenticate_username_password(null, $user_login, $user_pass);
         }
 
         if (!$this->simplesaml->isAuthenticated()) {
