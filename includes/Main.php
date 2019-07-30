@@ -74,7 +74,7 @@ class Main
 
         if ($this->options->force_websso == 1) {
             add_action('login_enqueue_scripts', [$this, 'loginEnqueueScripts']);
-            add_action('loginForm', [$this, 'loginForm']);
+            add_action('login_form', [$this, 'loginForm']);
         }
 
         if ($this->options->force_websso == 2) {
@@ -381,7 +381,7 @@ class Main
 
     public function loginEnqueueScripts()
     {
-        wp_enqueue_style('fau-websso-login-form', plugins_url('css/login-form.css', plugin_basename(RRZE_PLUGIN_FILE)), 'all', null);
+        wp_enqueue_style('fau-websso-login-form', plugins_url('css/login-form.css', plugin_basename($this->pluginFile)), 'all', null);
     }
 
     public function loginForm()
