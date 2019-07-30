@@ -4,7 +4,7 @@
 Plugin Name:     FAU WebSSO
 Plugin URI:      https://github.com/RRZE-Webteam/fau-websso
 Description:     Registration for centrally assigned identifiers of students and employees.
-Version:         6.4.3
+Version:         6.4.4
 Author:          RRZE Webteam
 Author URI:      https://blogs.fau.de/webworking/
 License:         GNU General Public License v2
@@ -22,8 +22,6 @@ defined('ABSPATH') || exit;
 
 const RRZE_PHP_VERSION = '7.1';
 const RRZE_WP_VERSION = '5.2';
-
-const RRZE_PLUGIN_FILE = __FILE__;
 
 spl_autoload_register(function ($class) {
     $prefix = __NAMESPACE__;
