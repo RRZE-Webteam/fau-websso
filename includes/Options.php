@@ -21,7 +21,7 @@ class Options
         $options = [
             'simplesaml_include' => '/simplesamlphp/lib/_autoload.php',
             'simplesaml_auth_source' => 'default-sp',
-            'force_websso' => 2,
+            'force_websso' => 0,
             'simplesaml_url_scheme' => 'https'
         ];
 
