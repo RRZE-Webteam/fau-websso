@@ -26,13 +26,18 @@ class UsersList
             return $value;
         }
 
-        $attributes = array();
+        $attributes = [];
 
         $eduPersonAffiliation = get_user_meta($userId, 'edu_person_affiliation', true);
         if ($eduPersonAffiliation) {
             $attributes[] = is_array($eduPersonAffiliation) ? implode('<br>', $eduPersonAffiliation) : $eduPersonAffiliation;
         }
-
+        
+        $eduPersonEntitlement = get_user_meta($userId, 'edu_person_entitlement', true);
+        if ($eduPersonEntitlement) {
+            $attributes[] = is_array($eduPersonEntitlement) ? implode('<br>', $eduPersonEntitlement) : $eduPersonEntitlement;
+        }
+        
         return implode('<br>', $attributes);
     }
 }
