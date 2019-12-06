@@ -58,9 +58,11 @@ class Main
     {
         $settings = new Settings();
         $settings->onLoaded();
-
-        $userList = new UsersList();
-        $userList->onLoaded();
+        
+        if (is_super_admin()) {
+            $userList = new UsersList();
+            $userList->onLoaded();            
+        }
 
         $simplesaml = new SimpleSAML($this->pluginFile);
         $this->simplesaml = $simplesaml->onLoaded();
