@@ -118,6 +118,9 @@ class Settings
         add_settings_field('simplesaml_include', __("Autoload path", 'fau-websso'), [$this, 'simpleSAMLIncludeField'], $this->menuPage, 'simplesaml_options_section');
         add_settings_field('simplesaml_auth_source', __("Authentication source", 'fau-websso'), [$this, 'simpleSAMLAuthSourceField'], $this->menuPage, 'simplesaml_options_section');
         add_settings_field('simplesaml_url_scheme', __("URL scheme", 'fau-websso'), [$this, 'simpleSAMLUrlSchemeField'], $this->menuPage, 'simplesaml_options_section');
+        if ($this->options->force_websso == 2) {
+            add_settings_field('allowed_user_email_domains', __("Allowed User Email Domains", 'fau-websso'), [$this, 'allowedUserEmailDomainsField'], $this->menuPage, 'simplesaml_options_section');
+        }
     }
 
     /**
@@ -186,6 +189,17 @@ class Settings
     }
 
     /**
+     * [allowedUserEmailDomainsField description]
+     * @return void
+     */
+    public function allowedUserEmailDomainsField()
+    {
+        $allowedUserEmailDomains = implode(PHP_EOL, (array)$this->options->allowed_user_email_domains);
+        echo '<textarea rows="5" cols="55" id="allowed_user_email_domains" class="regular-text" name="' . $this->optionName . '[allowed_user_email_domains]">' . esc_attr($allowedUserEmailDomains) . '</textarea>';
+        echo '<p class="description">' . __('List of allowed domains for user email addresses.', 'fau-websso') . '</p>';  
+    }
+
+    /**
      * [optionsValidate description]
      * @param  array $input [description]
      * @return array        [description]
@@ -197,10 +211,15 @@ class Settings
         $input['simplesaml_include'] = !empty($input['simplesaml_include']) ? esc_attr(trim($input['simplesaml_include'])) : $this->options->simplesaml_include;
         $input['simplesaml_auth_source'] = isset($input['simplesaml_auth_source']) ? esc_attr(trim($input['simplesaml_auth_source'])) : $this->options->simplesaml_auth_source;
         $input['simplesaml_url_scheme'] = isset($input['simplesaml_url_scheme']) && in_array(trim($input['simplesaml_url_scheme']), ['http', 'https']) ? trim($input['simplesaml_url_scheme']) : $this->options->simplesaml_url_scheme;
-
+        if ($this->options->force_websso == 2) {
+            $input['allowed_user_email_domains'] = array_filter(array_map('trim', explode(PHP_EOL, $input['allowed_user_email_domains'])));
+        } else {
+            $input['allowed_user_email_domains'] = $this->options->allowed_user_email_domains;
+        }
+        
         return $input;
     }
-
+        
     /**
      * [networkSettingsUpdate description]
      * @return void
