@@ -4,6 +4,7 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
+use RRZE\WebSSO\Options;
 use WP_Error;
 
 class Users
@@ -360,6 +361,15 @@ class Users
             $emaildomain = substr($user_email, 1 + strpos($user_email, '@'));
             if (!in_array($emaildomain, $limited_email_domains)) {
                 $errors->add('user_email', __("That email address is not allowed!", 'fau-websso'));
+            }
+        }
+        
+        $options = Options::getOptions();
+        $allowedUserEmailDomains = $options->allowed_user_email_domains;
+        if (is_array($allowedUserEmailDomains) && !empty($allowedUserEmailDomains)) {
+            $emaildomain = substr($user_email, 1 + strpos($user_email, '@'));
+            if (!in_array($emaildomain, $allowedUserEmailDomains)) {
+                $errors->add('user_email', sprintf(__("That email address domain is not allowed! Allowed domains: %s", 'fau-websso'), implode(', ', $allowedUserEmailDomains)));
             }
         }
 
