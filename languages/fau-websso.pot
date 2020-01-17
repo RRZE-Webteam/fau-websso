@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-17 08:30+0000\n"
+"POT-Creation-Date: 2020-01-17 10:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -19,83 +19,91 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: fau-websso.php:67
+#: fau-websso.php:65
 #, php-format
 msgid ""
 "The server is running PHP version %1$s. The Plugin requires at least PHP "
 "version %2$s."
 msgstr ""
 
-#: fau-websso.php:70
+#: fau-websso.php:68
 #, php-format
 msgid ""
 "The server is running WordPress version %1$s. The Plugin requires at least "
 "WordPress version %2$s."
 msgstr ""
 
-#: fau-websso.php:103
+#: fau-websso.php:101 includes/SimpleSAML.php:53
 #, php-format
 msgid "Plugins: %1$s: %2$s"
 msgstr ""
 
-#: includes/Settings.php:51 includes/Settings.php:60 includes/Settings.php:60
-#: includes/Settings.php:71
+#: includes/Settings.php:56 includes/Settings.php:65 includes/Settings.php:65
+#: includes/Settings.php:76
 msgid "WebSSO"
 msgstr ""
 
-#: includes/Settings.php:89 includes/Settings.php:135
+#: includes/Settings.php:94 includes/Settings.php:141
 msgid "WebSSO Settings"
 msgstr ""
 
-#: includes/Settings.php:110
+#: includes/Settings.php:115
 msgid "Allow WebSSO"
 msgstr ""
 
-#: includes/Settings.php:113
+#: includes/Settings.php:118
 msgid "Autoload path"
 msgstr ""
 
-#: includes/Settings.php:114
+#: includes/Settings.php:119
 msgid "Authentication source"
 msgstr ""
 
-#: includes/Settings.php:115
+#: includes/Settings.php:120
 msgid "URL scheme"
 msgstr ""
 
-#: includes/Settings.php:124
+#: includes/Settings.php:121
+msgid "Allowed User Email Domains"
+msgstr ""
+
+#: includes/Settings.php:130
 msgid "Web Single Sign-On"
 msgstr ""
 
-#: includes/Settings.php:125
+#: includes/Settings.php:131
 msgid "General WebSSO Settings."
 msgstr ""
 
-#: includes/Settings.php:136
+#: includes/Settings.php:142
 msgid "WebSSO has been disabled."
 msgstr ""
 
-#: includes/Settings.php:137
+#: includes/Settings.php:143
 msgid "Users can log on locally and WebSSO."
 msgstr ""
 
-#: includes/Settings.php:138
+#: includes/Settings.php:144
 msgid "Users may log in only via WebSSO."
 msgstr ""
 
-#: includes/Settings.php:148
+#: includes/Settings.php:154
 msgid "SimpleSAMLphp"
 msgstr ""
 
-#: includes/Settings.php:149
+#: includes/Settings.php:155
 msgid "Service Provider Settings."
 msgstr ""
 
-#: includes/Settings.php:159
+#: includes/Settings.php:165
 msgid "Relative path starting from the wp-content directory."
 msgstr ""
 
-#: includes/Settings.php:221
+#: includes/Settings.php:197
+msgid "List of allowed domains for user email addresses."
+msgstr ""
+
+#: includes/Settings.php:239
 msgid "Settings saved."
 msgstr ""
 
@@ -115,7 +123,7 @@ msgstr ""
 msgid "User registration is currently not allowed."
 msgstr ""
 
-#: includes/Main.php:253 includes/Users.php:31
+#: includes/Main.php:253 includes/Users.php:34
 msgid "The user could not be added."
 msgstr ""
 
@@ -268,57 +276,57 @@ msgstr ""
 msgid "Email Address"
 msgstr ""
 
-#: includes/Users.php:17
+#: includes/Users.php:20
 msgid "Cannot create an empty user."
 msgstr ""
 
-#: includes/Users.php:155
+#: includes/Users.php:158
 msgid "You can't give users that role."
 msgstr ""
 
-#: includes/Users.php:179
+#: includes/Users.php:182
 msgid "<strong>ERROR</strong>: Please enter a username."
 msgstr ""
 
-#: includes/Users.php:183
+#: includes/Users.php:186
 msgid ""
 "<strong>ERROR</strong>: This username is invalid because it uses illegal "
 "characters. Please enter a valid username."
 msgstr ""
 
-#: includes/Users.php:187
+#: includes/Users.php:190
 msgid ""
 "<strong>ERROR</strong>: This username is already registered. Please choose "
 "another one."
 msgstr ""
 
-#: includes/Users.php:191
+#: includes/Users.php:194
 msgid "<strong>ERROR</strong>: Please enter an email address."
 msgstr ""
 
-#: includes/Users.php:193
+#: includes/Users.php:196
 msgid "<strong>ERROR</strong>: The email address isn't correct."
 msgstr ""
 
-#: includes/Users.php:195
+#: includes/Users.php:198
 msgid ""
 "<strong>ERROR</strong>: This email address is already registered, please "
 "choose another one."
 msgstr ""
 
-#: includes/Users.php:216
+#: includes/Users.php:219
 #, php-format
 msgid ""
 "Hi,%5$s%5$sYou've been invited to join '%1$s' at %2$s with the role of %3$s."
 "%5$s%5$sPlease sign in using the following link to the website:%5$s%4$s"
 msgstr ""
 
-#: includes/Users.php:219
+#: includes/Users.php:222
 #, php-format
 msgid "[%s] You've been invited"
 msgstr ""
 
-#: includes/Users.php:228 includes/Users.php:238
+#: includes/Users.php:231 includes/Users.php:241
 #, php-format
 msgid ""
 "Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using "
@@ -326,56 +334,61 @@ msgid ""
 "Team @ %2$s"
 msgstr ""
 
-#: includes/Users.php:231 includes/Users.php:241
+#: includes/Users.php:234 includes/Users.php:244
 #, php-format
 msgid "[%s] Your user account"
 msgstr ""
 
-#: includes/Users.php:312
+#: includes/Users.php:315
 msgid "Only lowercase letters (a-z) and numbers are allowed."
 msgstr ""
 
-#: includes/Users.php:319
+#: includes/Users.php:322
 msgid "Please enter a username."
 msgstr ""
 
-#: includes/Users.php:329
+#: includes/Users.php:332
 msgid "Username is not allowed."
 msgstr ""
 
-#: includes/Users.php:333
+#: includes/Users.php:336
 msgid "Email Address or Username is not allowed."
 msgstr ""
 
-#: includes/Users.php:337
+#: includes/Users.php:340
 msgid "The username must be at least 4 characters."
 msgstr ""
 
-#: includes/Users.php:341
+#: includes/Users.php:344
 msgid "Username may not be longer than 60 characters."
 msgstr ""
 
-#: includes/Users.php:345
+#: includes/Users.php:348
 msgid "Usernames may not contain the underscore character."
 msgstr ""
 
-#: includes/Users.php:353 includes/SiteMenu.php:108
+#: includes/Users.php:356 includes/SiteMenu.php:108
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: includes/Users.php:360
+#: includes/Users.php:363
 msgid "That email address is not allowed!"
 msgstr ""
 
-#: includes/Users.php:365
+#: includes/Users.php:372
+#, php-format
+msgid "That email address domain is not allowed! Allowed domains: %s"
+msgstr ""
+
+#: includes/Users.php:377
 msgid "Username already exists!"
 msgstr ""
 
-#: includes/Users.php:369
+#: includes/Users.php:381
 msgid "The email address is already used!"
 msgstr ""
 
-#: includes/SimpleSAML.php:22
+#: includes/SimpleSAML.php:67
 msgid "The simpleSAML library could not be loaded."
 msgstr ""
 
@@ -473,7 +486,7 @@ msgstr ""
 msgid "(required)"
 msgstr ""
 
-#: includes/UsersList.php:18
+#: includes/UsersList.php:19
 msgid "Attributes"
 msgstr ""
 
