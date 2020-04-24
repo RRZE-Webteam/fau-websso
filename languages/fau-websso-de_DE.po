@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-17 10:15+0000\n"
-"PO-Revision-Date: 2020-01-17 10:40+0000\n"
+"POT-Creation-Date: 2020-04-24 10:52+0000\n"
+"PO-Revision-Date: 2020-04-24 10:54+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Poedit-SearchPath-0: ..\n"
-"X-Loco-Version: 2.3.1; wp-5.3.2"
+"X-Loco-Version: 2.3.3; wp-5.4"
 
 #: fau-websso.php:65
 #, php-format
@@ -47,7 +47,7 @@ msgstr "Plugins: %1$s: %2$s"
 msgid "WebSSO"
 msgstr "WebSSO"
 
-#: includes/Settings.php:94 includes/Settings.php:141
+#: includes/Settings.php:94 includes/Settings.php:144
 msgid "WebSSO Settings"
 msgstr "WebSSO-Einstellungen"
 
@@ -67,47 +67,55 @@ msgstr "Authentifizierungsquelle"
 msgid "URL scheme"
 msgstr "URL-Schema"
 
-#: includes/Settings.php:121
+#: includes/Settings.php:122
 msgid "Allowed User Email Domains"
 msgstr "Zulässige Benutzer-E-Mail-Domänen"
 
-#: includes/Settings.php:130
+#: includes/Settings.php:123
+msgid "Send Password to New User"
+msgstr "Passwort an neuen Benutzer senden"
+
+#: includes/Settings.php:133
 msgid "Web Single Sign-On"
 msgstr "Web Single Sign-On"
 
-#: includes/Settings.php:131
+#: includes/Settings.php:134
 msgid "General WebSSO Settings."
 msgstr "Allgemeine WebSSO-Einstellungen."
 
-#: includes/Settings.php:142
-msgid "WebSSO has been disabled."
-msgstr "WebSSO ist deaktiviert."
+#: includes/Settings.php:145
+msgid "WebSSO has been disabled"
+msgstr "WebSSO ist deaktiviert"
 
-#: includes/Settings.php:143
-msgid "Users can log on locally and WebSSO."
-msgstr "Benutzer können sich lokal und WebSSO anmelden."
+#: includes/Settings.php:146
+msgid "Users can log on locally and WebSSO"
+msgstr "Benutzer können sich lokal und WebSSO anmelden"
 
-#: includes/Settings.php:144
-msgid "Users may log in only via WebSSO."
-msgstr "Benutzer dürfen sich nur per WebSSO anmelden."
+#: includes/Settings.php:147
+msgid "Users may log in only via WebSSO"
+msgstr "Benutzer dürfen sich nur per WebSSO anmelden"
 
-#: includes/Settings.php:154
+#: includes/Settings.php:157
 msgid "SimpleSAMLphp"
 msgstr "SimpleSAMLphp"
 
-#: includes/Settings.php:155
+#: includes/Settings.php:158
 msgid "Service Provider Settings."
 msgstr "Einstellungen des Service Providers."
 
-#: includes/Settings.php:165
+#: includes/Settings.php:168
 msgid "Relative path starting from the wp-content directory."
 msgstr "Relative Pfad ausgehend vom wp-content-Verzeichnis."
 
-#: includes/Settings.php:197
+#: includes/Settings.php:200
 msgid "List of allowed domains for user email addresses."
 msgstr "Liste der zulässigen Domänen für Benutzer-E-Mail-Adressen."
 
-#: includes/Settings.php:239
+#: includes/Settings.php:212
+msgid "Allow sending password to the new user"
+msgstr "Erlaubt das Senden eines Passworts an den neuen Benutzer"
+
+#: includes/Settings.php:261
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
@@ -368,68 +376,76 @@ msgstr ""
 msgid "[%s] You've been invited"
 msgstr "[%s] Sie wurden eingeladen"
 
-#: includes/Users.php:231 includes/Users.php:241
+#: includes/Users.php:235 includes/Users.php:254
 #, php-format
 msgid ""
 "Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using "
-"the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The "
-"Team @ %2$s"
+"the following link to the website:%4$s%3$s%4$s"
 msgstr ""
 "Hallo,%4$s%4$sIhr Benutzerkonto %1$s wurde angelegt.%4$sBitte melden Sie "
-"sich mittels des folgenden Links an die Website %2$s an:%4$s%3$s%4$s%4$sViel "
-"Spaß!%4$s%4$s—Das Team von %2$s"
+"sich mittels des folgenden Links an die Website an:%4$s%3$s%4$s"
 
-#: includes/Users.php:234 includes/Users.php:244
+#: includes/Users.php:237 includes/Users.php:256
+#, php-format
+msgid "Password: %5$s%4$s"
+msgstr "Passwort: %5$s%4$s"
+
+#: includes/Users.php:239 includes/Users.php:258
+#, php-format
+msgid "%4$sThanks!%4$s%4$s--The Team @ %2$s"
+msgstr "%4$sViel Spaß!%4$s%4$s—Das Team von %2$s"
+
+#: includes/Users.php:241 includes/Users.php:260
 #, php-format
 msgid "[%s] Your user account"
 msgstr "[%s] Ihr Benutzerkonto"
 
-#: includes/Users.php:315
+#: includes/Users.php:331
 msgid "Only lowercase letters (a-z) and numbers are allowed."
 msgstr "Es sind nur Kleinbuchstaben und Ziffern erlaubt."
 
-#: includes/Users.php:322
+#: includes/Users.php:338
 msgid "Please enter a username."
 msgstr "Bitte geben Sie eine Benutzername ein."
 
-#: includes/Users.php:332
+#: includes/Users.php:348
 msgid "Username is not allowed."
 msgstr "Der Benutzername ist nicht erlaubt."
 
-#: includes/Users.php:336
+#: includes/Users.php:352
 msgid "Email Address or Username is not allowed."
 msgstr "Die E-Mail-Adresse ist nicht erlaubt."
 
-#: includes/Users.php:340
+#: includes/Users.php:356
 msgid "The username must be at least 4 characters."
 msgstr "Der Benutzername muss aus mindestens 4 Zeichen bestehen."
 
-#: includes/Users.php:344
+#: includes/Users.php:360
 msgid "Username may not be longer than 60 characters."
 msgstr "Der Benutzername darf nicht länger als 60 Zeichen sein."
 
-#: includes/Users.php:348
+#: includes/Users.php:364
 msgid "Usernames may not contain the underscore character."
 msgstr "Benutzernamen dürfen keinen Unterstrich enthalten."
 
-#: includes/Users.php:356 includes/SiteMenu.php:108
+#: includes/Users.php:372 includes/SiteMenu.php:108
 msgid "Please enter a valid email address."
 msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
 
-#: includes/Users.php:363
+#: includes/Users.php:379
 msgid "That email address is not allowed!"
 msgstr "Diese E-Mail-Adresse ist nicht erlaubt!"
 
-#: includes/Users.php:372
+#: includes/Users.php:388
 #, php-format
 msgid "That email address domain is not allowed! Allowed domains: %s"
 msgstr "Diese E-Mail-Adresse-Domain ist nicht erlaubt! Erlaubte Domains: %s"
 
-#: includes/Users.php:377
+#: includes/Users.php:393
 msgid "Username already exists!"
 msgstr "Der Benutzername existiert bereits!"
 
-#: includes/Users.php:381
+#: includes/Users.php:397
 msgid "The email address is already used!"
 msgstr "Die E-Mail-Adresse wird bereits verwendet!"
 
