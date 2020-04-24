@@ -139,7 +139,7 @@ class Users
     protected static function createUser()
     {
         global $wp_roles;
-        $user = new stdClass;
+        $user = new \stdClass;
 
         if (isset($_POST['user_login'])) {
             $user->user_login = sanitize_user($_POST['user_login'], true);
@@ -224,23 +224,39 @@ class Users
 
     protected static function newUserNotification($user_id)
     {
-        $user = get_userdata($user_id);
+        $options = Options::getOptions();
+        
+        $password = bin2hex(random_bytes(4));
+        wp_set_password($password, $user_id);
 
+        $user = get_userdata($user_id);
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
-        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');
-        $message = sprintf($strf, $user->user_login, $blogname, wp_login_url(), PHP_EOL);
-
+        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website:%4$s%3$s%4$s', 'fau-websso');
+        if ($options->send_new_user_password) {
+            $strf .= __('Password: %5$s%4$s', 'fau-websso');
+        }
+        $strf .= __('%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');
+        $message = sprintf($strf, $user->user_login, $blogname, wp_login_url(), PHP_EOL, $password);
         wp_mail($user->user_email, sprintf(__("[%s] Your user account", 'fau-websso'), $blogname), $message);
     }
 
     protected static function inviteUserNotification($user_login, $user_email)
     {
+        $options = Options::getOptions();
+
+        $user = get_user_by('login', $user_login);
+        $password = bin2hex(random_bytes(4));
+        wp_set_password($password, $user->ID);
+
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
-        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website %2$s:%4$s%3$s%4$s%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');
-        $message = sprintf($strf, $user_login, $blogname, wp_login_url(), PHP_EOL);
-
+        $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website:%4$s%3$s%4$s', 'fau-websso');
+        if ($options->send_new_user_password) {
+            $strf .= __('Password: %5$s%4$s', 'fau-websso');
+        }
+        $strf .= __('%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');        
+        $message = sprintf($strf, $user_login, $blogname, wp_login_url(), PHP_EOL, $password);
         wp_mail($user_email, sprintf(__("[%s] Your user account", 'fau-websso'), $blogname), $message);
     }
 

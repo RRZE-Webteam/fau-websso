@@ -23,7 +23,8 @@ class Options
             'simplesaml_auth_source' => 'default-sp',
             'force_websso' => 0,
             'simplesaml_url_scheme' => 'https',
-            'allowed_user_email_domains' => []
+            'allowed_user_email_domains' => [],
+            'send_new_user_password' => 0
         ];
 
         return $options;
