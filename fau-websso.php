@@ -20,8 +20,8 @@ use RRZE\WebSSO\Main;
 
 defined('ABSPATH') || exit;
 
-const RRZE_PHP_VERSION = '7.3';
-const RRZE_WP_VERSION = '5.3';
+const RRZE_PHP_VERSION = '7.4';
+const RRZE_WP_VERSION = '5.4';
 
 spl_autoload_register(function ($class) {
     $prefix = __NAMESPACE__;
