@@ -24,7 +24,7 @@ class Options
             'force_websso' => 0,
             'simplesaml_url_scheme' => 'https',
             'allowed_user_email_domains' => [],
-            'send_new_user_password' => 0
+            'dev_mode' => 0
         ];
 
         return $options;

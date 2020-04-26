@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAU WebSSO\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-24 10:52+0000\n"
-"PO-Revision-Date: 2020-04-24 10:54+0000\n"
+"POT-Creation-Date: 2020-04-25 09:37+0000\n"
+"PO-Revision-Date: 2020-04-25 09:38+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -72,8 +72,8 @@ msgid "Allowed User Email Domains"
 msgstr "Zulässige Benutzer-E-Mail-Domänen"
 
 #: includes/Settings.php:123
-msgid "Send Password to New User"
-msgstr "Passwort an neuen Benutzer senden"
+msgid "DEV Mode"
+msgstr "DEV-Modus"
 
 #: includes/Settings.php:133
 msgid "Web Single Sign-On"
@@ -112,34 +112,34 @@ msgid "List of allowed domains for user email addresses."
 msgstr "Liste der zulässigen Domänen für Benutzer-E-Mail-Adressen."
 
 #: includes/Settings.php:212
-msgid "Allow sending password to the new user"
-msgstr "Erlaubt das Senden eines Passworts an den neuen Benutzer"
+msgid "Development mode. Important: Do not use on the production server"
+msgstr "Entwicklungsmodus. Wichtig: Nicht auf dem Produktionsserver verwenden"
 
 #: includes/Settings.php:261
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
-#: includes/Main.php:175
+#: includes/Main.php:177
 msgid "The IdM Username is not valid."
 msgstr "Die IdM-Kennung ist nicht gültig."
 
-#: includes/Main.php:181
+#: includes/Main.php:183
 msgid "The IdM Username entered is not valid."
 msgstr "Die eingegebene IdM-Kennung ist nicht gültig."
 
-#: includes/Main.php:212
+#: includes/Main.php:214
 msgid "The user data could not be updated."
 msgstr "Die Benutzerdaten konnten nicht aktualisiert werden."
 
-#: includes/Main.php:230
+#: includes/Main.php:232
 msgid "User registration is currently not allowed."
 msgstr "Zurzeit ist die Benutzerregistrierung nicht erlaubt."
 
-#: includes/Main.php:253 includes/Users.php:34
+#: includes/Main.php:255 includes/Users.php:34
 msgid "The user could not be added."
 msgstr "Der Benutzer konnte nicht registriert werden."
 
-#: includes/Main.php:311
+#: includes/Main.php:313
 #, php-format
 msgid ""
 "You attempted to access the &ldquo;%1$s&rdquo; dashboard, but you do not "
@@ -152,7 +152,7 @@ msgstr ""
 "Zugriff auf das &bdquo;%1$s&ldquo; Dashboard haben, dann wenden Sie sich "
 "bitte an den Ansprechpartner der Website."
 
-#: includes/Main.php:314
+#: includes/Main.php:316
 msgid ""
 "If you reached this screen by accident and meant to visit one of your own "
 "websites, here are some shortcuts to help you find your way."
@@ -161,32 +161,32 @@ msgstr ""
 "Ihrer eigenen Websites besuchen wollten, hier ein paar hoffentlich "
 "hilfreiche Links."
 
-#: includes/Main.php:316
+#: includes/Main.php:318
 msgid "Your Websites"
 msgstr "Ihre Websites"
 
-#: includes/Main.php:322
+#: includes/Main.php:324
 msgid "Visit the Dashboard"
 msgstr "Dashboard besuchen"
 
-#: includes/Main.php:323
+#: includes/Main.php:325
 msgid "View the website"
 msgstr "Webseite anzeigen"
 
-#: includes/Main.php:332 includes/Main.php:348
+#: includes/Main.php:334 includes/Main.php:350
 msgid "Single Sign-On Log Out"
 msgstr "Single Sign-On Abmeldung"
 
-#: includes/Main.php:341
+#: includes/Main.php:343
 msgid "ERROR:"
 msgstr "Fehler:"
 
-#: includes/Main.php:342
+#: includes/Main.php:344
 #, php-format
 msgid "Authentication failed on the &ldquo;%s&rdquo; website."
 msgstr "Die Anmeldung auf der Website &bdquo;%s&ldquo; ist fehlgeschlagen."
 
-#: includes/Main.php:343
+#: includes/Main.php:345
 msgid ""
 "However, if no login is possible, please contact the contact person of the "
 "website."
@@ -194,32 +194,32 @@ msgstr ""
 "Sollte dennoch keine Anmeldung möglich sein, dann wenden Sie sich bitte an "
 "den Ansprechpartner der Website."
 
-#: includes/Main.php:370
+#: includes/Main.php:372
 #, php-format
 msgid "Contact persons for the &ldquo;%s&rdquo; website"
 msgstr "Ansprechpartner und Kontakt für die &bdquo;%s&ldquo; Website"
 
-#: includes/Main.php:375
+#: includes/Main.php:377
 msgid "Email Address:"
 msgstr "E-Mail-Adresse:"
 
-#: includes/Main.php:393
+#: includes/Main.php:395
 msgid "You have already activated your IdM Username?"
 msgstr "Sie haben Ihr IdM-Kennung bereits aktiviert?"
 
-#: includes/Main.php:394
+#: includes/Main.php:396
 #, php-format
 msgid "Please login to the website %s using the link below."
 msgstr ""
 "Bitte melden Sie sich mittels des folgenden Links an die &bdquo;%s&ldquo; "
 "Website an."
 
-#: includes/Main.php:395
+#: includes/Main.php:397
 #, php-format
 msgid "Login to the %2$s website"
 msgstr "Anmelden an die &bdquo;%2$s&ldquo; Website"
 
-#: includes/Main.php:437
+#: includes/Main.php:439
 msgid "Disabled function."
 msgstr "Gebrauchsunfähige Funktion."
 

@@ -120,8 +120,10 @@ class Settings
         add_settings_field('simplesaml_url_scheme', __("URL scheme", 'fau-websso'), [$this, 'simpleSAMLUrlSchemeField'], $this->menuPage, 'simplesaml_options_section');
         if ($this->options->force_websso == 2) {
             add_settings_field('allowed_user_email_domains', __("Allowed User Email Domains", 'fau-websso'), [$this, 'allowedUserEmailDomainsField'], $this->menuPage, 'simplesaml_options_section');
-            add_settings_field('send_new_user_password', __("Send Password to New User", 'fau-websso'), [$this, 'sendNewUserPasswordField'], $this->menuPage, 'simplesaml_options_section');
         }
+        if ($this->options->force_websso) {
+            add_settings_field('dev_mode', __("DEV Mode", 'fau-websso'), [$this, 'devModeField'], $this->menuPage, 'simplesaml_options_section');
+        }        
     }
 
     /**
@@ -201,15 +203,15 @@ class Settings
     }
 
     /**
-     * [sendNewUserPasswordField description]
+     * [devModeField description]
      * @return void
      */
-    public function sendNewUserPasswordField()
+    public function devModeField()
     {
         echo '<label>';
-        echo '<input type="checkbox" id="send_new_user_password" name="' . $this->optionName . '[send_new_user_password]" value="1"';
-        checked($this->options->send_new_user_password, 1);
-        echo  '> ', __('Allow sending password to the new user', 'fau-websso');
+        echo '<input type="checkbox" id="dev_mode" name="' . $this->optionName . '[dev_mode]" value="1"';
+        checked($this->options->dev_mode, 1);
+        echo  '> ', __('Development mode. Important: Do not use on the production server', 'fau-websso');
         echo '</label>';
     }
 
@@ -231,7 +233,7 @@ class Settings
             $input['allowed_user_email_domains'] = $this->options->allowed_user_email_domains;
         }
         
-        $input['send_new_user_password'] = isset($input['send_new_user_password']) ? 1 : 0;
+        $input['dev_mode'] = isset($input['dev_mode']) ? 1 : 0;
 
         return $input;
     }
