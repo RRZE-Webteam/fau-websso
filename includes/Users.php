@@ -233,7 +233,7 @@ class Users
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
         $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website:%4$s%3$s%4$s', 'fau-websso');
-        if ($options->send_new_user_password) {
+        if ($options->dev_mode) {
             $strf .= __('Password: %5$s%4$s', 'fau-websso');
         }
         $strf .= __('%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');
@@ -252,7 +252,7 @@ class Users
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
         $strf = __('Hi,%4$s%4$sYour user account %1$s has been created.%4$sPlease sign in using the following link to the website:%4$s%3$s%4$s', 'fau-websso');
-        if ($options->send_new_user_password) {
+        if ($options->dev_mode) {
             $strf .= __('Password: %5$s%4$s', 'fau-websso');
         }
         $strf .= __('%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');        

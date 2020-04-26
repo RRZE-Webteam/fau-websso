@@ -74,26 +74,43 @@ class Main
             return;
         }
 
+        if ($this->options->dev_mode) {
+            $devMode = new DevMode;
+            $devMode->onLoaded();
+        }
+
         if ($this->options->force_websso == 1) {
             add_action('login_enqueue_scripts', [$this, 'loginEnqueueScripts']);
             add_action('login_form', [$this, 'loginForm']);
-        }
-
-        if ($this->options->force_websso == 2) {
+        } else {
             $this->registerRedirect();
             $this->userNewPageRedirect();
 
-            add_filter('wpmu_signup_user_notification', '__return_false');
-            add_filter('wpmu_welcome_user_notification', '__return_false');
+            if (!$this->options->dev_mode) {
+                // Send a confirmation request email to a user 
+                // when they sign up for a new user account (disable).
+                add_filter('wpmu_signup_user_notification', '__return_false');
+                // Notify a user that their account activation 
+                // has been successful (disable).
+                add_filter('wpmu_welcome_user_notification', '__return_false');
 
-            add_action('lost_password', [$this, 'disableFunction']);
-            add_action('retrieve_password', [$this, 'disableFunction']);
-            add_action('password_reset', [$this, 'disableFunction']);
+                // Fires before the lost password form (die).
+                add_action('lost_password', [$this, 'disableFunction']);
+                // Fires before a new password is retrieved (die).
+                add_action('retrieve_password', [$this, 'disableFunction']);
+                // Fires before the user’s password is reset (die).
+                add_action('password_reset', [$this, 'disableFunction']);
 
-            add_filter('show_password_fields', '__return_false');
+                // Filters the display of the password fields (disable).
+                add_filter('show_password_fields', '__return_false');
+            }
 
+            // Filters whether to show the Add Existing User form 
+            // on the Multisite Users screen (disable).
             add_filter('show_network_site_users_add_existing_form', '__return_false');
-            add_filter('show_network_site_users_add_new_form', '__return_false');
+            // Filters whether to show the Add New User form 
+            // on the Multisite Users screen (disable).
+            add_filter('show_network_site_users_add_new_form', '__return_false');    
 
             add_action('network_admin_menu', [__NAMESPACE__ . '\NetworkMenu', 'userNewPage']);
             add_action('admin_menu', [__NAMESPACE__ . '\SiteMenu', 'userNewPage']);
