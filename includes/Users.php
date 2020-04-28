@@ -113,21 +113,20 @@ class Users
 
                     wpmu_signup_user($new_user_login, $new_user_email, array('add_to_blog' => $wpdb->blogid, 'new_role' => $_REQUEST['role']));
 
-                    if (is_super_admin()) {
-                        $key = $wpdb->get_var($wpdb->prepare("SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s AND user_email = %s", $new_user_login, $new_user_email));
-                        $signup = wpmu_activate_signup($key);
+                    $key = $wpdb->get_var($wpdb->prepare("SELECT activation_key FROM {$wpdb->signups} WHERE user_login = %s AND user_email = %s", $new_user_login, $new_user_email));
+                    $signup = wpmu_activate_signup($key);
 
-                        if (is_wp_error($signup)) {
-                            $add_user_errors = $signup;
-                            $redirect = add_query_arg(array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php');
-                        }
-                    }
-
-                    if (isset($_POST['noconfirmation']) && is_super_admin()) {
-                        $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'addnoconfirmation'), 'users.php');
+                    if (is_wp_error($signup)) {
+                        $add_user_errors = $signup;
+                        $redirect = add_query_arg(array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php');
                     } else {
-                        self::inviteUserNotification($new_user_login, $new_user_email);
-                        $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'newuserconfirmation'), 'users.php');
+                        if (isset($_POST['noconfirmation']) && is_super_admin()) {
+                            $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'addnoconfirmation'), 'users.php');
+                        } else {
+                            $new_user_id = $signup['user_id'];
+                            self::inviteUserNotification($new_user_id, $new_user_login, $new_user_email);
+                            $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'newuserconfirmation'), 'users.php');
+                        }
                     }
                 }
             }
@@ -241,13 +240,12 @@ class Users
         wp_mail($user->user_email, sprintf(__("[%s] Your user account", 'fau-websso'), $blogname), $message);
     }
 
-    protected static function inviteUserNotification($user_login, $user_email)
+    protected static function inviteUserNotification($user_id, $user_login, $user_email)
     {
         $options = Options::getOptions();
 
-        $user = get_user_by('login', $user_login);
         $password = bin2hex(random_bytes(4));
-        wp_set_password($password, $user->ID);
+        wp_set_password($password, $user_id);
 
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
