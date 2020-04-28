@@ -87,13 +87,6 @@ class Main
             $this->userNewPageRedirect();
 
             if (!$this->options->dev_mode) {
-                // Send a confirmation request email to a user 
-                // when they sign up for a new user account (disable).
-                add_filter('wpmu_signup_user_notification', '__return_false');
-                // Notify a user that their account activation 
-                // has been successful (disable).
-                add_filter('wpmu_welcome_user_notification', '__return_false');
-
                 // Fires before the lost password form (die).
                 add_action('lost_password', [$this, 'disableFunction']);
                 // Fires before a new password is retrieved (die).
@@ -104,6 +97,13 @@ class Main
                 // Filters the display of the password fields (disable).
                 add_filter('show_password_fields', '__return_false');
             }
+
+            // Send a confirmation request email to a user 
+            // when they sign up for a new user account (disable).
+            add_filter('wpmu_signup_user_notification', '__return_false');
+            // Notify a user that their account activation 
+            // has been successful (disable).
+            add_filter('wpmu_welcome_user_notification', '__return_false');
 
             // Filters whether to show the Add Existing User form 
             // on the Multisite Users screen (disable).
