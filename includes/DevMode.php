@@ -4,9 +4,6 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
-use RRZE\WebSSO\Options;
-use WP_Error;
-
 class DevMode
 {
     public function onLoaded()
@@ -56,16 +53,16 @@ class DevMode
         update_user_meta($userId, 'edu_person_entitlement', $eduPersonEntitlement);
     }
 
-    protected function joinArrayValue(array $array, string $glue = ',') : string
+    protected function joinArrayValue(array $array, string $glue = ','): string
     {
         return implode($glue, $array);
     }
 
-    protected function splitTextInput(string $string, string $delimiter = ',') : array
+    protected function splitTextInput(string $string, string $delimiter = ','): array
     {
         $split = explode($delimiter, $string);
         return array_unique(array_map(function ($item) {
             return trim($item, ' ');
         }, $split));
-    }    
+    }
 }

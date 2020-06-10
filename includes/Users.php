@@ -4,9 +4,6 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
-use RRZE\WebSSO\Options;
-use WP_Error;
-
 class Users
 {
     public static function userNewAction()
@@ -31,7 +28,7 @@ class Users
                 $user_id = wpmu_create_user(esc_html(strtolower($user['username'])), $password, sanitize_email($user['email']));
 
                 if (!$user_id) {
-                    $add_user_errors = new WP_Error('add_user_fail', __("The user could not be added.", 'fau-websso'));
+                    $add_user_errors = new \WP_Error('add_user_fail', __("The user could not be added.", 'fau-websso'));
                     $redirect = add_query_arg(array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php');
                 } else {
                     self::newUserNotification($user_id);
@@ -70,7 +67,7 @@ class Users
             if (($username != null && !is_super_admin($user_id)) && (array_key_exists(get_current_blog_id(), get_blogs_of_user($user_id)))) {
                 $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'addexisting'), 'users.php');
             } else {
-                add_existing_user_to_blog(array('user_id' => $user_id, 'role' => $_REQUEST[ 'role' ]));
+                add_existing_user_to_blog(array('user_id' => $user_id, 'role' => $_REQUEST['role']));
                 if (isset($_POST['noconfirmation']) && is_super_admin()) {
                     $redirect = add_query_arg(array('page' => 'usernew', 'update' => 'addnoconfirmation'), 'users.php');
                 } else {
@@ -106,7 +103,7 @@ class Users
                 $user_details = self::validateUserSignup($_REQUEST['user_login'], $new_user_email);
 
                 if (is_wp_error($user_details['errors']) && !empty($user_details['errors']->errors)) {
-                    $add_user_errors = $user_details[ 'errors' ];
+                    $add_user_errors = $user_details['errors'];
                     $redirect = add_query_arg(array('page' => 'usernew', 'error' => base64_encode(serialize($add_user_errors))), 'users.php');
                 } else {
                     $new_user_login = sanitize_user(wp_unslash($_REQUEST['user_login']), true);
@@ -175,7 +172,7 @@ class Users
             $user->use_ssl = 1;
         }
 
-        $errors = new WP_Error();
+        $errors = new \WP_Error();
 
         if ($user->user_login == '') {
             $errors->add('user_login', __("<strong>ERROR</strong>: Please enter a username.", 'fau-websso'));
@@ -194,7 +191,7 @@ class Users
         } elseif (!is_email($user->user_email)) {
             $errors->add('invalid_email', __("<strong>ERROR</strong>: The email address isn't correct.", 'fau-websso'), array('form-field' => 'email'));
         } elseif (email_exists($user->user_email)) {
-            $errors->add('email_exists', __("<strong>ERROR</strong>: This email address is already registered, please choose another one.", 'fau-websso'), array( 'form-field' => 'email'));
+            $errors->add('email_exists', __("<strong>ERROR</strong>: This email address is already registered, please choose another one.", 'fau-websso'), array('form-field' => 'email'));
         }
 
         if ($errors->get_error_codes()) {
@@ -213,7 +210,7 @@ class Users
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
         $roles = get_editable_roles();
-        $role = $roles[ $_REQUEST['role'] ];
+        $role = $roles[$_REQUEST['role']];
 
         $strf = __('Hi,%5$s%5$sYou\'ve been invited to join \'%1$s\' at %2$s with the role of %3$s.%5$s%5$sPlease sign in using the following link to the website:%5$s%4$s', 'fau-websso');
         $message = sprintf($strf, $blogname, home_url(), wp_specialchars_decode(translate_user_role($role['name'])), wp_login_url(), PHP_EOL);
@@ -224,7 +221,7 @@ class Users
     protected static function newUserNotification($user_id)
     {
         $options = Options::getOptions();
-        
+
         $password = bin2hex(random_bytes(4));
         wp_set_password($password, $user_id);
 
@@ -253,7 +250,7 @@ class Users
         if ($options->dev_mode) {
             $strf .= __('Password: %5$s%4$s', 'fau-websso');
         }
-        $strf .= __('%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');        
+        $strf .= __('%4$sThanks!%4$s%4$s--The Team @ %2$s', 'fau-websso');
         $message = sprintf($strf, $user_login, $blogname, wp_login_url(), PHP_EOL, $password);
         wp_mail($user_email, sprintf(__("[%s] Your user account", 'fau-websso'), $blogname), $message);
     }
@@ -320,7 +317,7 @@ class Users
     {
         global $wpdb;
 
-        $errors = new WP_Error();
+        $errors = new \WP_Error();
 
         $orig_username = $user_name;
         $user_name = preg_replace('/\s+/', '', sanitize_user($user_name, true));
@@ -377,7 +374,7 @@ class Users
                 $errors->add('user_email', __("That email address is not allowed!", 'fau-websso'));
             }
         }
-        
+
         $options = Options::getOptions();
         $allowedUserEmailDomains = $options->allowed_user_email_domains;
         if (is_array($allowedUserEmailDomains) && !empty($allowedUserEmailDomains)) {
@@ -400,5 +397,4 @@ class Users
         $result = array('user_name' => $user_name, 'orig_username' => $orig_username, 'user_email' => $user_email, 'errors' => $errors);
         return apply_filters('wpmu_validate_user_signup', $result);
     }
-
 }
