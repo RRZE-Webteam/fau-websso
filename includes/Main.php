@@ -4,13 +4,6 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
-use RRZE\WebSSO\Options;
-use RRZE\WebSSO\Settings;
-use RRZE\WebSSO\SimpleSAML;
-use RRZE\WebSSO\Users;
-use WP_User;
-use WP_Error;
-
 class Main
 {
     /**
@@ -58,10 +51,10 @@ class Main
     {
         $settings = new Settings();
         $settings->onLoaded();
-        
+
         if (is_super_admin()) {
             $userList = new UsersList();
-            $userList->onLoaded();            
+            $userList->onLoaded();
         }
 
         $simplesaml = new SimpleSAML($this->pluginFile);
@@ -110,7 +103,7 @@ class Main
             add_filter('show_network_site_users_add_existing_form', '__return_false');
             // Filters whether to show the Add New User form 
             // on the Multisite Users screen (disable).
-            add_filter('show_network_site_users_add_new_form', '__return_false');    
+            add_filter('show_network_site_users_add_new_form', '__return_false');
 
             add_action('network_admin_menu', [__NAMESPACE__ . '\NetworkMenu', 'userNewPage']);
             add_action('admin_menu', [__NAMESPACE__ . '\SiteMenu', 'userNewPage']);
@@ -133,10 +126,11 @@ class Main
         if (!$this->registration) {
             add_action('before_signup_header', [$this, 'beforeSignupHeader']);
         }
-
-        add_filter('authenticate', [$this, 'authenticate'], 10, 3);
-        remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
-        remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
+        
+        // After wp_authenticate_username_password runs.
+        add_filter('authenticate', [$this, 'authenticate'], 21, 3);
+        //remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
+        //remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
 
         add_filter('login_url', [$this, 'loginUrl'], 10, 2);
 
@@ -156,12 +150,13 @@ class Main
         wp_destroy_other_sessions();
         if ($this->simplesaml->isAuthenticated()) {
             $this->simplesaml->logout(site_url('', $this->options->simplesaml_url_scheme));
+            \SimpleSAML\Session::getSessionFromRequest()->cleanup();
         }
     }
 
     public function authenticate($user, $user_login, $user_pass)
     {
-        if (is_a($user, 'WP_User')) {
+        if (is_a($user, 'WP_User') && $this->options->force_websso == 1) {
             return $user;
         }
 
@@ -172,7 +167,9 @@ class Main
         }
 
         if (!$this->simplesaml->isAuthenticated()) {
+            \SimpleSAML\Session::getSessionFromRequest()->cleanup();
             $this->simplesaml->requireAuth();
+            \SimpleSAML\Session::getSessionFromRequest()->cleanup();
         }
 
         $attributes = array();
@@ -220,8 +217,8 @@ class Main
             if ((!empty($display_name) && $userdata->data->display_name == $user_login)) {
                 $user_id = wp_update_user(
                     array(
-                    'ID' => $userdata->ID,
-                    'display_name' => $display_name
+                        'ID' => $userdata->ID,
+                        'display_name' => $display_name
                     )
                 );
 
@@ -233,7 +230,7 @@ class Main
                 update_user_meta($user_id, 'last_name', $last_name);
             }
 
-            $user = new WP_User($userdata->ID);
+            $user = new \WP_User($userdata->ID);
             update_user_meta($userdata->ID, 'edu_person_affiliation', $edu_person_affiliation);
             update_user_meta($userdata->ID, 'edu_person_entitlement', $edu_person_entitlement);
 
@@ -253,13 +250,13 @@ class Main
 
             $user_id = wp_insert_user(
                 array(
-                'user_pass' => wp_generate_password(12, false),
-                'user_login' => $user_login,
-                'user_email' => $user_email,
-                'display_name' => $display_name,
-                'first_name' => $first_name,
-                'last_name' => $last_name,
-                'role' => 'subscriber'
+                    'user_pass' => wp_generate_password(12, false),
+                    'user_login' => $user_login,
+                    'user_email' => $user_email,
+                    'display_name' => $display_name,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'role' => 'subscriber'
                 )
             );
 
@@ -270,7 +267,7 @@ class Main
                 $this->login_die(__("The user could not be added.", 'fau-websso'));
             }
 
-            $user = new WP_User($user_id);
+            $user = new \WP_User($user_id);
             update_user_meta($user_id, 'edu_person_affiliation', $edu_person_affiliation);
             update_user_meta($user_id, 'edu_person_entitlement', $edu_person_entitlement);
 
@@ -337,7 +334,7 @@ class Main
                 $output .= '<tr>';
                 $output .= "<td>{$blog->blogname}</td>";
                 $output .= '<td><a href="' . esc_url(get_admin_url($blog->userblog_id)) . '">' . __("Visit the Dashboard", 'fau-websso') . '</a> | ' .
-                    '<a href="' . esc_url(get_home_url($blog->userblog_id)). '">' . __("View the website", 'fau-websso') . '</a></td>';
+                    '<a href="' . esc_url(get_home_url($blog->userblog_id)) . '">' . __("View the website", 'fau-websso') . '</a></td>';
                 $output .= '</tr>';
             }
 
