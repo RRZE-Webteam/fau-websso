@@ -4,10 +4,6 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
-use RRZE\WebSSO\Options;
-use SimpleSAML\Auth\Simple as SimpleSAMLAuthSimple;
-use WP_Error;
-
 /**
  * [SimpleSAML description]
  */
@@ -62,8 +58,8 @@ class SimpleSAML
     {
         if (file_exists(WP_CONTENT_DIR . $this->options->simplesaml_include)) {
             require_once(WP_CONTENT_DIR . $this->options->simplesaml_include);
-            return new SimpleSAMLAuthSimple($this->options->simplesaml_auth_source);
+            return new \SimpleSAML\Auth\Simple($this->options->simplesaml_auth_source);
         }
-        return new WP_Error('simplesaml_could_not_be_loaded', __('The simpleSAML library could not be loaded.', 'fau-websso'));
+        return new \WP_Error('simplesaml_could_not_be_loaded', __('The simpleSAML library could not be loaded.', 'fau-websso'));
     }
 }

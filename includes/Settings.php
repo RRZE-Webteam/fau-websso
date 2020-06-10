@@ -4,8 +4,6 @@ namespace RRZE\WebSSO;
 
 defined('ABSPATH') || exit;
 
-use RRZE\WebSSO\Options;
-
 class Settings
 {
     /**
@@ -71,16 +69,16 @@ class Settings
      */
     public function networkOptionsPage()
     {
-        ?>
+?>
         <div class="wrap">
             <h1><?php echo esc_html(__('WebSSO', 'fau-websso')); ?></h1>
             <form method="post">
-            <?php do_settings_sections($this->menuPage); ?>
-            <?php settings_fields($this->menuPage); ?>
-            <?php submit_button(); ?>
+                <?php do_settings_sections($this->menuPage); ?>
+                <?php settings_fields($this->menuPage); ?>
+                <?php submit_button(); ?>
             </form>
         </div>
-        <?php
+    <?php
     }
 
     /**
@@ -89,16 +87,16 @@ class Settings
      */
     public function optionsPage()
     {
-        ?>
+    ?>
         <div class="wrap">
             <h1><?php echo esc_html(__("WebSSO Settings", 'fau-websso')); ?></h1>
             <form method="post" action="options.php">
-            <?php do_settings_sections($this->menuPage); ?>
-            <?php settings_fields($this->menuPage); ?>
-            <?php submit_button(); ?>
+                <?php do_settings_sections($this->menuPage); ?>
+                <?php settings_fields($this->menuPage); ?>
+                <?php submit_button(); ?>
             </form>
         </div>
-        <?php
+<?php
     }
 
     /**
@@ -123,7 +121,7 @@ class Settings
         }
         if ($this->options->force_websso) {
             add_settings_field('dev_mode', __("DEV Mode", 'fau-websso'), [$this, 'devModeField'], $this->menuPage, 'simplesaml_options_section');
-        }        
+        }
     }
 
     /**
@@ -197,9 +195,9 @@ class Settings
      */
     public function allowedUserEmailDomainsField()
     {
-        $allowedUserEmailDomains = implode(PHP_EOL, (array)$this->options->allowed_user_email_domains);
+        $allowedUserEmailDomains = implode(PHP_EOL, (array) $this->options->allowed_user_email_domains);
         echo '<textarea rows="5" cols="55" id="allowed_user_email_domains" class="regular-text" name="' . $this->optionName . '[allowed_user_email_domains]">' . esc_attr($allowedUserEmailDomains) . '</textarea>';
-        echo '<p class="description">' . __('List of allowed domains for user email addresses.', 'fau-websso') . '</p>';  
+        echo '<p class="description">' . __('List of allowed domains for user email addresses.', 'fau-websso') . '</p>';
     }
 
     /**
@@ -232,12 +230,12 @@ class Settings
         } else {
             $input['allowed_user_email_domains'] = $this->options->allowed_user_email_domains;
         }
-        
+
         $input['dev_mode'] = isset($input['dev_mode']) ? 1 : 0;
 
         return $input;
     }
-        
+
     /**
      * [networkSettingsUpdate description]
      * @return void
