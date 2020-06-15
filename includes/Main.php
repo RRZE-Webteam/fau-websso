@@ -156,7 +156,7 @@ class Main
 
     public function authenticate($user, $user_login, $user_pass)
     {
-        if (is_a($user, 'WP_User') && $this->options->force_websso == 1) {
+        if (is_a($user, '\WP_User') && $this->options->force_websso == 1) {
             return $user;
         }
 
