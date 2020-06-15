@@ -126,7 +126,7 @@ class Main
         if (!$this->registration) {
             add_action('before_signup_header', [$this, 'beforeSignupHeader']);
         }
-        
+
         add_filter('authenticate', [$this, 'authenticate'], 10, 3);
         remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
         remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
@@ -177,11 +177,12 @@ class Main
 
         if (!empty($_attributes)) {
             do_action(
-                'rrze.log.info', 
+                'rrze.log.info',
                 [
-                    'plugin' => 'fau-websso', 
-                    'method' => __METHOD__, 
-                    'attributes' => $_attributes
+                    'plugin' => 'fau-websso',
+                    'method' => __METHOD__,
+                    'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+                    'person_attributes' => $_attributes
                 ]
             );
             $attributes['uid'] = isset($_attributes['urn:mace:dir:attribute-def:uid'][0]) ? $_attributes['urn:mace:dir:attribute-def:uid'][0] : '';
