@@ -127,10 +127,9 @@ class Main
             add_action('before_signup_header', [$this, 'beforeSignupHeader']);
         }
         
-        // After wp_authenticate_username_password runs.
-        add_filter('authenticate', [$this, 'authenticate'], 21, 3);
-        //remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
-        //remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
+        add_filter('authenticate', [$this, 'authenticate'], 10, 3);
+        remove_action('authenticate', 'wp_authenticate_username_password', 20, 3);
+        remove_action('authenticate', 'wp_authenticate_email_password', 20, 3);
 
         add_filter('login_url', [$this, 'loginUrl'], 10, 2);
 
@@ -156,7 +155,7 @@ class Main
 
     public function authenticate($user, $user_login, $user_pass)
     {
-        if (is_a($user, '\WP_User') && $this->options->force_websso == 1) {
+        if (is_a($user, '\WP_User')) {
             return $user;
         }
 
@@ -172,12 +171,19 @@ class Main
             \SimpleSAML\Session::getSessionFromRequest()->cleanup();
         }
 
-        $attributes = array();
+        $attributes = [];
 
         $_attributes = $this->simplesaml->getAttributes();
 
         if (!empty($_attributes)) {
-            do_action('rrze.log.info', ['plugin' => 'fau-websso', 'method' => __METHOD__, 'attributes' => $_attributes]);
+            do_action(
+                'rrze.log.info', 
+                [
+                    'plugin' => 'fau-websso', 
+                    'method' => __METHOD__, 
+                    'attributes' => $_attributes
+                ]
+            );
             $attributes['uid'] = isset($_attributes['urn:mace:dir:attribute-def:uid'][0]) ? $_attributes['urn:mace:dir:attribute-def:uid'][0] : '';
             $attributes['mail'] = isset($_attributes['urn:mace:dir:attribute-def:mail'][0]) ? $_attributes['urn:mace:dir:attribute-def:mail'][0] : '';
             $attributes['displayName'] = isset($_attributes['urn:mace:dir:attribute-def:displayName'][0]) ? $_attributes['urn:mace:dir:attribute-def:displayName'][0] : '';
